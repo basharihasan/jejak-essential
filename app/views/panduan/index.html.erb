@@ -39,6 +39,11 @@
   .markdown-body thead th { background: var(--pd-th-bg); color: var(--pd-heading); font-weight: 600; text-align: left; }
   .markdown-body th, .markdown-body td { border: 1px solid var(--pd-border); padding: 0.45rem 0.65rem; vertical-align: top; line-height: 1.5; }
 
+  /* Screenshot halaman: bingkai tipis supaya tepi putih screenshot tidak
+     melebur ke kartu panduan. `.pd-phone` untuk tangkapan layar ponsel. */
+  .markdown-body img { display: block; max-width: 100%; height: auto; margin: 1rem auto 1.5rem; border: 1px solid var(--pd-border); border-radius: 0.6rem; box-shadow: 0 1px 3px rgb(15 23 42 / 0.08); }
+  .markdown-body img.pd-phone { max-width: 280px; border-radius: 1.25rem; }
+
   /* Daftar isi: dua kolom di layar lebar. */
   .markdown-body h2#daftar-isi + ul { columns: 2; column-gap: 2rem; background: var(--pd-toc-bg); border: 1px solid var(--pd-border); border-radius: 0.75rem; padding: 1rem 1.25rem 1rem 2.5rem; font-size: 0.9rem; }
   .markdown-body h2#daftar-isi + ul > li { break-inside: avoid; }
