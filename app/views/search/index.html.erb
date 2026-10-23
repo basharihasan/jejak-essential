@@ -1,7 +1,7 @@
 <h1 class="text-xl font-bold text-gray-900">Pencarian</h1>
 
 <%= form_with url: search_path, method: :get, class: "mt-4" do |f| %>
-  <%= f.text_field :q, value: @query, placeholder: "Cari nama atau email pengguna...",
+  <%= f.text_field :q, value: @query, placeholder: (current_user.has_role?("admin") ? "Cari nama atau email pengguna..." : "Cari nama atau email mahasiswa..."),
         class: "block w-full rounded-xl border-0 py-2.5 px-3.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm" %>
 <% end %>
 
@@ -11,7 +11,7 @@
       <% @users.each do |user| %>
         <%# Seluruh kartu jadi tautan: mahasiswa → Dasbor Mahasiswa (pengajar/
             kaprodi/admin); pengguna lain → sunting (admin). Selain itu tanpa tautan. %>
-        <% target = if current_user.can_view_students? && user.has_role?("mahasiswa") then student_dashboard_path(user)
+        <% target = if current_user.can_view_student?(user) then student_dashboard_path(user)
                     elsif current_user.has_role?("admin") then edit_admin_user_path(user)
                     end %>
         <%= content_tag (target ? :a : :div), (target ? { href: target } : {}).merge(class: "bg-white rounded-xl ring-1 ring-gray-200 p-4 flex items-center gap-3 #{'hover:ring-indigo-300 hover:bg-indigo-50/40 transition-colors' if target}") do %>
@@ -23,7 +23,7 @@
             <p class="text-xs text-gray-400"><%= user.email %><%= " · #{user.roles.map(&:name).join(', ')}" if user.roles.any? %></p>
           </div>
           <% if target %>
-            <span class="shrink-0 text-xs font-semibold text-indigo-600"><%= user.has_role?("mahasiswa") && current_user.can_view_students? ? "Dasbor Mahasiswa" : "Sunting" %> →</span>
+            <span class="shrink-0 text-xs font-semibold text-indigo-600"><%= current_user.can_view_student?(user) ? "Dasbor Mahasiswa" : "Sunting" %> →</span>
           <% end %>
         <% end %>
       <% end %>

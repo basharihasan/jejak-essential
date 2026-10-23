@@ -52,7 +52,8 @@
         <%= form_with url: submit_student_assessment_path(@instance), method: :patch, multipart: true, class: "mt-4 space-y-3" do |f| %>
           <div>
             <%= f.label :document, (@instance.document.attached? ? "Ganti dokumen (opsional)" : "Dokumen (PDF/DOCX/gambar)"), class: "block text-sm font-semibold text-gray-700 mb-1" %>
-            <%= f.file_field :document, class: "block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-indigo-700" %>
+            <%= f.file_field :document, accept: AssessmentInstance.attachment_accept(:document), class: "block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-indigo-700" %>
+            <p class="mt-1 text-xs text-gray-400"><%= AssessmentInstance.attachment_types_label(:document).upcase_first %>, maks. <%= AssessmentInstance.attachment_max_size_label(:document) %>.</p>
           </div>
           <div>
             <%= f.label :self_evaluation, "Evaluasi diri", class: "block text-sm font-semibold text-gray-700 mb-1" %>

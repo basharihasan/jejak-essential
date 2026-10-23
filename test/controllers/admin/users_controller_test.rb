@@ -46,11 +46,35 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "mahasiswa" ], users(:siti).reload.roles.pluck(:code)
   end
 
-  test "reset kata sandi ke bawaan" do
+  test "reset kata sandi membuat kata sandi sementara acak yang ditampilkan sekali dan wajib diganti" do
     sign_in @admin
     patch reset_password_admin_user_path(users(:siti))
     assert_redirected_to edit_admin_user_path(users(:siti))
-    assert users(:siti).reload.valid_password?(User::DEFAULT_PASSWORD)
+
+    temporary = flash[:temporary_password]
+    assert_match(/\A[a-zA-Z2-9]{4}-[a-zA-Z2-9]{4}-[a-zA-Z2-9]{4}\z/, temporary)
+    siti = users(:siti).reload
+    assert siti.valid_password?(temporary)
+    assert_not siti.valid_password?(User::LEGACY_DEFAULT_PASSWORD)
+    assert siti.must_change_password?
+
+    follow_redirect!
+    assert_select '[data-testid="temporary-password"]', /#{Regexp.escape(temporary)}/
+    get edit_admin_user_path(siti)
+    assert_select '[data-testid="temporary-password"]', 0
+  end
+
+  test "reset kata sandi oleh admin membuka kunci akun yang terkunci" do
+    siti = users(:siti)
+    siti.lock_access!(send_instructions: false)
+    sign_in @admin
+
+    get edit_admin_user_path(siti)
+    assert_select '[data-testid="account-locked"]'
+
+    patch reset_password_admin_user_path(siti)
+    assert_not siti.reload.access_locked?
+    assert_equal 0, siti.failed_attempts
   end
 
   test "reset kata sandi oleh admin ikut mengonfirmasi email yang belum terkonfirmasi" do
@@ -89,7 +113,12 @@ class Admin::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "mahasiswa" ], baru.roles.pluck(:code)
     assert_equal study_programs(:sarjana_kedokteran), baru.study_program
     assert baru.confirmed?
-    assert baru.valid_password?(User::DEFAULT_PASSWORD)
+    assert baru.must_change_password?
+    assert_not baru.valid_password?(User::LEGACY_DEFAULT_PASSWORD)
+    temporary = css_select('[data-testid="import-credentials"] tr').map { |tr| tr.css("td").map(&:text) }
+                                                                  .find { |cells| cells.first == "baru1@example.com" }&.last
+    assert temporary.present?, "kata sandi sementara akun baru harus ditampilkan di hasil impor"
+    assert baru.valid_password?(temporary)
 
     dosen = User.find_by!(email: "dr.baru@example.com")
     assert_equal %w[dosen preseptor].sort, dosen.roles.pluck(:code).sort

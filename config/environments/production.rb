@@ -22,7 +22,10 @@ Rails.application.configure do
   # config.asset_host = "http://assets.example.com"
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # ACTIVE_STORAGE_SERVICE=s3 memindahkan berkas ke penyimpanan S3-compatible
+  # (lihat config/storage.yml) — wajib di Render & PaaS lain yang disknya
+  # terhapus setiap deploy ulang.
+  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
 
   # Render (dan PaaS sejenis) mengakhiri SSL di reverse proxy-nya, jadi
   # aplikasi sendiri menerima trafik HTTP biasa — dua baris ini yang membuat

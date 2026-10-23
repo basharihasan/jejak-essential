@@ -20,7 +20,10 @@ class ActivityLogsController < ApplicationController
     scope = base.recent
     scope = scope.in_domain(@domain.id) if @domain
     scope = scope.tagged_with(@competency_item_id) if @competency_item_id
-    @activity_logs_by_date = scope.with_taxonomy.includes(:competency_items).group_by(&:activity_date)
+    # Berpaginasi sebelum dikelompokkan per tanggal: tab "Perlu Diverifikasi"
+    # memuat kegiatan seluruh mahasiswa dan tak boleh dimuat sekaligus.
+    @activity_logs = scope.with_taxonomy.includes(:competency_items).page(params[:page]).per(50)
+    @activity_logs_by_date = @activity_logs.group_by(&:activity_date)
     @all_competency_items = CompetencyItem.order(:position)
   end
 
@@ -64,8 +67,10 @@ class ActivityLogsController < ApplicationController
   def update
     authorize @activity_log
     @activity_log.require_form_fields = true
-    if @activity_log.update(activity_log_params)
-      @activity_log.evidence_files.attach(new_evidence_files) if new_evidence_files.any?
+    @activity_log.assign_attributes(activity_log_params)
+    # Dilampirkan sebelum save supaya validasi tipe/ukuran ikut menolak berkas.
+    @activity_log.evidence_files.attach(new_evidence_files) if new_evidence_files.any?
+    if @activity_log.save
       redirect_to @activity_log, notice: "Kegiatan berhasil diperbarui."
     else
       load_form_collections

@@ -6,6 +6,7 @@ class FinalProjectsController < ApplicationController
 
   def index
     @final_projects = policy_scope(FinalProject).includes(:student, :supervisor).order(created_at: :desc)
+                                                .page(params[:page]).per(50)
   end
 
   def show

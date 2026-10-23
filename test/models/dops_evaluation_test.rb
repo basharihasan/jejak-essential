@@ -76,7 +76,7 @@ class DopsEvaluationTest < ActiveSupport::TestCase
   end
 
   test "rotasi harus milik mahasiswa yang dinilai" do
-    other = User.create!(full_name: "Mahasiswa Lain", email: "dops.lain@example.com", password: "password123", confirmed_at: Time.current)
+    other = User.create!(full_name: "Mahasiswa Lain", email: "dops.lain@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     dops = DopsEvaluation.new(
       student: other, evaluator: users(:budi), clinical_rotation: clinical_rotations(:ongoing_rotation_siti),
       procedure_name: "Jahit Luka", evaluated_at: Date.current,

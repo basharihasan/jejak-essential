@@ -33,13 +33,10 @@ class EntrustmentDecisionsController < ApplicationController
   private
 
   # Mahasiswa hanya peta miliknya; pengajar & kaprodi boleh membuka
-  # mahasiswa lain (kaprodi hanya melihat — lihat can_decide?).
+  # mahasiswa lain (kaprodi hanya melihat, dan hanya prodi binaannya — lihat
+  # can_decide? dan ApplicationController#viewed_student).
   def set_student
-    if params[:student_id].present? && current_user.can_view_students?
-      @student = User.find(params[:student_id])
-    else
-      @student = current_user
-    end
+    @student = viewed_student
   end
 
   def can_decide?

@@ -6,6 +6,7 @@ class ClinicalRotationsController < ApplicationController
 
   def index
     @rotations = policy_scope(ClinicalRotation).includes(:academic_period, :preceptor, :user).order(start_date: :desc)
+                                              .page(params[:page]).per(50)
   end
 
   def new

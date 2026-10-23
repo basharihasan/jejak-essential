@@ -54,4 +54,5 @@
   <% if @enrollments.empty? %>
     <p class="text-sm text-gray-400">Belum ada enrolment tutorial.</p>
   <% end %>
+  <%= paginate @enrollments %>
 </div>

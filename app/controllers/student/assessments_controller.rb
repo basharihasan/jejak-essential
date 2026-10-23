@@ -34,6 +34,8 @@ class Student::AssessmentsController < ApplicationController
     @instance.submit!(document: params[:document], self_evaluation: params[:self_evaluation])
     notify_examiner
     redirect_to student_assessment_path(@instance), notice: "Berhasil dikumpulkan. Penguji akan menilai."
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to student_assessment_path(@instance), alert: "Gagal dikumpulkan: #{e.record.errors.full_messages.to_sentence}"
   end
 
   private

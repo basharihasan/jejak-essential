@@ -186,7 +186,10 @@
       </div>
       <div>
         <%= f.label :evidence_files, "#{term('terms.evidence_files')} (opsional)", class: label_class %>
-        <%= f.file_field :evidence_files, multiple: true, class: "text-sm" %>
+        <%= f.file_field :evidence_files, multiple: true, accept: ActivityLog.attachment_accept(:evidence_files), class: "text-sm" %>
+        <p class="mt-1 text-xs text-gray-400">
+          <%= ActivityLog.attachment_types_label(:evidence_files).upcase_first %>, maks. <%= ActivityLog.attachment_max_size_label(:evidence_files) %> per berkas, 10 berkas.
+        </p>
         <% if activity_log.persisted? && activity_log.evidence_files.attached? %>
           <p class="mt-1 text-xs text-gray-400">
             Sudah terlampir <%= activity_log.evidence_files.count %> berkas — berkas baru ditambahkan, tidak menggantikan.

@@ -80,21 +80,23 @@ Panduan ini disusun menurut **peran**: bab awal berlaku untuk semua orang, lalu 
 ### 1.1 Mendaftar akun
 
 1. Buka halaman muka aplikasi, lalu klik **Daftar**.
-2. Isi **Nama Lengkap**, **Email**, pilih **Peran** (Mahasiswa, Dosen, atau Preseptor), lalu buat **Kata Sandi** dan ulangi.
-3. Klik **Daftar**. Peran yang Anda pilih langsung menjadi peran aktif akun Anda.
+2. Isi **Nama Lengkap**, **Email**, lalu buat **Kata Sandi** (minimal 8 karakter) dan ulangi.
+3. Klik **Daftar**. Akun baru selalu berperan **Mahasiswa**.
 
-Peran **Kaprodi** dan **Admin** tidak dapat dipilih sendiri karena membuka data seluruh prodi/instalasi — admin instansi yang memberikannya lewat **Konfigurasi → Pengguna → Sunting** (atau kolom `peran` pada impor CSV). Permintaan peran itu lewat form yang diubah pun ditolak dan akun tetap menjadi Mahasiswa.
+Peran **Dosen**, **Preseptor**, **Kaprodi**, dan **Admin** tidak dapat dipilih sendiri karena membuka kasus klinis dan data seluruh mahasiswa — admin instansi yang memberikannya lewat **Konfigurasi → Pengguna → Sunting** (atau kolom `peran` pada impor CSV). Permintaan peran lain lewat form yang diubah pun ditolak dan akun tetap menjadi Mahasiswa.
 
 Bila instansi Anda mengaktifkan login Google, tombol **Masuk dengan Google** juga tersedia — akun Google baru otomatis dibuat sebagai pengguna dan dianggap sudah terverifikasi.
 
 > **Konfirmasi email.** Konfirmasi lewat surel hanya diminta bila server dipasangi layanan pengirim email. Pada instalasi tanpa server surat, akun hasil pendaftaran langsung bisa dipakai. Jika Anda mendapat pesan "harus mengonfirmasi email" padahal tidak pernah menerima suratnya, minta admin membuka **Konfigurasi → Pengguna → Sunting → Konfirmasi Sekarang**.
 
-Sebagian instansi tidak membuka pendaftaran mandiri dan memilih **mengimpor akun dari CSV** (lihat [Pengguna & impor CSV](#pengguna--impor-csv)). Akun hasil impor memakai kata sandi bawaan `password123` — segera ganti lewat **Pengaturan Akun** setelah masuk pertama kali.
+Sebagian instansi tidak membuka pendaftaran mandiri dan memilih **mengimpor akun dari CSV** (lihat [Pengguna & impor CSV](#pengguna--impor-csv)). Akun hasil impor menerima **kata sandi sementara** acak dari admin. Saat pertama masuk, Anda diarahkan ke **Pengaturan Akun** dan wajib membuat kata sandi baru sebelum bisa membuka halaman lain.
 
 ### 1.2 Masuk, lupa kata sandi, keluar
 
 - **Masuk**: email + kata sandi, atau tombol Google. Centang **Ingat saya** agar tidak perlu masuk ulang di perangkat yang sama.
-- **Lupa kata sandi**: tautan *Lupa kata sandi?* di halaman masuk mengirim tautan reset ke email Anda (hanya tampil bila server bisa mengirim email). Tanpa server surat, admin dapat me-reset kata sandi Anda ke bawaan dari **Konfigurasi → Pengguna**.
+- **Lupa kata sandi**: tautan *Lupa kata sandi?* di halaman masuk mengirim tautan reset ke email Anda (hanya tampil bila server bisa mengirim email). Tanpa server surat, minta admin me-reset kata sandi Anda dari **Konfigurasi → Pengguna**; Anda menerima kata sandi sementara baru yang wajib diganti saat masuk.
+- **Akun terkunci**: setelah 10 kali salah kata sandi, akun terkunci 15 menit lalu terbuka sendiri; admin juga bisa membukanya lewat **Reset Kata Sandi**. Percobaan masuk yang terlalu cepat dari satu perangkat dibatasi sementara (pesan "Terlalu banyak percobaan").
+- **Sesi**: tanpa centang **Ingat saya**, sesi berakhir setelah 2 jam tidak aktif. Kata sandi `password123` tidak dapat dipakai karena tercantum publik.
 - **Ganti kata sandi / email**: menu akun (pojok kanan atas) → **Pengaturan Saya** → tautan **Pengaturan Akun**, atau langsung ke `/users/edit`. Ubah **Email** dan/atau isi **Kata Sandi Baru** + **Ulangi Kata Sandi Baru** (kosongkan bila tidak ingin mengganti), lalu isi **Kata Sandi Saat Ini** — wajib untuk menyimpan perubahan apa pun di halaman itu. Pada instalasi yang mengirim email, email baru berlaku setelah tautan konfirmasi yang dikirim ke alamat baru dibuka.
 - **Keluar**: menu akun → **Keluar**.
 
@@ -169,7 +171,7 @@ Bagi **kaprodi**, isian **Program Studi Binaan** hanya ditampilkan dan tidak dap
 | Bagian | Isi |
 |---|---|
 | **Sidebar** (kiri, gelap) | Merek + nama prodi, identitas & **peran aktif**, tombol **Edit Profil**, kotak **Cari menu** (menyaring menu saat mengetik), grup menu, dan di kaki: **Panduan Pengguna**, **Pengaturan**, **Keluar**. Di ponsel sidebar tersembunyi; buka dengan tombol ☰. |
-| **Topbar** (atas, putih) | Judul halaman, pengalih **Peran aktif**, kotak **Cari** (menuju halaman Pencarian), tombol **tema** (terang → gelap → ikuti sistem), tombol bahasa **EN/ID**, tombol **?** (membuka panduan ini di tab baru), **lonceng notifikasi** (5 terbaru + lencana belum dibaca), dan **menu akun** (Profil Saya, Pengaturan Saya, Keluar). |
+| **Topbar** (atas, putih) | Judul halaman, pengalih **Peran aktif**, kotak **Cari** (menuju halaman Pencarian; khusus dosen/preseptor/kaprodi/admin), tombol **tema** (terang → gelap → ikuti sistem), tombol bahasa **EN/ID**, tombol **?** (membuka panduan ini di tab baru), **lonceng notifikasi** (5 terbaru + lencana belum dibaca), dan **menu akun** (Profil Saya, Pengaturan Saya, Keluar). |
 | **Area konten** | Halaman yang sedang dibuka. |
 | **Bilah bawah** (ponsel) | Lima pintasan: Beranda, Log Kegiatan, Log Kasus, Verifikasi (pembimbing) atau Asesmen (mahasiswa), Profil. |
 
@@ -207,7 +209,7 @@ Preferensi disimpan pada akun, jadi berlaku di semua perangkat.
 
 ### 2.5 Pencarian
 
-Kotak **Cari** di topbar dan menu **Daftar Mahasiswa** (`/cari`) mencari **pengguna** berdasarkan nama atau email. Kartu hasil dapat diklik untuk membuka profil pengguna. Pencarian belum mencakup isi logbook atau kasus.
+Kotak **Cari** di topbar dan menu **Daftar Mahasiswa** (`/cari`) mencari **pengguna** berdasarkan nama atau email — hanya untuk dosen, preseptor, kaprodi, dan admin. Pengajar hanya menemukan **mahasiswa**, kaprodi hanya mahasiswa **prodi binaannya**, dan admin menemukan semua pengguna. Kartu mahasiswa membuka **Dasbor Mahasiswa**; kartu pengguna lain membuka halaman sunting akun (admin). Pencarian belum mencakup isi logbook atau kasus.
 
 ### 2.6 Notifikasi
 
@@ -367,7 +369,7 @@ Menu **Logbook → Kasus Klinis** (`/clinical_cases`). Halaman daftar memuat **s
 | 3. Pemeriksaan Penunjang | Hasil laboratorium, radiologi, pemeriksaan lain. |
 | 4. Diagnosis & Tatalaksana | Diagnosis (isian ber-autocomplete dari **Master Diagnosis**; kode ICD-10 dan level SKDI terisi otomatis bila cocok) dan tatalaksana. |
 | 5. Terapi & Resep | Latihan menulis resep: nama obat (autocomplete dari **Master Obat**), sediaan, kekuatan, jumlah, rute, aturan pakai (signa), catatan. Baris yang sama sekali kosong dibuang otomatis; baris terisi sebagian tanpa nama obat ditandai dan harus dilengkapi. **Pratinjau resep** langsung menyusun isian menjadi format resep, mis. `R/ Parasetamol tab 500 mg No. X` dan `S 3 dd tab I p.c.` — sediaan otomatis disingkat (Tablet → tab, Kapsul → kaps, Sirup → syr, dst.), sama dengan resep yang tersimpan. |
-| 6. Pembelajaran & Bukti | Poin pembelajaran dan unggahan berkas bukti. |
+| 6. Pembelajaran & Bukti | Poin pembelajaran dan unggahan berkas bukti (gambar, PDF, Word, PowerPoint, Excel; maks. 10 MB per berkas, 10 berkas). Berkas baru ditambahkan — menyunting kasus tidak menghapus bukti yang sudah ada. |
 
 > Setting klinis menentukan jenis fasilitas: **Pelayanan Primer → FKTP**, selainnya **FKRTL** — inilah dasar kartu Pemenuhan Target Kasus.
 
@@ -534,7 +536,7 @@ Notifikasi ke Anda **baru terkirim saat evaluasi berstatus Terkirim** — draf p
 </svg>
 
 1. Klik **Daftar** pada event yang tersedia (percobaan baru; bila event mengizinkan percobaan berulang, Anda dapat mendaftar lagi setelah dinilai).
-2. Buka percobaan, **unggah dokumen** dan/atau tulis **evaluasi diri**, lalu **Kumpulkan**. Penguji yang ditunjuk menerima notifikasi; bila belum ada penguji, penguji mana pun dapat mengambilnya.
+2. Buka percobaan, **unggah dokumen** (PDF/Word/PowerPoint/Excel atau gambar, maks. 20 MB) dan/atau tulis **evaluasi diri**, lalu **Kumpulkan**. Penguji yang ditunjuk menerima notifikasi; bila belum ada penguji, penguji mana pun dapat mengambilnya.
 3. Setelah dinilai, halaman percobaan menampilkan nilai, umpan balik **pertahankan / tingkatkan**, rubrik yang diisi penguji (bila event memakai Assessment Form), dan **posisi Anda terhadap kohort** untuk event itu.
 
 ### 4.11 Jurnal Umpan Balik
@@ -656,7 +658,7 @@ Tiap baris memuat jumlah kegiatan pada periode terpilih (kolom **Kegiatan Period
 
 ### 5.9 Daftar Mahasiswa
 
-**Coaching Center → Daftar Mahasiswa** membuka halaman Pencarian (`/cari`) — cari nama/email, lalu klik kartu untuk membuka profil pengguna dan dari sana ke Peta EPA-nya.
+**Coaching Center → Daftar Mahasiswa** membuka halaman Pencarian (`/cari`) — cari nama/email mahasiswa, lalu klik kartu untuk membuka **Dasbor Mahasiswa** dan dari sana ke halaman asesmen serta Peta EPA-nya. Kaprodi hanya dapat membuka mahasiswa prodi binaannya.
 
 ### 5.10 Khusus kaprodi
 
@@ -682,7 +684,7 @@ Periode yang sudah dipakai rotasi klinik, enrolment tutorial, Assessment Event, 
 
 ### 6.3 Pengguna & impor CSV
 
-`/admin/users` — daftar berpenyaring (nama/email, peran, prodi). **Sunting** mengubah nama, prodi, dan peran (minimal satu peran; peran aktif ikut disesuaikan bila dicabut) — untuk akun kaprodi, prodi di sini adalah **prodi binaan** yang membatasi hak aksesnya dan hanya dapat diubah admin; **Reset ke Bawaan** mengembalikan kata sandi ke `password123`, dan **Konfirmasi Sekarang** mengaktifkan akun yang tersangkut konfirmasi email.
+`/admin/users` — daftar berpenyaring (nama/email, peran, prodi). **Sunting** mengubah nama, prodi, dan peran (minimal satu peran; peran aktif ikut disesuaikan bila dicabut) — untuk akun kaprodi, prodi di sini adalah **prodi binaan** yang membatasi hak aksesnya dan hanya dapat diubah admin; **Reset Kata Sandi** membuat kata sandi sementara acak (ditampilkan sekali — sampaikan langsung ke pengguna) sekaligus membuka kunci akun, dan pengguna wajib menggantinya saat masuk; **Konfirmasi Sekarang** mengaktifkan akun yang tersangkut konfirmasi email. Status **terkunci** (terlalu banyak salah kata sandi) tampil di halaman sunting.
 
 **Impor CSV** (`/admin/users/import`) — header baris pertama, urutan kolom bebas, pemisah koma atau titik koma:
 
@@ -694,7 +696,7 @@ budi@kampus.ac.id,Budi Santoso,dosen+preseptor,
 
 - `peran`: kode dipisah `+` atau `;` (mahasiswa, dosen, preseptor, kaprodi, admin); kosong → mahasiswa.
 - `prodi`: kode atau nama prodi; kosong → tidak diubah.
-- Akun baru: kata sandi bawaan, langsung terkonfirmasi. Akun lama: hanya nama/peran/prodi yang diperbarui, kata sandi tidak disentuh. Setiap baris gagal dilaporkan dengan nomor barisnya.
+- Akun baru: kata sandi sementara acak per akun, langsung terkonfirmasi, wajib diganti saat masuk pertama. Daftar email + kata sandi sementara ditampilkan **sekali** di halaman hasil impor (tombol **Unduh CSV**) — simpan sebelum meninggalkan halaman. Akun lama: hanya nama/peran/prodi yang diperbarui, kata sandi tidak disentuh. Setiap baris gagal dilaporkan dengan nomor barisnya.
 
 ### 6.4 Relabel Prodi Mahasiswa
 

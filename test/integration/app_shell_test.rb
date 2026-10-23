@@ -19,13 +19,15 @@ class AppShellTest < ActionDispatch::IntegrationTest
       assert_select "p", text: "Coaching Center", count: 0
       assert_select "p", text: "Konfigurasi", count: 0
     end
-    assert_select "header a[href=?]", search_path
+    # Pencarian pengguna khusus pengajar/kaprodi/admin — ikonnya tidak tampil.
+    assert_select "header a[href=?]", search_path, count: 0
     assert_select ".mobile-bottom-nav a[href=?]", assessments_path
   end
 
   test "dosen melihat Coaching Center dengan lencana kasus menunggu, tanpa Konfigurasi" do
     sign_in users(:budi)
     get dashboard_path
+    assert_select "header a[href=?]", search_path
 
     pending = ClinicalCase.awaiting_verification.count
     assert_select "aside#sidebar" do

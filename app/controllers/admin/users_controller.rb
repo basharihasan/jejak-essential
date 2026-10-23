@@ -13,7 +13,7 @@ class Admin::UsersController < ApplicationController
     @role_code = params[:role].presence
     @study_program_id = params[:study_program_id].presence
 
-    scope = User.includes(:roles, :study_program).order(:full_name)
+    scope = User.includes(:roles, :study_program, :active_role).order(:full_name)
     if @query.present?
       like = "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%"
       scope = scope.where("full_name ILIKE :q OR email ILIKE :q", q: like)
@@ -50,12 +50,18 @@ class Admin::UsersController < ApplicationController
   end
 
   # Admin yang mereset kata sandi sekaligus menjamin akunnya — email ikut
-  # dikonfirmasi, kalau tidak pengguna tetap tertahan "harus mengonfirmasi
-  # alamat email" walau kata sandinya benar.
+  # dikonfirmasi dan kunci (terlalu banyak salah kata sandi) dibuka, kalau
+  # tidak pengguna tetap tertahan walau kata sandinya benar. Kata sandinya
+  # sementara & acak, ditampilkan sekali lewat flash ke admin, dan wajib
+  # diganti pengguna saat masuk.
   def reset_password
-    @user.update!(password: User::DEFAULT_PASSWORD, password_confirmation: User::DEFAULT_PASSWORD,
-                  confirmed_at: @user.confirmed_at || Time.current)
-    redirect_to edit_admin_user_path(@user), notice: "Kata sandi #{@user.full_name} direset ke kata sandi bawaan.", status: :see_other
+    temporary = @user.assign_temporary_password
+    @user.confirmed_at ||= Time.current
+    @user.locked_at = nil
+    @user.failed_attempts = 0
+    @user.save!
+    flash[:temporary_password] = temporary
+    redirect_to edit_admin_user_path(@user), notice: "Kata sandi #{@user.full_name} direset ke kata sandi sementara.", status: :see_other
   end
 
   def confirm_email

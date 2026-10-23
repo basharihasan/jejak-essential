@@ -1,15 +1,18 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+  include AttachmentValidation
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :trackable, :confirmable, :omniauthable, omniauth_providers: [ :google_oauth2 ]
+         :trackable, :confirmable, :lockable, :timeoutable,
+         :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
   belongs_to :active_role, class_name: "Role", optional: true
 
   has_one_attached :avatar
+  validates_attachments :avatar, content_types: WEB_IMAGE_TYPES, max_size: 5.megabytes
 
   has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :destroy
   has_many :device_push_tokens, dependent: :destroy
@@ -53,11 +56,65 @@ class User < ApplicationRecord
     has_role?("kaprodi") && !has_role?("admin")
   end
 
-  # Kata sandi bawaan akun hasil impor CSV / reset admin — publik & lemah,
-  # jadi halaman Pengaturan Akun tetap satu-satunya tempat menggantinya.
-  DEFAULT_PASSWORD = "password123"
+  # Boleh membuka data satu mahasiswa tertentu (Dasbor Mahasiswa dan halaman
+  # asesmen ber-?student_id=). Targetnya harus mahasiswa — bukan akun dosen/
+  # admin — dan kaprodi non-admin hanya untuk mahasiswa prodi binaannya.
+  def can_view_student?(student)
+    return false unless student && can_view_students? && student.has_role?("mahasiswa")
+    return student.study_program_id == study_program_id if study_program_bound?
+
+    true
+  end
+
+  # Kata sandi bawaan lama untuk akun hasil impor CSV / reset admin — tercantum
+  # publik di repositori. Akun baru tidak lagi memakainya (lihat
+  # assign_temporary_password), tetapi akun lama yang masih memakainya
+  # ditandai wajib ganti saat masuk (valid_password?).
+  LEGACY_DEFAULT_PASSWORD = "password123"
+
+  # Akun contoh `bin/rails demo:seed` sengaja berkata sandi publik dan dipakai
+  # bergantian banyak orang — tidak dipaksa ganti kata sandi, kalau tidak
+  # pengunjung pertama mengunci semua pengunjung berikutnya.
+  DEMO_EMAIL_DOMAIN = "jejaklite.test"
+
+  # Huruf/angka yang tak mudah tertukar saat didikte atau disalin dari kertas
+  # (tanpa 0/O, 1/l/I).
+  TEMPORARY_PASSWORD_ALPHABET = (("a".."z").to_a + ("A".."Z").to_a + ("2".."9").to_a - %w[l I O]).freeze
 
   validates :full_name, presence: true
+  validate :password_not_legacy_default
+
+  before_save :clear_must_change_password, if: :will_save_change_to_encrypted_password?
+
+  def self.generate_temporary_password
+    Array.new(3) { Array.new(4) { TEMPORARY_PASSWORD_ALPHABET.sample(random: SecureRandom) }.join }.join("-")
+  end
+
+  # Kata sandi sementara acak untuk akun hasil impor CSV atau reset admin —
+  # ditampilkan sekali ke admin, lalu pengguna wajib menggantinya saat masuk.
+  # Mengembalikan kata sandinya (belum disimpan; panggil save sesudahnya).
+  def assign_temporary_password
+    temporary = self.class.generate_temporary_password
+    self.password = self.password_confirmation = temporary
+    self.must_change_password = true
+    @temporary_password_assigned = true
+    temporary
+  end
+
+  def demo_account?
+    email.to_s.end_with?("@#{DEMO_EMAIL_DOMAIN}")
+  end
+
+  # Tandai wajib ganti bila seseorang berhasil masuk memakai kata sandi
+  # bawaan lama yang publik. Dicek di sini karena hanya saat login kata sandi
+  # aslinya tersedia — tanpa bcrypt tambahan.
+  def valid_password?(password)
+    super.tap do |valid|
+      if valid && password == LEGACY_DEFAULT_PASSWORD && !demo_account? && !must_change_password?
+        update_column(:must_change_password, true)
+      end
+    end
+  end
 
   GENDERS = { "Laki-laki" => "Laki-laki", "Perempuan" => "Perempuan" }.freeze
   PROFESSION_CATEGORIES = [
@@ -162,8 +219,12 @@ class User < ApplicationRecord
       clinical_cases.exists?(verified_by: instructor)
   end
 
+  # Memuat peran sekali per objek lalu memeriksa di memori — dulu satu query
+  # per panggilan (sampai 36 kali per request lewat sidebar & policy).
+  # `roles <<` dan `role_ids=` ikut memperbarui koleksi yang sudah dimuat,
+  # jadi hasilnya tidak basi setelah peran diubah lewat asosiasi ini.
   def has_role?(code)
-    roles.exists?(code: code.to_s)
+    roles.any? { |role| role.code == code.to_s }
   end
 
   # Menukar peran aktif — dipakai fitur "Ganti Peran". Menolak pindah ke
@@ -187,6 +248,24 @@ class User < ApplicationRecord
     calendar_feed_token
   end
   private
+
+  # Kata sandi apa pun yang disimpan selain kata sandi sementara (ganti
+  # sendiri di Pengaturan Akun, reset lewat email) melepas kewajiban ganti.
+  def clear_must_change_password
+    if @temporary_password_assigned
+      @temporary_password_assigned = false
+    else
+      self.must_change_password = false
+    end
+  end
+
+  # Kata sandi bawaan lama tercantum publik di repositori — tidak boleh dipilih
+  # lagi, kecuali untuk akun demo yang memang berkata sandi publik.
+  def password_not_legacy_default
+    return unless password == LEGACY_DEFAULT_PASSWORD && !demo_account?
+
+    errors.add(:password, "terlalu mudah ditebak — kata sandi ini tercantum publik, pilih yang lain")
+  end
 
   def birth_date_not_in_future
     return if birth_date.blank?

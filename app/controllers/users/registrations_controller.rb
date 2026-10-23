@@ -16,6 +16,20 @@ class Users::RegistrationsController < Devise::RegistrationsController
                                              status: :see_other
   end
 
+  protected
+
+  # Akun berkata sandi sementara wajib mengisi kata sandi baru — bukan cuma
+  # mengganti email lalu terpental kembali ke halaman ini oleh
+  # ApplicationController#require_password_change.
+  def update_resource(resource, params)
+    if resource.must_change_password? && params[:password].blank?
+      resource.errors.add(:password, "baru wajib diisi untuk mengganti kata sandi sementara")
+      return false
+    end
+
+    super
+  end
+
   private
 
   # role_code cuma dipakai assign_initial_role, bukan kolom User — kalau
@@ -25,12 +39,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
     super.except(:role_code)
   end
 
-  # Form registrasi mengirim satu `role_code` (mis. "mahasiswa"/"dosen").
-  # Hanya peran Role::SELF_REGISTRABLE_CODES yang diterima — kaprodi/admin
-  # yang dikirim lewat form yang diubah jatuh ke mahasiswa, bukan dikabulkan.
-  # Peran lain diberikan admin belakangan; ini hanya menjamin akun baru
-  # langsung punya minimal satu peran aktif supaya Dashboard tidak menemui
-  # user tanpa peran sama sekali.
+  # Form Daftar tidak lagi menawarkan pilihan peran, tapi `role_code` dari
+  # form lama/yang diubah tetap dibaca: hanya Role::SELF_REGISTRABLE_CODES
+  # (mahasiswa) yang dikabulkan — dosen/preseptor/kaprodi/admin jatuh ke
+  # mahasiswa. Peran lain diberikan admin belakangan; ini hanya menjamin akun
+  # baru langsung punya minimal satu peran aktif supaya Dashboard tidak
+  # menemui user tanpa peran sama sekali.
   def assign_initial_role(user)
     requested = params.dig(:user, :role_code)
     role = Role.find_by(code: requested) if Role.self_registrable?(requested)

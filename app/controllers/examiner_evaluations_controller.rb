@@ -16,7 +16,9 @@ class ExaminerEvaluationsController < ApplicationController
   def index
     @mine = AssessmentInstance.for_examiner(current_user).includes(:student, :assessment_event)
                               .order(Arel.sql("CASE status WHEN 'scored' THEN 1 ELSE 0 END"), :submitted_at)
-    @unassigned = AssessmentInstance.where(examiner_id: nil, status: "submitted").includes(:student, :assessment_event).order(:submitted_at)
+                              .page(params[:mine_page]).per(50)
+    @unassigned = AssessmentInstance.where(examiner_id: nil, status: "submitted").includes(:student, :assessment_event)
+                                    .order(:submitted_at).page(params[:unassigned_page]).per(50)
   end
 
   def show

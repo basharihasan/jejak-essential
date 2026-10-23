@@ -26,7 +26,9 @@
     <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-6">
       <h2 class="text-base font-semibold text-gray-900 mb-4">Foto &amp; Akun</h2>
       <div class="flex items-start gap-5 flex-wrap">
-        <% if @user.avatar.attached? %>
+        <%# persisted?: saat form gagal disimpan, foto baru yang belum tersimpan
+            belum punya URL — tampilkan foto lama (atau inisial) saja. %>
+        <% if @user.avatar.attached? && @user.avatar.persisted? %>
           <%= image_tag @user.avatar, class: "h-20 w-20 rounded-full object-cover ring-1 ring-gray-200" %>
         <% else %>
           <span class="h-20 w-20 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl font-bold"><%= @user.full_name.first.upcase %></span>
@@ -34,7 +36,7 @@
         <div class="flex-1 min-w-56 space-y-4">
           <div>
             <%= f.label :avatar, "Ganti foto profil", class: lbl %>
-            <%= f.file_field :avatar, accept: "image/*", class: "block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-indigo-700" %>
+            <%= f.file_field :avatar, accept: User.attachment_accept(:avatar), class: "block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-indigo-700" %>
           </div>
           <div>
             <%= f.label :full_name, "Nama Lengkap", class: lbl %>

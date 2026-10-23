@@ -5,6 +5,7 @@
 # (attempt_number), unik per (event, mahasiswa, percobaan) — pakai
 # `representative_for`, bukan find_by, saat butuh satu nilai wakil.
 class AssessmentInstance < ApplicationRecord
+  include AttachmentValidation
   STATUSES = { "registered" => "Terdaftar", "submitted" => "Dikumpulkan", "scored" => "Dinilai" }.freeze
   SOURCES = %w[import manual rubric].freeze
 
@@ -20,6 +21,7 @@ class AssessmentInstance < ApplicationRecord
   has_many :osce_station_scores, -> { ordered }, dependent: :destroy, inverse_of: :assessment_instance
 
   has_one_attached :document
+  validates_attachments :document, content_types: DOCUMENT_TYPES + IMAGE_TYPES, max_size: 20.megabytes
 
   validates :attempt_number, numericality: { only_integer: true, greater_than: 0 }
   validates :attempt_number, uniqueness: { scope: %i[assessment_event_id student_id] }
@@ -63,8 +65,11 @@ class AssessmentInstance < ApplicationRecord
     (where(assessment_event: event, student: student).maximum(:attempt_number) || 0) + 1
   end
 
+  # Dokumen di-assign (bukan attach yang langsung menyimpan) supaya validasi
+  # tipe/ukuran berjalan dalam update! yang sama — berkas yang ditolak tidak
+  # pernah tersimpan dan statusnya tidak berubah.
   def submit!(document: nil, self_evaluation: nil)
-    self.document.attach(document) if document.present?
+    self.document = document if document.present?
     update!(self_evaluation: self_evaluation.presence || self.self_evaluation, status: "submitted", submitted_at: Time.current)
   end
 

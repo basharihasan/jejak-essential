@@ -45,6 +45,9 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 gem "ruby-vips"
+# Penyimpanan berkas S3-compatible (AWS S3, Cloudflare R2, Backblaze B2, MinIO)
+# — dipilih lewat ENV ACTIVE_STORAGE_SERVICE=s3, lihat config/storage.yml.
+gem "aws-sdk-s3", require: false
 
 # ── Auth ──────────────────────────────────────────────────────────────────────
 gem "devise"
@@ -64,7 +67,6 @@ gem "rqrcode"       # QR profil & QR pasien
 gem "kramdown"       # render Panduan Pengguna
 gem "web-push"       # notifikasi push
 gem "discard"        # soft-delete logbook/evaluasi
-gem "active_storage_validations"
 gem "csv"            # import CBT/OSCE generik
 
 # ── Hardening dasar ───────────────────────────────────────────────────────────

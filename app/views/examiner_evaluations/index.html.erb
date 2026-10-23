@@ -6,9 +6,9 @@
     <p class="text-sm text-gray-500 mt-0.5">Percobaan yang ditugaskan kepada Anda dan pengumpulan yang belum bertugas penguji.</p>
   </div>
 
-  <% [ [ "Ditugaskan kepada saya", @mine ], [ "Belum bertugas penguji (boleh diambil)", @unassigned ] ].each do |title, rows| %>
+  <% [ [ "Ditugaskan kepada saya", @mine, :mine_page ], [ "Belum bertugas penguji (boleh diambil)", @unassigned, :unassigned_page ] ].each do |title, rows, page_param| %>
     <div class="bg-white rounded-2xl ring-1 ring-gray-200 overflow-x-auto">
-      <div class="px-5 py-4 border-b border-gray-100"><p class="text-sm font-semibold text-gray-800"><%= title %> <span class="text-gray-400 font-normal">(<%= rows.size %>)</span></p></div>
+      <div class="px-5 py-4 border-b border-gray-100"><p class="text-sm font-semibold text-gray-800"><%= title %> <span class="text-gray-400 font-normal">(<%= rows.total_count %>)</span></p></div>
       <table class="min-w-full text-sm">
         <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
           <tr><th class="text-left px-5 py-3">Mahasiswa</th><th class="text-left px-5 py-3">Event</th><th class="text-left px-5 py-3">Status</th><th class="text-left px-5 py-3">Dikumpulkan</th><th class="text-left px-5 py-3">Nilai</th><th></th></tr>
@@ -27,6 +27,7 @@
           <% if rows.empty? %><tr><td colspan="6" class="px-5 py-6 text-center text-gray-400">Kosong.</td></tr><% end %>
         </tbody>
       </table>
+      <div class="px-5"><%= paginate rows, param_name: page_param %></div>
     </div>
   <% end %>
 </div>

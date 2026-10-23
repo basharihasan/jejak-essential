@@ -8,6 +8,7 @@
   </div>
 
   <%= form_with model: current_user, url: update_appearance_settings_path, method: :patch,
+        data: { controller: "appearance-preview" },
         class: "bg-white rounded-2xl ring-1 ring-slate-200 shadow-sm p-6 space-y-6" do |f| %>
     <% if current_user.errors.any? %>
       <div class="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-800">
@@ -21,7 +22,7 @@
       <div class="grid grid-cols-3 gap-3">
         <% User::THEME_OPTIONS.each do |value| %>
           <label class="<%= input_class %>">
-            <%= f.radio_button :theme_preference, value, class: "text-indigo-600 focus:ring-indigo-500", onchange: "window.applyAhsTheme(this.value)" %>
+            <%= f.radio_button :theme_preference, value, class: "text-indigo-600 focus:ring-indigo-500", data: { action: "change->appearance-preview#theme" } %>
             <span><%= t("settings.theme_#{value}") %></span>
           </label>
         <% end %>
@@ -34,7 +35,7 @@
       <div class="grid grid-cols-3 gap-3">
         <% User::FONT_SIZE_OPTIONS.each do |value| %>
           <label class="<%= input_class %>">
-            <%= f.radio_button :font_size_preference, value, class: "text-indigo-600 focus:ring-indigo-500", onchange: "window.applyAhsFontSize(this.value)" %>
+            <%= f.radio_button :font_size_preference, value, class: "text-indigo-600 focus:ring-indigo-500", data: { action: "change->appearance-preview#fontSize" } %>
             <span><%= t("settings.font_#{value}") %></span>
           </label>
         <% end %>

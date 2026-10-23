@@ -7,7 +7,7 @@ class StudentProgramRelabelerTest < ActiveSupport::TestCase
   end
 
   def create_student(email, program: @pssk, npm: nil, cohort: nil)
-    user = User.create!(full_name: email.split("@").first.capitalize, email: email, password: "password123",
+    user = User.create!(full_name: email.split("@").first.capitalize, email: email, password: "rahasia-kuat-1",
                         confirmed_at: Time.current, study_program: program,
                         identifier_number: npm, cohort_year: cohort)
     user.roles << roles(:mahasiswa)

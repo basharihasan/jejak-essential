@@ -10,12 +10,21 @@ require "csv"
 #             kosong → mahasiswa
 #   - prodi : kode StudyProgram (pssk / pspd) atau namanya; kosong → tidak diubah
 #
-# Akun baru dibuat dengan kata sandi bawaan User::DEFAULT_PASSWORD dan langsung
-# terkonfirmasi (admin yang mengimpor bertanggung jawab atas emailnya). Akun
-# yang sudah ada hanya diperbarui nama/peran/prodi-nya — kata sandi tidak
-# disentuh. Setiap baris dilaporkan, bukan gagal senyap.
+# Akun baru dibuat dengan kata sandi sementara acak per akun (wajib diganti
+# saat masuk) dan langsung terkonfirmasi (admin yang mengimpor bertanggung
+# jawab atas emailnya). Pasangan email + kata sandi sementara dikembalikan di
+# Result#credentials untuk ditampilkan sekali ke admin — tidak disimpan
+# terbaca di mana pun. Akun yang sudah ada hanya diperbarui nama/peran/
+# prodi-nya — kata sandi tidak disentuh. Setiap baris dilaporkan, bukan gagal
+# senyap.
 class UserCsvImporter
-  Result = Struct.new(:created, :updated, :errors, keyword_init: true) do
+  Credential = Struct.new(:email, :full_name, :temporary_password, keyword_init: true)
+
+  Result = Struct.new(:created, :updated, :errors, :credentials, keyword_init: true) do
+    def initialize(created: [], updated: [], errors: [], credentials: [])
+      super
+    end
+
     def total = created.size + updated.size + errors.size
   end
 
@@ -31,7 +40,7 @@ class UserCsvImporter
   end
 
   def call
-    result = Result.new(created: [], updated: [], errors: [])
+    result = Result.new
     rows = parse
 
     rows.each_with_index do |row, idx|
@@ -59,8 +68,9 @@ class UserCsvImporter
       new_record = user.new_record?
       user.full_name = name
       user.study_program = study_program if study_program
+      temporary_password = nil
       if new_record
-        user.password = user.password_confirmation = User::DEFAULT_PASSWORD
+        temporary_password = user.assign_temporary_password
         user.confirmed_at = Time.current
       end
 
@@ -71,13 +81,14 @@ class UserCsvImporter
       end
 
       (new_record ? result.created : result.updated) << email
+      result.credentials << Credential.new(email: email, full_name: name, temporary_password: temporary_password) if new_record
     rescue ActiveRecord::RecordInvalid => e
       result.errors << "Baris #{line}: #{e.record.errors.full_messages.to_sentence}"
     end
 
     result
   rescue CSV::MalformedCSVError => e
-    Result.new(created: [], updated: [], errors: [ "Berkas CSV tidak dapat dibaca: #{e.message}" ])
+    Result.new(errors: [ "Berkas CSV tidak dapat dibaca: #{e.message}" ])
   end
 
   private

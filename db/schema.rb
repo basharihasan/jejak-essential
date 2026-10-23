@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_08_010001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_23_010001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -815,6 +815,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_010001) do
     t.string "current_sign_in_ip"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.integer "failed_attempts", default: 0, null: false
     t.string "font_size_preference", default: "normal", null: false
     t.string "full_name", default: "", null: false
     t.string "gender"
@@ -822,6 +823,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_010001) do
     t.datetime "last_sign_in_at"
     t.string "last_sign_in_ip"
     t.string "locale_preference", default: "id", null: false
+    t.datetime "locked_at"
+    t.boolean "must_change_password", default: false, null: false
     t.string "phone"
     t.string "position"
     t.string "profession_category"
@@ -835,6 +838,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_010001) do
     t.string "theme_preference", default: "system", null: false
     t.string "uid"
     t.string "unconfirmed_email"
+    t.string "unlock_token"
     t.datetime "updated_at", null: false
     t.string "work_unit"
     t.index ["active_role_id"], name: "index_users_on_active_role_id"
@@ -845,6 +849,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_08_010001) do
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["study_program_id"], name: "index_users_on_study_program_id"
+    t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
   add_foreign_key "academic_activity_subdomains", "academic_activity_domains"

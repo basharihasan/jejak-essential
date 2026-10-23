@@ -15,8 +15,9 @@
 
     <%# Terapkan tema & ukuran huruf sebelum render pertama agar tidak ada
         kedipan tampilan salah. Sinkron dengan window.applyAhsTheme/FontSize
-        yang dipakai tombol tema di topbar dan halaman Pengaturan. %>
-    <script>
+        yang dipakai tombol tema di topbar dan halaman Pengaturan. Ber-nonce
+        karena Content Security Policy menolak skrip inline tanpa nonce. %>
+    <script nonce="<%= content_security_policy_nonce %>">
       (function () {
         var root = document.documentElement;
         var darkMedia = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)");
@@ -54,10 +55,11 @@
     <link href="/vendor/fonts/inter/inter.css" rel="stylesheet">
 
     <%= stylesheet_link_tag :tailwind, "data-turbo-track": "reload" %>
-    <%# Chartkick (Portfolio, Dashboard Analitik) — dimuat lewat CDN, bukan
-        importmap, karena Chartkick tidak menyediakan build ESM resmi. %>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartkick@5/dist/chartkick.js"></script>
+    <%# Chart.js + Chartkick (Portfolio, Dashboard Analitik, radar DOPS/
+        Mini-CEX) — build UMD bawaan gem chartkick, dilayani dari aset sendiri
+        (bukan CDN pihak ketiga berversi mengambang) supaya versinya terkunci
+        Gemfile.lock dan Content Security Policy cukup mengizinkan 'self'. %>
+    <%= javascript_include_tag "Chart.bundle", "chartkick", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
     <style>

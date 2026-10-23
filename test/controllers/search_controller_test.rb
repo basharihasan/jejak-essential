@@ -50,9 +50,32 @@ class SearchControllerTest < ActionDispatch::IntegrationTest
     assert_equal edit_admin_user_path(users(:wati)), card_for(users(:wati))["href"]
   end
 
-  test "kartu tanpa tujuan tetap tampil tanpa tautan bagi mahasiswa" do
+  test "mahasiswa tidak bisa memakai pencarian pengguna dan tidak melihat ikonnya" do
     sign_in users(:siti)
-    get search_path, params: { q: "wati" }
-    assert_equal "div", card_for(users(:wati)).name
+    get search_path, params: { q: "a" }
+    assert_redirected_to dashboard_path
+    follow_redirect!
+    assert_select "header a[href=?]", search_path, count: 0
+  end
+
+  test "dosen hanya menemukan mahasiswa, bukan akun pengajar/admin" do
+    get search_path, params: { q: "example.com" }
+    assert_match users(:siti).email, response.body
+    assert_no_match users(:wati).email, response.body
+    assert_no_match users(:dedi).email, response.body
+  end
+
+  test "kaprodi hanya menemukan mahasiswa prodi binaannya" do
+    users(:siti).update!(study_program: study_programs(:profesi_dokter))
+    sign_in users(:dedi)
+    get search_path, params: { q: "siti" }
+    assert_response :success
+    assert_no_match users(:siti).email, response.body
+  end
+
+  test "admin menemukan semua pengguna" do
+    users(:budi).roles << roles(:admin)
+    get search_path, params: { q: "example.com" }
+    [ :siti, :wati, :dedi ].each { |u| assert_match users(u).email, response.body }
   end
 end

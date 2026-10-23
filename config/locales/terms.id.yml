@@ -45,6 +45,18 @@ id:
         clinical_rotation: "Rotasi klinik"
         evidence_url: "Link bukti aktivitas"
         document_url: "Link dokumen"
+        evidence_files: "Berkas bukti"
+      clinical_case:
+        evidence_files: "Bukti pendukung"
+      assessment_instance:
+        document: "Dokumen"
+      user:
+        email: "Email"
+        full_name: "Nama lengkap"
+        password: "Kata sandi"
+        password_confirmation: "Konfirmasi kata sandi"
+        current_password: "Kata sandi saat ini"
+        avatar: "Foto profil"
       academic_activity_domain:
         name: "Nama domain"
         color_code: "Kode warna"

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Chart.js sudah dimuat global lewat CDN di layout (dipakai Chartkick),
+// Chart.js sudah dimuat global di layout (Chart.bundle dari gem chartkick),
 // tapi Chartkick sendiri tidak punya tipe radar — jadi controller kecil ini
 // memanggil window.Chart langsung. Dipakai di show DOPS/Mini-CEX, Dashboard,
 // dan Kurikulum untuk memetakan skor per dimensi/kompetensi.

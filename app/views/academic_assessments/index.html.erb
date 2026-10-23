@@ -2,8 +2,8 @@
 <p class="text-sm text-gray-400 mt-1">Potret satu periode akademik — bukan tren antar tahun, karena jenis & bobot asesmen berbeda tiap periode.</p>
 
 <% if @academic_periods.any? %>
-  <%= form_with url: academic_assessments_path, method: :get, class: "mt-4" do %>
-    <select name="academic_period_id" onchange="this.form.requestSubmit()"
+  <%= form_with url: academic_assessments_path, method: :get, class: "mt-4", data: { controller: "auto-submit" } do %>
+    <select name="academic_period_id" data-action="change->auto-submit#submit"
           class="rounded-xl border-0 py-2 px-3.5 text-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500">
       <% @academic_periods.each do |period| %>
         <option value="<%= period.id %>" <%= "selected" if @selected_period == period %>><%= period.name %></option>

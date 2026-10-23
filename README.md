@@ -8,7 +8,7 @@ Rencana lengkap, keputusan arsitektur, dan status tiap fase (0–16, semua ✅) 
 
 Seluruh baris **tingkat Dasar (🟢)** pada `DAFTAR_FITUR_JEJAK.md` di repo utama `PFKV2` — tidak lebih:
 
-- **Akun & Peran** — multi-peran per akun (mahasiswa/dosen/preseptor/kaprodi/admin) + Ganti Peran; login email/password atau Google; kelola pengguna & impor CSV; bahasa antarmuka ID/EN; tema terang/gelap/ikuti sistem.
+- **Akun & Peran** — multi-peran per akun (mahasiswa/dosen/preseptor/kaprodi/admin) + Ganti Peran; login email/password atau Google; daftar mandiri hanya sebagai mahasiswa (peran pengajar & pengelola diberikan admin); kelola pengguna & impor CSV dengan kata sandi sementara acak yang wajib diganti; bahasa antarmuka ID/EN (menu, topbar, dan halaman autentikasi — isi halaman tetap berbahasa Indonesia); tema terang/gelap/ikuti sistem.
 - **Pencatatan Kasus** — wizard Kasus Klinis 4 langkah, identitas pasien terenkripsi dengan **Privacy Mode** + **Break Glass** beraudit, QR persetujuan pasien (halaman publik tanpa login), master Diagnosis/ICD-10 & Keterampilan, target kasus FKTP/FKRTL, logbook kegiatan + kalender/iCal, verifikasi preseptor.
 - **Asesmen** — Assessment Events (CBT, nilai tutor, Tinjauan, TMEX, Progress Test, OSCE, SOCA/MSP, esai & festival gagasan, community project, refleksi dinilai, EBCR, CBD, Long Case) dengan impor CSV berpemetaan kolom, unggah berkas CSV format ekspor Glide (*CBT Exam Results* & *Penilaian OSCE* 8 dimensi klinis — tanpa API Glide) beserta Kelola Ujian CBT, riwayat & rollback impor, percobaan berulang, alur rubrik mahasiswa→penguji, DOPS & Mini-CEX + jadwalnya, jurnal umpan balik penguji.
 - **Pemetaan Capaian** — Peta Kompetensi per periode, Peta EPA & Tingkat Entrustment (1–5, ber-supersede), Assessment Matrix per Learning Unit, kurva persentil kohort (gabungan PSSK+PSPD), portofolio longitudinal.
@@ -79,7 +79,7 @@ Membuat 8 akun contoh (password sama semua: `password123`, sengaja lemah — **h
 | `mahasiswa2.demo@jejaklite.test` | Mahasiswa | Kasus klinis & nilai ujian (untuk melihat agregasi lintas mahasiswa) |
 | `demo@jejaklite.test` | Mahasiswa + Dosen | Akun serba-guna untuk mencoba cepat |
 
-Task ini idempoten (aman dijalankan berkali-kali) dan terpisah dari `db/seeds.rb` karena isinya akun contoh berpassword publik, bukan data rujukan aplikasi.
+Task ini idempoten (aman dijalankan berkali-kali) dan terpisah dari `db/seeds.rb` karena isinya akun contoh berpassword publik, bukan data rujukan aplikasi. Isi `DEMO_PASSWORD` untuk memakai kata sandi lain. Akun berdomain `@jejaklite.test` sengaja dikecualikan dari kewajiban ganti kata sandi supaya bisa dipakai bergantian; akun lain yang masuk dengan `password123` langsung diarahkan untuk menggantinya.
 
 ## Pindah ke jejak.pro
 
@@ -95,7 +95,7 @@ Paket lalu diimpor di jejak.pro dengan `bin/rails jejak_lite:import` (uji coba d
 ## Test
 
 ```bash
-bin/rails test   # 237 test, semua hijau per Fase 26
+bin/rails test   # ±530 test — semuanya harus hijau
 ```
 
 Selain test suite, tiap fase diverifikasi dengan **smoke test HTTP sungguhan**: login sebagai tiap akun demo lalu membuka seluruh halaman sidebar, memastikan nol 500. Cara cepat melakukannya sendiri: jalankan server, lalu buka halaman-halaman itu sebagai `admin.demo@jejaklite.test` dan `mahasiswa1.demo@jejaklite.test`.
@@ -110,8 +110,20 @@ Selain test suite, tiap fase diverifikasi dengan **smoke test HTTP sungguhan**: 
 4. Jalankan `bin/rails demo:seed` sekali lewat Render Shell kalau ingin instance demo publik yang bisa langsung dicoba.
 
 Keterbatasan yang perlu diketahui sebelum deploy sungguhan (bukan sekadar demo):
-- `config.active_storage.service = :local` (lihat `config/storage.yml`) — berkas (avatar, bukti kegiatan) tersimpan di disk lokal container, **hilang setiap deploy ulang** di PaaS dengan filesystem sementara seperti Render free tier. Untuk produksi sungguhan, aktifkan `amazon:`/S3 di `config/storage.yml` (gem `aws-sdk-s3` sudah ada di Gemfile) dan ganti `config.active_storage.service`.
+- Berkas unggahan (foto profil, bukti kegiatan/kasus, dokumen asesmen) bawaannya tersimpan di disk lokal container dan **hilang setiap deploy ulang** di PaaS berfilesystem sementara seperti Render free tier. Untuk produksi sungguhan isi `ACTIVE_STORAGE_SERVICE=s3` beserta `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`, `S3_REGION`, dan (untuk Cloudflare R2/Backblaze B2/MinIO) `S3_ENDPOINT` — lihat `config/storage.yml` dan contoh di `render.yaml`.
+- Postgres gratis Render kedaluwarsa setelah masa tertentu (cek kebijakan Render terbaru) — instance yang DB-nya kedaluwarsa gagal dibangunkan (`hibernate-wake-error`). Pakai DB berbayar atau self-host (lihat `NAS_DEPLOY.md`) untuk data sungguhan.
+- Plan free Render menidurkan service setelah ±15 menit tanpa kunjungan; pengunjung pertama sesudahnya menunggu cold start.
 - Keempat "role" database (primary/cache/queue/cable) sengaja berbagi satu database fisik (lihat komentar di `config/database.yml`) supaya cukup satu instance Postgres gratis — aman karena masing-masing solid_* punya nama tabel unik, tapi berarti backup/restore tidak bisa dipisah per peran.
+
+## Keamanan
+
+- **Pendaftaran mandiri** hanya menghasilkan akun Mahasiswa. Dosen/preseptor dapat membuka kasus klinis seluruh mahasiswa (termasuk Break Glass identitas pasien), jadi peran itu — juga kaprodi/admin — hanya diberikan admin lewat **Konfigurasi → Pengguna**.
+- **Kata sandi**: minimal 8 karakter; `password123` (bawaan lama yang tercantum publik) ditolak. Akun hasil impor CSV atau reset admin menerima kata sandi sementara acak yang ditampilkan sekali ke admin dan wajib diganti saat masuk pertama.
+- **Login**: akun terkunci 15 menit setelah 10 kali salah kata sandi (Devise `:lockable`; reset kata sandi oleh admin juga membuka kunci). Rack::Attack membatasi percobaan login per email dan per IP, pendaftaran, reset kata sandi, serta halaman publik bertoken (`config/initializers/rack_attack.rb`). Sesi tanpa "Ingat saya" berakhir setelah 2 jam tidak aktif.
+- **Data mahasiswa**: pencarian pengguna hanya untuk pengajar/kaprodi/admin; pengajar hanya menemukan mahasiswa, dan kaprodi non-admin hanya bisa membuka mahasiswa prodi binaannya (`User#can_view_student?`).
+- **Content Security Policy** aktif (`config/initializers/content_security_policy.rb`): skrip hanya dari aset sendiri atau inline ber-nonce — tanpa CDN pihak ketiga dan tanpa atribut `onclick`/`onchange`; gunakan Stimulus untuk perilaku baru.
+- **Unggahan** divalidasi jenis (dibaca dari isi berkas) dan ukurannya (`AttachmentValidation`): bukti 10 MB × maks. 10 berkas, dokumen asesmen 20 MB, foto profil 5 MB.
+- **Peramban** minimal Safari/iOS 16.4, Chrome 111, Firefox 128 (dukungan Tailwind v4); di bawahnya tampil halaman 406 berbahasa Indonesia.
 
 ## Yang Sengaja Tidak Dibawa dari JEJAK
 

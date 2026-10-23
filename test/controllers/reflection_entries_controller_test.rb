@@ -12,7 +12,7 @@ class ReflectionEntriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "index hanya menampilkan refleksi milik sendiri" do
-    other = User.create!(full_name: "Lain", email: "reflect.lain@example.com", password: "password123", confirmed_at: Time.current)
+    other = User.create!(full_name: "Lain", email: "reflect.lain@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     other_entry = ReflectionEntry.create!(user: other, entry_date: Date.current, content: "Punya orang lain")
 
     get reflection_entries_path
@@ -23,7 +23,7 @@ class ReflectionEntriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "tidak bisa melihat refleksi milik orang lain" do
-    other = User.create!(full_name: "Lain", email: "reflect.lain2@example.com", password: "password123", confirmed_at: Time.current)
+    other = User.create!(full_name: "Lain", email: "reflect.lain2@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     other_entry = ReflectionEntry.create!(user: other, entry_date: Date.current, content: "Punya orang lain")
 
     get reflection_entry_path(other_entry)

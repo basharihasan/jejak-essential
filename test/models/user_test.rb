@@ -2,7 +2,7 @@ require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
   test "full_name wajib diisi" do
-    user = User.new(email: "tanpa_nama@example.com", password: "password123")
+    user = User.new(email: "tanpa_nama@example.com", password: "rahasia-kuat-1")
     assert_not user.valid?
     assert_includes user.errors[:full_name], "tidak boleh kosong"
   end

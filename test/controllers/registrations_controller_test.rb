@@ -10,8 +10,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
           full_name: "Andi Baru",
           email: "andi.baru@example.com",
           role_code: "mahasiswa",
-          password: "password123",
-          password_confirmation: "password123"
+          password: "rahasia-kuat-1",
+          password_confirmation: "rahasia-kuat-1"
         }
       }
     end
@@ -31,8 +31,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
         full_name: "Citra Baru",
         email: "citra.baru@example.com",
         role_code: "dosen",
-        password: "password123",
-        password_confirmation: "password123"
+        password: "rahasia-kuat-1",
+        password_confirmation: "rahasia-kuat-1"
       }
     }
 
@@ -45,8 +45,8 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
         full_name: "Dedi Baru",
         email: "dedi.baru@example.com",
         role_code: "peran_tidak_ada",
-        password: "password123",
-        password_confirmation: "password123"
+        password: "rahasia-kuat-1",
+        password_confirmation: "rahasia-kuat-1"
       }
     }
 
@@ -76,17 +76,18 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 end
 
 class RegistrationsSelfRegistrableRoleTest < ActionDispatch::IntegrationTest
-  # Kaprodi/admin membuka data seluruh prodi/instalasi — tidak boleh bisa
-  # diklaim sendiri lewat form Daftar publik, termasuk lewat form yang diubah.
-  %w[admin kaprodi].each do |code|
+  # Dosen/preseptor membuka kasus klinis (dan Break Glass identitas pasien)
+  # seluruh mahasiswa; kaprodi/admin seluruh prodi/instalasi — tidak satu pun
+  # boleh diklaim sendiri lewat form Daftar publik, termasuk lewat form yang diubah.
+  %w[admin kaprodi dosen preseptor].each do |code|
     test "role_code #{code} dari form Daftar jatuh ke mahasiswa" do
       post user_registration_path, params: {
         user: {
           full_name: "Eka #{code}",
           email: "eka.#{code}@example.com",
           role_code: code,
-          password: "password123",
-          password_confirmation: "password123"
+          password: "rahasia-kuat-1",
+          password_confirmation: "rahasia-kuat-1"
         }
       }
 
@@ -97,13 +98,21 @@ class RegistrationsSelfRegistrableRoleTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "form Daftar hanya menawarkan peran yang boleh dipilih sendiri" do
+  test "form Daftar tidak menawarkan pilihan peran dan menjelaskan akun pengajar dari admin" do
     get new_user_registration_path
 
     assert_response :success
-    assert_select "select[name='user[role_code]'] option", count: Role::SELF_REGISTRABLE_CODES.size
-    assert_select "select[name='user[role_code]'] option[value=admin]", count: 0
-    assert_select "select[name='user[role_code]'] option[value=kaprodi]", count: 0
-    assert_select "select[name='user[role_code]'] option[value=mahasiswa]"
+    assert_select "select[name='user[role_code]']", count: 0
+    assert_select '[data-testid="self-registration-role-note"]', /Mahasiswa/
+  end
+
+  test "pendaftar baru tidak bisa membuka kasus klinis mahasiswa lain" do
+    post user_registration_path, params: {
+      user: { full_name: "Orang Asing", email: "asing.daftar@example.com", role_code: "dosen",
+              password: "rahasia-kuat-1", password_confirmation: "rahasia-kuat-1" }
+    }
+    user = User.find_by!(email: "asing.daftar@example.com")
+    assert_not user.instructor?
+    assert_not ClinicalCasePolicy.new(user, clinical_cases(:submitted_case_siti)).break_glass?
   end
 end

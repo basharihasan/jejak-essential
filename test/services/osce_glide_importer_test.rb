@@ -9,7 +9,7 @@ class OsceGlideImporterTest < ActiveSupport::TestCase
 
   setup do
     @siti = users(:siti)
-    @andi = User.create!(full_name: "Andi", email: "andi@example.com", password: "password123", confirmed_at: Time.current)
+    @andi = User.create!(full_name: "Andi", email: "andi@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     @andi.roles << roles(:mahasiswa)
     @examiner = users(:wati)
     @day1 = 4.days.ago.to_date
