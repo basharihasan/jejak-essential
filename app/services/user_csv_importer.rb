@@ -94,8 +94,7 @@ class UserCsvImporter
   private
 
   def parse
-    content = @io.read
-    content = content.force_encoding("UTF-8").delete_prefix("﻿")
+    content = CsvUpload.decode(@io.read)
     table = CSV.parse(content, headers: true, col_sep: detect_separator(content))
     table.map { |r| normalize(r.to_h) }
   end

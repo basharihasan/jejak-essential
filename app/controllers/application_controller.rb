@@ -11,6 +11,13 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
 
+  # Setiap parameter query di aplikasi ini bernilai tunggal — nomor halaman
+  # Kaminari, id (student_id, academic_period_id, …), kata kunci pencarian,
+  # filter peran. Dikirim sebagai array/hash (?page[]=1, ?student_id[a]=1,
+  # ?role[a]=1) nilainya membuat .to_i / .gsub / User.find / has_role? / where
+  # gagal → galat 500 di hampir semua halaman. Tidak ada tautan atau form GET
+  # yang sah mengirimnya begitu; bila kelak ada, kecualikan namanya di sini.
+  prepend_before_action :reject_non_scalar_query_params
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_password_change, unless: :devise_controller?
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -76,6 +83,13 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def reject_non_scalar_query_params
+    # nil = kunci tanpa nilai (?unduh) — tetap skalar.
+    return if request.query_parameters.each_value.all? { |value| value.nil? || value.is_a?(String) }
+
+    raise ActionController::BadRequest, "Parameter query tidak valid"
+  end
 
   # Akun berkata sandi sementara (impor CSV / reset admin) atau yang masih
   # memakai kata sandi bawaan lama hanya boleh membuka Pengaturan Akun (Devise

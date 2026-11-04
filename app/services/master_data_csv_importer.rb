@@ -24,7 +24,7 @@ class MasterDataCsvImporter
 
   def call
     result = { created: 0, updated: 0, errors: [] }
-    content = @io.read.force_encoding("UTF-8").delete_prefix("﻿")
+    content = CsvUpload.decode(@io.read)
     first = content.lines.first.to_s
     sep = first.count(";") > first.count(",") ? ";" : ","
     CSV.parse(content, headers: true, col_sep: sep).each_with_index do |row, idx|

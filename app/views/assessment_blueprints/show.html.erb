@@ -17,8 +17,11 @@
   <div class="mt-4 bg-white rounded-2xl ring-1 ring-gray-200 p-5">
     <div class="flex items-center justify-between mb-3">
       <p class="text-sm font-semibold text-gray-700">Peta Bobot Kompetensi</p>
-      <span class="text-xs font-bold px-2 py-0.5 rounded-full <%= @assessment_blueprint.total_weight == 100 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' %>">
+      <span class="text-xs font-bold px-2 py-0.5 rounded-full <%= @assessment_blueprint.weights_complete? ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' %>">
         Total <%= @assessment_blueprint.total_weight.round(1) %>%
+        <% unless @assessment_blueprint.weights_complete? %>
+          <span class="font-normal">· sisa <%= @assessment_blueprint.remaining_weight %>%</span>
+        <% end %>
       </span>
     </div>
     <% weights = @assessment_blueprint.weight_by_competency_item %>

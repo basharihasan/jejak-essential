@@ -9,24 +9,28 @@ class AssessmentBlueprint < ApplicationRecord
   has_many :learning_units, dependent: :nullify
 
   validates :name, presence: true
-  validate :mapping_weights_sum_to_100, if: -> { assessment_blueprint_mappings.any? }
 
+  # Mapping ditambah satu per satu, jadi total di tengah penyusunan wajar
+  # belum 100% — itu ditandai di halaman detail (weights_complete?), bukan
+  # divalidasi di sini: dulu validasi "harus 100%" di blueprint justru
+  # mengunci sunting nama/deskripsi selama mapping belum lengkap, padahal
+  # tidak pernah mencegah mapping baru mendorong total melewati 100%. Batas
+  # atas itu kini dijaga AssessmentBlueprintMapping.
   def total_weight
     assessment_blueprint_mappings.sum { |m| m.weight.to_f }
+  end
+
+  def weights_complete?
+    (total_weight - 100).abs < 0.01
+  end
+
+  def remaining_weight
+    (100 - total_weight).round(1)
   end
 
   # {CompetencyItem => bobot} — dipakai halaman show untuk radar chart,
   # sudah dalam bentuk siap-pakai (bukan JSONB label bebas lagi).
   def weight_by_competency_item
     assessment_blueprint_mappings.includes(:competency_item).index_by(&:competency_item).transform_values { |m| m.weight.to_f }
-  end
-
-  private
-
-  def mapping_weights_sum_to_100
-    total = total_weight
-    return if (total - 100).abs < 0.01
-
-    errors.add(:base, "Total bobot peta kompetensi harus 100% (saat ini #{total.round(1)}%)")
   end
 end

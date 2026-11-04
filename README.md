@@ -66,7 +66,7 @@ Hasilkan ketiganya dengan `bin/rails db:encryption:init`. Opsional: `PRIVACY_MOD
 bin/rails demo:seed
 ```
 
-Membuat 8 akun contoh (password sama semua: `password123`, sengaja lemah — **hanya untuk demo**, jangan pernah dipakai untuk akun sungguhan):
+Membuat 7 akun contoh (password sama semua: `password123`, sengaja lemah — **hanya untuk demo**, jangan pernah dipakai untuk akun sungguhan):
 
 | Email | Peran | Kegunaan |
 |---|---|---|
@@ -77,7 +77,6 @@ Membuat 8 akun contoh (password sama semua: `password123`, sengaja lemah — **h
 | `multirole.demo@jejaklite.test` | Mahasiswa + Dosen | Contoh satu akun berperan ganda (fitur Ganti Peran) |
 | `mahasiswa1.demo@jejaklite.test` | Mahasiswa | Punya logbook, kasus klinis, DOPS/Mini-CEX, tugas akhir, nilai ujian |
 | `mahasiswa2.demo@jejaklite.test` | Mahasiswa | Kasus klinis & nilai ujian (untuk melihat agregasi lintas mahasiswa) |
-| `demo@jejaklite.test` | Mahasiswa + Dosen | Akun serba-guna untuk mencoba cepat |
 
 Task ini idempoten (aman dijalankan berkali-kali) dan terpisah dari `db/seeds.rb` karena isinya akun contoh berpassword publik, bukan data rujukan aplikasi. Isi `DEMO_PASSWORD` untuk memakai kata sandi lain. Akun berdomain `@jejaklite.test` sengaja dikecualikan dari kewajiban ganti kata sandi supaya bisa dipakai bergantian; akun lain yang masuk dengan `password123` langsung diarahkan untuk menggantinya.
 

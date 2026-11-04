@@ -1,0 +1,224 @@
+# Nama atribut dalam pesan validasi (errors.full_messages). Tanpa berkas ini
+# Rails memakai nama kolom yang di-humanize — "End date harus setelah tanggal
+# mulai", "Clinical rotation bukan rotasi milik…" — padahal UI seluruhnya
+# berbahasa Indonesia. Label disamakan dengan label form masing-masing.
+#
+# Atribut Logbook Kegiatan, Taksonomi Kegiatan, dan akun ada di terms.id.yml.
+id:
+  activerecord:
+    attributes:
+      academic_activity_subdomain:
+        academic_activity_domain: "Domain kegiatan"
+      academic_activity_template:
+        academic_activity_subdomain: "Subdomain kegiatan"
+      academic_period:
+        name: "Nama periode"
+        start_date: "Tanggal mulai"
+        end_date: "Tanggal selesai"
+      activity_log:
+        user: "Pemilik kegiatan"
+      activity_log_competency_tag:
+        activity_log: "Kegiatan"
+        competency_item: "Kompetensi"
+        competency_item_id: "Kompetensi"
+      app_setting:
+        key: "Kunci pengaturan"
+      assessment_blueprint:
+        name: "Nama blueprint"
+      assessment_blueprint_mapping:
+        assessment_blueprint: "Blueprint"
+        competency_item: "Kompetensi"
+        competency_item_id: "Kompetensi"
+        weight: "Bobot"
+      assessment_dimension:
+        assessment_event: "Assessment event"
+        name: "Nama dimensi"
+        weight: "Bobot"
+        max_score: "Nilai maksimum"
+      assessment_dimension_score:
+        assessment_instance: "Percobaan"
+        assessment_dimension: "Dimensi"
+        assessment_dimension_id: "Dimensi"
+        score: "Skor"
+      assessment_event:
+        academic_period: "Periode akademik"
+        name: "Nama event"
+        assessment_type: "Tipe asesmen"
+        status: "Status"
+        max_score: "Nilai maksimum"
+        exam_purpose: "Tujuan ujian"
+        external_code: "Kode ujian"
+      assessment_form_answer:
+        assessment_form_submission: "Pengisian formulir"
+        assessment_form_field: "Pertanyaan"
+      assessment_form_field:
+        assessment_form_template: "Formulir"
+        label: "Pertanyaan / kriteria"
+        field_type: "Jenis jawaban"
+        max_score: "Skala maksimum"
+        weight: "Bobot"
+        options_text: "Pilihan jawaban"
+      assessment_form_submission:
+        assessment_form_template: "Formulir"
+        respondent: "Pengisi"
+        submitted_at: "Waktu pengisian"
+        subject_user: "Mahasiswa yang dinilai"
+      assessment_form_template:
+        name: "Nama formulir"
+      assessment_instance:
+        assessment_event: "Assessment event"
+        student: "Mahasiswa"
+        attempt_number: "Percobaan ke-"
+        status: "Status"
+        source: "Sumber nilai"
+        score: "Nilai"
+        max_score: "Nilai maksimum"
+      assessment_mapping:
+        learning_unit: "Learning Unit"
+        assessment_event: "Assessment event"
+        assessment_event_id: "Assessment event"
+        weight: "Bobot"
+      break_glass_access:
+        user: "Pengguna"
+        clinical_case: "Kasus klinis"
+        reason: "Alasan"
+        expires_at: "Berlaku sampai"
+      case_verification_comment:
+        clinical_case: "Kasus klinis"
+        user: "Pengguna"
+        action: "Aksi"
+        body: "Komentar"
+      clinical_case:
+        user: "Pemilik kasus"
+        chief_complaint: "Keluhan utama"
+        case_date: "Tanggal kasus"
+        status: "Status"
+        patient_age_group: "Usia pasien"
+        patient_gender: "Jenis kelamin pasien"
+        patient_age: "Umur pasien"
+        patient_birth_date: "Tanggal lahir pasien"
+      clinical_rotation:
+        user: "Mahasiswa"
+        academic_period: "Periode akademik"
+        station_name: "Bagian/Departemen"
+        start_date: "Tanggal mulai"
+        end_date: "Tanggal selesai"
+      competency_framework:
+        name: "Nama peta kompetensi"
+      competency_item:
+        competency_framework: "Peta kompetensi"
+        title: "Nama kompetensi"
+      competency_milestone:
+        competency_item: "Kompetensi"
+        academic_period: "Periode akademik"
+        academic_period_id: "Periode akademik"
+        expected_score: "Skor target"
+      device_push_token:
+        user: "Pengguna"
+        endpoint: "Endpoint push"
+        p256dh_key: "Kunci p256dh"
+        auth_key: "Kunci auth"
+      diagnosis_definition:
+        name: "Nama diagnosis"
+        skdi_level: "Level SKDI"
+      dops_evaluation:
+        student: "Mahasiswa"
+        evaluator: "Penilai"
+        clinical_rotation: "Rotasi"
+        procedure_name: "Nama tindakan"
+        evaluated_at: "Tanggal penilaian"
+        status: "Status"
+        video_recording_url: "Tautan rekaman video"
+      entrustment_decision:
+        student: "Mahasiswa"
+        competency_item: "EPA"
+        decided_by: "Penilai"
+        level: "Level entrustment"
+        justification: "Justifikasi"
+      evaluation_schedule:
+        student: "Mahasiswa"
+        kind: "Jenis"
+        status: "Status"
+        scheduled_at: "Waktu"
+      examiner_score:
+        final_project: "Tugas akhir"
+        examiner: "Penguji"
+        session_date: "Tanggal ujian"
+        score: "Skor"
+      final_project:
+        student: "Mahasiswa"
+        title: "Judul tugas akhir"
+        status: "Status"
+      final_project_milestone:
+        final_project: "Tugas akhir"
+        title: "Judul milestone"
+        target_date: "Tanggal target"
+      glide_import:
+        importer_key: "Jenis data"
+        status: "Status"
+      learning_unit:
+        study_program: "Program studi"
+        name: "Nama unit / blok"
+        credits: "SKS"
+      logbook_case_target:
+        study_program: "Program studi"
+        facility_type: "Jenis fasilitas"
+        target_count: "Jumlah target"
+      medication_definition:
+        name: "Nama obat"
+      mini_cex_evaluation:
+        student: "Mahasiswa"
+        evaluator: "Penilai"
+        clinical_rotation: "Rotasi"
+        case_description: "Kasus yang diamati"
+        evaluated_at: "Tanggal penilaian"
+        status: "Status"
+        global_rating: "Penilaian global"
+        video_recording_url: "Tautan rekaman video"
+      notification:
+        recipient: "Penerima"
+        title: "Judul"
+      osce_station_score:
+        assessment_instance: "Percobaan"
+        checklist_score: "Skor checklist"
+        scores: "Skor dimensi"
+      patient_consent:
+        clinical_case: "Kasus klinis"
+        signer_relation: "Hubungan penanda tangan"
+      prescription_item:
+        clinical_case: "Kasus klinis"
+        medication_name: "Nama obat"
+      reflection_entry:
+        user: "Penulis"
+        entry_date: "Tanggal"
+        content: "Tulisan refleksi"
+        activity_log: "Kegiatan"
+        clinical_case: "Kasus klinis"
+      role:
+        code: "Kode peran"
+        name: "Nama peran"
+      skill_definition:
+        name: "Nama keterampilan"
+        skdi_level: "Level SKDI"
+      study_program:
+        name: "Nama"
+        code: "Kode"
+        level: "Jenjang"
+      tutorial_enrollment:
+        user: "Mahasiswa"
+        academic_period: "Periode akademik"
+        block_name: "Blok / sistem"
+        end_date: "Tanggal selesai"
+      user:
+        gender: "Jenis kelamin"
+        profession_category: "Kategori profesi"
+        cohort_year: "Angkatan"
+        phone: "Nomor telepon"
+        birth_date: "Tanggal lahir"
+        theme_preference: "Tema"
+        font_size_preference: "Ukuran huruf"
+        locale_preference: "Bahasa antarmuka"
+      user_role:
+        user: "Pengguna"
+        role: "Peran"
+        role_id: "Peran"

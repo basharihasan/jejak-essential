@@ -37,7 +37,7 @@ class AssessmentScoreImporter
   # dimension_mapping: { dimension_id => kolom }
   def initialize(event:, csv_text:, mapping:, dimension_mapping: {})
     @event = event
-    @csv_text = csv_text.to_s.force_encoding("UTF-8").delete_prefix("﻿")
+    @csv_text = CsvUpload.decode(csv_text)
     @mapping = mapping.to_h.transform_keys(&:to_s).transform_values { |v| v.to_s.presence }
     @dimension_mapping = dimension_mapping.to_h.transform_keys(&:to_i).transform_values { |v| v.to_s.presence }.compact
     @dimensions = event.assessment_dimensions.index_by(&:id)

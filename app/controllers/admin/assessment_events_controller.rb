@@ -140,7 +140,7 @@ class Admin::AssessmentEventsController < ApplicationController
       return
     end
 
-    @csv_text = file.read.force_encoding("UTF-8").delete_prefix("﻿")
+    @csv_text = CsvUpload.decode(file.read)
     @headers, @sample_rows = AssessmentScoreImporter.parse_headers(@csv_text)
     if @headers.empty?
       redirect_to import_admin_assessment_event_path(@event), alert: "Berkas tidak punya baris header yang bisa dibaca."
