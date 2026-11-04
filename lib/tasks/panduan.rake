@@ -21,6 +21,13 @@ namespace :panduan do
     abort "Chrome/Edge tidak ditemukan — setel CHROME_PATH." unless chrome
 
     body = Kramdown::Document.new(File.read(dir.join("panduan.md")), input: "kramdown").to_html
+    # Screenshot ditulis `panduan/nama.png` (relatif ke aset, lihat
+    # PanduanController); HTML sementara ini ada di folder tmp, jadi arahkan ke
+    # berkas aslinya supaya gambar ikut tercetak.
+    images = Rails.root.join("app/assets/images")
+    body = body.gsub(%r{<img src="(panduan/[^"]+)"}) do
+      %(<img src="file:///#{images.join(Regexp.last_match(1)).to_s.tr('\\', '/').delete_prefix('/')}")
+    end
     # Gaya markdown & diagram diambil dari halaman /panduan supaya keduanya tak berbeda.
     style = File.read(dir.join("index.html.erb"))[%r{<style>(.*?)</style>}m, 1]
     updated = I18n.l(Date.current, format: :long, locale: :id)
@@ -40,6 +47,7 @@ namespace :panduan do
           .markdown-body h2 { break-after: avoid; }
           .markdown-body h3, .markdown-body h4 { break-after: avoid; }
           .markdown-body tr, .markdown-body svg.dg, .markdown-body blockquote { break-inside: avoid; }
+          .markdown-body img { max-width: 100%; height: auto; max-height: 235mm; object-fit: contain; break-inside: avoid; }
           .markdown-body h2#daftar-isi + ul { columns: 2; }
         </style>
       </head>

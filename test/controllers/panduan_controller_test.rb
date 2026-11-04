@@ -30,6 +30,8 @@ class PanduanControllerTest < ActionDispatch::IntegrationTest
     assert_operator body.css("pre code").size, :>=, 2
     leaked = body.css("p").select { |p| p.text.include?("|---") || p.text.start_with?("~~~", "###") }
     assert_empty leaked, "teks mentah bocor: #{leaked.map(&:text).first(3)}"
+    # Karakter | tanpa escape di butir daftar membuat kramdown menyulapnya jadi tabel.
+    assert_empty body.css("li table").map(&:text), "pakai \\| untuk garis tegak di dalam butir daftar"
   end
 
   # image_path melempar galat bila berkas di app/assets/images/panduan/ tidak
