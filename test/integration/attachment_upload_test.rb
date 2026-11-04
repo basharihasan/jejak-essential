@@ -83,9 +83,12 @@ class AttachmentUploadTest < ActionDispatch::IntegrationTest
   end
 
   test "dokumen asesmen yang ditolak tidak mengubah status pengumpulan" do
-    instance = assessment_instances(:siti_cbt_1)
-    instance.update_columns(status: "registered")
-    instance.assessment_event.update_columns(status: "published", submission_close_at: nil)
+    # Event rubrik — event ujian tulis/praktik (CBT/OSCE) sudah menolak
+    # pengumpulan dokumen sebelum berkasnya diperiksa.
+    event = assessment_events(:soca_kardio)
+    event.update_columns(status: "published", submission_close_at: nil)
+    instance = AssessmentInstance.create!(assessment_event: event, student: users(:siti), attempt_number: 1,
+                                          status: "registered", max_score: 100)
 
     patch submit_student_assessment_path(instance), params: { document: upload("MZ".b, "x.exe", "application/octet-stream") }
     assert_redirected_to student_assessment_path(instance)

@@ -32,9 +32,8 @@ class EntrustmentDecisionsController < ApplicationController
 
   private
 
-  # Mahasiswa hanya peta miliknya; pengajar & kaprodi boleh membuka
-  # mahasiswa lain (kaprodi hanya melihat, dan hanya prodi binaannya — lihat
-  # can_decide? dan ApplicationController#viewed_student).
+  # Mahasiswa hanya peta miliknya; pengajar & kaprodi (prodi binaannya saja)
+  # boleh membuka mahasiswa lain — kaprodi hanya melihat, lihat can_decide?.
   def set_student
     @student = viewed_student
   end

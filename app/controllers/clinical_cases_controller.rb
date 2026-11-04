@@ -5,12 +5,21 @@ class ClinicalCasesController < ApplicationController
   before_action :set_clinical_case, only: %i[show edit update destroy submit verify request_revision reject cancel_verification comment initiate_workplace_assessment break_glass issue_consent revoke_consent initiate_assessment]
 
   def index
-    @scope = params[:scope] == "to_verify" && current_user.can_verify_clinical_cases? ? "to_verify" : "mine"
-    base_scope = @scope == "to_verify" ? ClinicalCase.awaiting_verification : current_user.clinical_cases
-    @clinical_cases = base_scope.recent.page(params[:page])
+    # to_verify = antrean kasus "Menunggu Verifikasi" yang boleh diverifikasi
+    # pengajar ini (tanpa tanda pembimbing, atau menandai dia); reviewed =
+    # kasus yang pernah diputuskan pengajar ini, supaya bisa dibuka ulang.
+    @scope = (params[:scope].presence_in(%w[to_verify reviewed]) if current_user.can_verify_clinical_cases?) || "mine"
+    base_scope =
+      case @scope
+      when "to_verify" then ClinicalCase.awaiting_verification_by(current_user)
+      when "reviewed" then ClinicalCase.reviewed_by(current_user)
+      else current_user.clinical_cases
+      end
+    @clinical_cases = base_scope.includes(:user, :supervisor).recent.page(params[:page])
     @case_targets = @scope == "mine" ? case_target_progress : []
 
-    stats_scope = @scope == "to_verify" ? ClinicalCase.all : current_user.clinical_cases
+    # Draf belum diajukan dan hanya milik pemiliknya — tidak ikut ringkasan.
+    stats_scope = @scope == "to_verify" ? ClinicalCase.where.not(status: "draft") : base_scope
     @stats = {
       total: stats_scope.count,
       by_status: stats_scope.group(:status).count,
@@ -20,11 +29,11 @@ class ClinicalCasesController < ApplicationController
 
   def show
     authorize @clinical_case
-    # Identitas pasien tersamar selama Privacy Mode menyala, kecuali pengguna
-    # ini memegang Break Glass aktif untuk kasus ini.
+    # Identitas pasien tersamar selama Privacy Mode menyala, kecuali bagi
+    # pembimbing kasus ini atau pengguna yang memegang Break Glass aktif.
     @privacy_mode = AppSetting.privacy_mode?
     @break_glass = BreakGlassAccess.active_for(current_user, @clinical_case) if @privacy_mode
-    @identity_visible = !@privacy_mode || @break_glass.present?
+    @identity_visible = !@privacy_mode || @break_glass.present? || policy(@clinical_case).view_patient_identity?
     @patient_consent = @clinical_case.patient_consent
     # Tombol "Inisiasi CBD / Long Case": event berbasis kasus yang tampil bagi
     # pemilik kasus dan belum dipakai kasus ini.
@@ -216,7 +225,7 @@ class ClinicalCasesController < ApplicationController
 
   def workplace_rotation_for(clinical_case)
     rotations = clinical_case.user.clinical_rotations
-    rotations.where("start_date <= :d AND end_date >= :d", d: clinical_case.case_date).order(start_date: :desc).first ||
+    rotations.covering(clinical_case.case_date).order(start_date: :desc).first ||
       rotations.ongoing.order(start_date: :desc).first
   end
 
@@ -254,7 +263,7 @@ class ClinicalCasesController < ApplicationController
       :clinical_setting, :case_complexity,
       :anamnesis, :general_condition, :physical_examination, :family_history,
       :laboratory_results, :radiology_results, :other_investigations,
-      :diagnosis, :management, :learning_points,
+      :diagnosis, :management, :learning_points, :supervisor_id,
       prescription_items_attributes: %i[id medication_name strength dosage_form quantity signa route notes _destroy],
       vital_signs: ClinicalCase::VITAL_SIGN_FIELDS.keys
     )

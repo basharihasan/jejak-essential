@@ -45,8 +45,9 @@ gem "bootsnap", require: false
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 1.2"
 gem "ruby-vips"
-# Penyimpanan berkas S3-compatible (AWS S3, Cloudflare R2, Backblaze B2, MinIO)
-# — dipilih lewat ENV ACTIVE_STORAGE_SERVICE=s3, lihat config/storage.yml.
+# Penyimpanan berkas S3-compatible — Cloudflare R2 otomatis bila R2_BUCKET
+# diisi; AWS S3, Backblaze B2, MinIO lewat ACTIVE_STORAGE_SERVICE=s3. Lihat
+# config/storage.yml.
 gem "aws-sdk-s3", require: false
 
 # ── Auth ──────────────────────────────────────────────────────────────────────

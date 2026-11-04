@@ -19,6 +19,7 @@ class User < ApplicationRecord
   has_many :activity_logs, dependent: :destroy
   has_many :clinical_cases, dependent: :destroy
   has_many :verified_clinical_cases, class_name: "ClinicalCase", foreign_key: :verified_by_id, inverse_of: :verified_by, dependent: :nullify
+  has_many :supervised_clinical_cases, class_name: "ClinicalCase", foreign_key: :supervisor_id, inverse_of: :supervisor, dependent: :nullify
   has_many :clinical_rotations, dependent: :destroy # sebagai mahasiswa
   has_many :precepted_rotations, class_name: "ClinicalRotation", foreign_key: :preceptor_id, inverse_of: :preceptor, dependent: :nullify
   has_many :tutorial_enrollments, dependent: :destroy # sebagai mahasiswa (PSSK)
@@ -36,6 +37,7 @@ class User < ApplicationRecord
   has_many :assessment_instances, foreign_key: :student_id, inverse_of: :student, dependent: :destroy
   has_many :examined_assessment_instances, class_name: "AssessmentInstance", foreign_key: :examiner_id, inverse_of: :examiner, dependent: :nullify
   has_many :entrustment_decisions, foreign_key: :student_id, inverse_of: :student, dependent: :destroy
+  has_many :data_export_logs, dependent: :destroy
 
   # Peran yang boleh menilai/memverifikasi mahasiswa (DOPS, Mini-CEX, Kasus
   # Klinis) — dosen, preseptor (pembimbing klinis di wahana), dan admin.
@@ -44,10 +46,31 @@ class User < ApplicationRecord
   end
   alias can_verify_clinical_cases? instructor?
 
+  # Calon pembimbing yang boleh ditandai mahasiswa pada kasus klinis.
+  scope :case_supervisors, -> {
+    where(id: UserRole.joins(:role).where(roles: { code: %w[dosen preseptor] }).select(:user_id)).order(:full_name)
+  }
+
   # Boleh membuka halaman mahasiswa lain (Peta EPA dsb.) — pengajar, plus
   # kaprodi yang memantau tanpa menilai.
   def can_view_students?
     instructor? || has_role?("kaprodi")
+  end
+
+  # Mahasiswa tertentu yang halamannya boleh dibuka: pengajar boleh mahasiswa
+  # mana pun (verifikasi & penilaian lintas prodi), kaprodi hanya mahasiswa
+  # prodi binaannya — cakupan yang sama dengan Dashboard Analitik.
+  def can_view_student?(student)
+    return false unless student&.has_role?("mahasiswa")
+    return true if instructor?
+
+    has_role?("kaprodi") && study_program_id.present? && student.study_program_id == study_program_id
+  end
+
+  # Assessment Form Builder (/assessment_form_templates) — membuat, menyunting,
+  # mengisi, dan membaca jawaban formulir — hanya untuk kaprodi dan admin.
+  def can_manage_assessment_forms?
+    has_role?("admin") || has_role?("kaprodi")
   end
 
   # Kaprodi (bukan admin) terikat ke prodi akunnya: prodi itu membatasi apa

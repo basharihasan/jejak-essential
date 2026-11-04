@@ -15,7 +15,7 @@ class StudentDashboardsController < ApplicationController
       return
     end
     unless current_user.can_view_student?(@student)
-      redirect_to search_path, alert: "#{@student.full_name} bukan mahasiswa prodi binaan Anda."
+      redirect_to search_path, alert: "#{@student.full_name} di luar program studi binaan Anda."
       return
     end
 

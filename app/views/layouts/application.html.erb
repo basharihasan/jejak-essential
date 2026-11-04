@@ -58,7 +58,9 @@
     <%# Chart.js + Chartkick (Portfolio, Dashboard Analitik, radar DOPS/
         Mini-CEX) — build UMD bawaan gem chartkick, dilayani dari aset sendiri
         (bukan CDN pihak ketiga berversi mengambang) supaya versinya terkunci
-        Gemfile.lock dan Content Security Policy cukup mengizinkan 'self'. %>
+        Gemfile.lock dan Content Security Policy cukup mengizinkan 'self'.
+        Chart.bundle sudah memuat chartjs-adapter-date-fns, adapter tanggal
+        yang dibutuhkan line_chart bersumbu waktu (tren Evaluasi Akademik). %>
     <%= javascript_include_tag "Chart.bundle", "chartkick", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 

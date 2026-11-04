@@ -21,17 +21,20 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files on the local file system (see config/storage.yml for options).
-  # ACTIVE_STORAGE_SERVICE=s3 memindahkan berkas ke penyimpanan S3-compatible
-  # (lihat config/storage.yml) — wajib di Render & PaaS lain yang disknya
-  # terhapus setiap deploy ulang.
-  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "local").to_sym
+  # Unggahan disimpan di Cloudflare R2 bila R2_BUCKET diisi (lihat
+  # config/storage.yml), selain itu di disk lokal — cocok untuk NAS dengan
+  # volume persisten, TIDAK untuk Render free (disknya terhapus tiap deploy).
+  # ACTIVE_STORAGE_SERVICE menimpa pilihan otomatis ini, mis. "s3" untuk
+  # AWS S3 / Backblaze B2 / MinIO.
+  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE") { ENV["R2_BUCKET"].present? ? "cloudflare" : "local" }.to_sym
 
   # Render (dan PaaS sejenis) mengakhiri SSL di reverse proxy-nya, jadi
   # aplikasi sendiri menerima trafik HTTP biasa — dua baris ini yang membuat
   # Rails tetap menganggap koneksi aman (cookie secure, redirect HTTP→HTTPS).
-  config.assume_ssl = true
-  config.force_ssl = true
+  # Self-host LAN (docker-compose.yml) set ASSUME_SSL/FORCE_SSL=false — kalau
+  # tetap true di HTTP polos, cookie Secure hilang dan login POST → 422.
+  config.assume_ssl = ActiveModel::Type::Boolean.new.cast(ENV.fetch("ASSUME_SSL", "true"))
+  config.force_ssl  = ActiveModel::Type::Boolean.new.cast(ENV.fetch("FORCE_SSL", "true"))
 
   # Skip http-to-https redirect for the default health check endpoint.
   # config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }

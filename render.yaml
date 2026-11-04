@@ -41,6 +41,13 @@ services:
       # memori PFKV2 — kelas kegagalan yang sama).
       - key: SOLID_QUEUE_IN_PUMA
         value: "true"
+      # Hemat RAM 512 MB plan free: satu thread job cukup untuk notifikasi,
+      # dan glibc dibatasi dua arena malloc (mencegah memori membengkak per
+      # thread). Solid Queue berjalan mode async — lihat config/puma.rb.
+      - key: JOB_THREADS
+        value: "1"
+      - key: MALLOC_ARENA_MAX
+        value: "2"
       # Wajib di production (lihat config/initializers/active_record_encryption.rb)
       # — kolom identitas pasien di ClinicalCase dienkripsi dengan kunci ini.
       # Isi manual di dashboard, hasil `bin/rails db:encryption:init`.
@@ -49,6 +56,18 @@ services:
       - key: AR_ENCRYPTION_DETERMINISTIC_KEY
         sync: false
       - key: AR_ENCRYPTION_KEY_DERIVATION_SALT
+        sync: false
+      # Cloudflare R2 untuk unggahan (foto profil, lampiran, dokumen). Disk
+      # plan free terhapus setiap deploy — tanpa R2 semua unggahan hilang.
+      # Isi keempatnya di dashboard; aplikasi otomatis memakai R2 bila
+      # R2_BUCKET terisi (lihat config/storage.yml).
+      - key: R2_ACCOUNT_ID
+        sync: false
+      - key: R2_ACCESS_KEY_ID
+        sync: false
+      - key: R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: R2_BUCKET
         sync: false
       # Dipakai config.action_mailer.default_url_options — tautan di email
       # (konfirmasi akun, reset password) akan pakai domain ini. Render

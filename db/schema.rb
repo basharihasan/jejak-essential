@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_23_010001) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_24_020001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -357,12 +357,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010001) do
     t.boolean "recommend_remediation", default: false, null: false
     t.string "skdi_level"
     t.string "status", default: "draft", null: false
+    t.bigint "supervisor_id"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.datetime "verified_at"
     t.bigint "verified_by_id"
     t.jsonb "vital_signs", default: {}, null: false
     t.index ["status"], name: "index_clinical_cases_on_status"
+    t.index ["supervisor_id"], name: "index_clinical_cases_on_supervisor_id"
     t.index ["user_id", "status"], name: "index_clinical_cases_on_user_id_and_status"
     t.index ["user_id"], name: "index_clinical_cases_on_user_id"
     t.index ["verified_by_id"], name: "index_clinical_cases_on_verified_by_id"
@@ -412,6 +414,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010001) do
     t.index ["academic_period_id"], name: "index_competency_milestones_on_academic_period_id"
     t.index ["competency_item_id", "academic_period_id"], name: "index_competency_milestones_uniq", unique: true
     t.index ["competency_item_id"], name: "index_competency_milestones_on_competency_item_id"
+  end
+
+  create_table "data_export_logs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "dataset", null: false
+    t.jsonb "filters", default: {}, null: false
+    t.integer "row_count", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["created_at"], name: "index_data_export_logs_on_created_at"
+    t.index ["user_id"], name: "index_data_export_logs_on_user_id"
   end
 
   create_table "device_push_tokens", force: :cascade do |t|
@@ -896,6 +909,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010001) do
   add_foreign_key "case_verification_comments", "clinical_cases"
   add_foreign_key "case_verification_comments", "users"
   add_foreign_key "clinical_cases", "users"
+  add_foreign_key "clinical_cases", "users", column: "supervisor_id"
   add_foreign_key "clinical_cases", "users", column: "verified_by_id"
   add_foreign_key "clinical_rotations", "academic_periods"
   add_foreign_key "clinical_rotations", "users"
@@ -904,6 +918,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_23_010001) do
   add_foreign_key "competency_items", "competency_items", column: "parent_id"
   add_foreign_key "competency_milestones", "academic_periods"
   add_foreign_key "competency_milestones", "competency_items"
+  add_foreign_key "data_export_logs", "users"
   add_foreign_key "device_push_tokens", "users"
   add_foreign_key "dops_evaluations", "clinical_cases", validate: false
   add_foreign_key "dops_evaluations", "clinical_rotations"

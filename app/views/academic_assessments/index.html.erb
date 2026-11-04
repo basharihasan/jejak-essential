@@ -28,14 +28,7 @@
         <ul class="mt-3 space-y-1.5">
           <% @dops_evaluations.each do |dops| %>
             <li class="text-xs text-gray-500 flex items-center justify-between">
-              <%# Pengajar yang melihat mahasiswa lain (?student_id=) hanya boleh
-                  membuka evaluasi yang ia nilai sendiri — sisanya teks biasa,
-                  bukan tautan yang berujung "tidak memiliki akses". %>
-              <% if policy(dops).show? %>
-                <%= link_to dops.procedure_name, dops_evaluation_path(dops), class: "hover:text-indigo-600" %>
-              <% else %>
-                <span><%= dops.procedure_name %></span>
-              <% end %>
+              <%= link_to_if policy(dops).show?, dops.procedure_name, dops_evaluation_path(dops), class: "hover:text-indigo-600" %>
               <span class="font-semibold text-gray-700"><%= dops.average_score || "-" %>/9</span>
             </li>
           <% end %>
@@ -57,11 +50,7 @@
         <ul class="mt-3 space-y-1.5">
           <% @mini_cex_evaluations.each do |mini_cex| %>
             <li class="text-xs text-gray-500 flex items-center justify-between">
-              <% if policy(mini_cex).show? %>
-                <%= link_to mini_cex.case_description, mini_cex_evaluation_path(mini_cex), class: "hover:text-indigo-600" %>
-              <% else %>
-                <span><%= mini_cex.case_description %></span>
-              <% end %>
+              <%= link_to_if policy(mini_cex).show?, mini_cex.case_description, mini_cex_evaluation_path(mini_cex), class: "hover:text-indigo-600" %>
               <span class="font-semibold text-gray-700"><%= mini_cex.average_score || "-" %>/9</span>
             </li>
           <% end %>

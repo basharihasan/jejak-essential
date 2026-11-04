@@ -159,11 +159,11 @@ class DashboardController < ApplicationController
     @can_verify = current_user.can_verify_clinical_cases?
     return unless @can_verify
 
-    case_queue = ClinicalCase.awaiting_verification
+    case_queue = ClinicalCase.awaiting_verification_by(current_user)
     @pending_case_count = case_queue.count
     # Terlama menunggu didahulukan.
     @pending_cases = case_queue.includes(:user).order(:updated_at).limit(PENDING_CASE_LIST_LIMIT).to_a
-    @pending_activity_count = ActivityLog.awaiting_verification.count
+    @pending_activity_count = ActivityLog.awaiting_verification_by(current_user).count
   end
 
   # "Perlu Dinilai": DOPS/Mini-CEX yang diminta mahasiswa atau masih draf

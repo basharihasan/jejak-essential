@@ -6,11 +6,31 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-# Penyimpanan S3-compatible (AWS S3, Cloudflare R2, Backblaze B2, MinIO) —
+# Cloudflare R2 (S3-kompatibel) — dipakai produksi bila R2_BUCKET diisi (lihat
+# config/environments/production.rb). Disk Render free terhapus setiap
+# deploy; R2 menyimpan unggahan (foto profil, lampiran kegiatan & kasus,
+# dokumen asesmen) secara permanen. Bucket boleh privat: berkas disajikan
+# lewat URL bertanda-tangan berumur pendek, dan unggahan lewat server (bukan
+# direct upload) sehingga bucket tidak perlu aturan CORS.
+#
+# SDK aws-sdk-s3 baru menambahkan checksum CRC32 bawaan yang ditolak R2;
+# "when_required" mengembalikan perilaku lama.
+cloudflare:
+  service: S3
+  endpoint: https://<%= ENV["R2_ACCOUNT_ID"] %>.r2.cloudflarestorage.com
+  access_key_id: <%= ENV["R2_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["R2_SECRET_ACCESS_KEY"] %>
+  region: auto
+  bucket: <%= ENV["R2_BUCKET"] %>
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
+
+# Penyimpanan S3-compatible lain (AWS S3, Backblaze B2, MinIO) —
 # aktif bila ACTIVE_STORAGE_SERVICE=s3 (lihat config/environments/production.rb).
 # Wajib di PaaS berfilesystem sementara (Render free): disk lokal hilang
 # setiap deploy ulang. S3_ENDPOINT dikosongkan untuk AWS S3 asli; isi untuk
-# penyedia lain, mis. https://<account>.r2.cloudflarestorage.com (region "auto").
+# penyedia lain (Backblaze B2, MinIO). Untuk Cloudflare R2 pakai layanan
+# "cloudflare" di atas — ia sudah mematikan checksum CRC32 yang ditolak R2.
 s3:
   service: S3
   access_key_id: <%= ENV["S3_ACCESS_KEY_ID"] %>

@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class ClinicalCasePolicy < ApplicationPolicy
+  # Draf belum diajukan ke pembimbing, jadi hanya pemiliknya (dan admin) yang
+  # melihatnya; pengajar lain baru melihat kasus sejak dikirim.
   def show?
-    owner? || user.can_verify_clinical_cases?
+    owner? || user.has_role?("admin") || (user.can_verify_clinical_cases? && record.status != "draft")
   end
 
   def update?
@@ -19,9 +21,10 @@ class ClinicalCasePolicy < ApplicationPolicy
 
   # Bukan cuma "punya peran dosen/admin" — akun yang kebetulan juga
   # menyandang peran mahasiswa (multi-peran diperbolehkan di app ini) tidak
-  # boleh memverifikasi kasus miliknya sendiri.
+  # boleh memverifikasi kasus miliknya sendiri. Kasus yang menandai
+  # pembimbing hanya boleh diverifikasi pembimbing itu, bukan pengajar lain.
   def verify?
-    !owner? && user.can_verify_clinical_cases? && record.status == "submitted"
+    !owner? && user.can_verify_clinical_cases? && record.status == "submitted" && assigned_verifier?
   end
 
   def request_revision?
@@ -47,6 +50,12 @@ class ClinicalCasePolicy < ApplicationPolicy
   # verifier, admin) boleh membukanya — tetapi selalu beralasan & tercatat.
   def break_glass?
     show?
+  end
+
+  # Pembimbing kasus melihat identitas pasien tanpa Break Glass walau Privacy
+  # Mode menyala; pengajar lain dan pemilik kasus tetap lewat Break Glass.
+  def view_patient_identity?
+    show? && !owner? && record.supervised_by?(user)
   end
 
   def issue_consent?
@@ -77,5 +86,9 @@ class ClinicalCasePolicy < ApplicationPolicy
 
   def owner?
     record.user_id == user.id
+  end
+
+  def assigned_verifier?
+    record.supervisor_id.nil? || record.supervisor_id == user.id
   end
 end
