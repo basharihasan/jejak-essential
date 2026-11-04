@@ -199,7 +199,7 @@ Sidebar hanya memuat enam grup, dan **menyempit mengikuti peran aktif** — buka
 
 Lencana angka di **Validasi Kasus Klinis** dan **Validasi Kegiatan** menunjukkan jumlah butir yang menunggu verifikasi oleh Anda — kasus/kegiatan milik akun Anda sendiri tidak dihitung.
 
-![Sidebar akun admin, ditampilkan dua kolom: grup Ikhtisar sampai Coaching Center, lalu grup Konfigurasi dan kaki sidebar](panduan/2-2-sidebar-admin.png)
+![Sidebar akun admin, ditampilkan dua kolom: grup Ikhtisar sampai Coaching Center, lalu grup Konfigurasi (sampai Ekspor Data) dan kaki sidebar](panduan/2-2-sidebar-admin.png)
 
 ### 2.3 Ganti peran
 
@@ -233,6 +233,8 @@ Kotak **Cari** di topbar dan menu **Daftar Mahasiswa** (`/cari`) mencari **pengg
 - Klik kolomnya lalu ketik sebagian nama; daftar langsung tersaring. Huruf besar/kecil dan urutan kata tidak berpengaruh — `sari dew` menemukan "Dewi Sari". Kolom rotasi juga bisa dicari dengan nama stase.
 - Pilih dengan klik, atau dengan tombol **↑/↓** lalu **Enter**. **Esc** menutup daftar tanpa mengubah pilihan.
 - Pada kolom opsional, hapus teksnya atau pilih **— Kosongkan pilihan —** untuk mengosongkan. Teks yang tidak cocok dengan nama mana pun dikembalikan ke pilihan sebelumnya.
+
+![Kolom Mahasiswa pada formulir Tambah Rotasi: mengetik "mahas" langsung menyaring daftar nama](panduan/2-5-pilih-nama.png)
 
 ### 2.6 Notifikasi
 
@@ -333,7 +335,7 @@ Domain yang ditandai admin sebagai *kegiatan klinis* membuat kegiatan itu dihitu
 #### Daftar, filter, dan Kalender
 
 - Tab **Punya Saya** menampilkan kegiatan Anda dalam **linimasa per tanggal**. Chip filter **domain** dan **kompetensi** menyaring daftar; **✕ Hapus filter** mengembalikannya.
-- Sakelar **Daftar | Kalender** mengganti tampilan ke **kalender bulanan** (`/kalender`, navigasi ‹ › antar bulan). Kegiatan yang sudah diverifikasi diberi penanda warna berbeda.
+- Sakelar **Daftar \| Kalender** mengganti tampilan ke **kalender bulanan** (`/kalender`, navigasi ‹ › antar bulan). Kegiatan yang sudah diverifikasi diberi penanda warna berbeda.
 - **Feed Kalender (iCal)** di bawah kalender: salin alamatnya ke Google Calendar/Outlook/Apple Calendar agar kegiatan Anda muncul di kalender pribadi. Alamat itu adalah kredensial — jika bocor, klik **Perbarui Tautan** dan tautan lama langsung tidak berlaku.
 - Tombol **Buat Kode Pasien** pada halaman kegiatan klinis (hanya untuk pemilik kegiatan) membuat kode acak non-identifikasi (mis. `P-7K2M9QXA`) untuk menandai beberapa kegiatan dengan pasien yang sama tanpa menyimpan data pribadi.
 - Kegiatan Anda dapat dihapus dari halaman kegiatannya. Refleksi yang menautkan kegiatan itu tetap tersimpan; hanya tautannya yang dilepas.
@@ -343,6 +345,8 @@ Domain yang ditandai admin sebagai *kegiatan klinis* membuat kegiatan itu dihitu
 #### Verifikasi kegiatan
 
 Kegiatan tersimpan dengan status *belum diverifikasi*. Pembimbing membukanya lewat **Validasi Kegiatan** dan menekan **Verifikasi**; Anda menerima notifikasi, kegiatan berpenanda ✓ di daftar dan kalender. Kegiatan lama (dicatat sebelum taksonomi ada) tetap tampil sebagai Klinis/Non-Klinis; saat disunting Anda diminta memilih domain.
+
+![Halaman kegiatan berstatus Terverifikasi: label hijau, nama preseptor yang memverifikasi, dan tanggal verifikasi](panduan/4-2-kegiatan-terverifikasi.png)
 
 ### 4.3 Logbook Kasus Klinis
 
@@ -407,7 +411,7 @@ Menu **Logbook → Kasus Klinis** (`/clinical_cases`). Halaman daftar memuat **s
 | 5. Terapi & Resep | Latihan menulis resep: nama obat (autocomplete dari **Master Obat**), sediaan, kekuatan, jumlah, rute, aturan pakai (signa), catatan. Baris yang sama sekali kosong dibuang otomatis; baris terisi sebagian tanpa nama obat ditandai dan harus dilengkapi. **Pratinjau resep** langsung menyusun isian menjadi format resep, mis. `R/ Parasetamol tab 500 mg No. X` dan `S 3 dd tab I p.c.` — sediaan otomatis disingkat (Tablet → tab, Kapsul → kaps, Sirup → syr, dst.), sama dengan resep yang tersimpan. |
 | 6. Pembelajaran & Bukti | Poin pembelajaran dan unggahan berkas bukti (gambar, PDF, Word, PowerPoint, Excel; maks. 10 MB per berkas, 10 berkas). Berkas baru ditambahkan — menyunting kasus tidak menghapus bukti yang sudah ada. |
 
-![Langkah 1 wizard Kasus Klinis Baru, termasuk blok Identitas Pasien yang disimpan terenkripsi](panduan/4-3-wizard-kasus.png)
+![Langkah 1 wizard Kasus Klinis Baru, termasuk blok Identitas Pasien yang disimpan terenkripsi dan kolom Dosen/Preseptor Pembimbing](panduan/4-3-wizard-kasus.png)
 
 > Setting klinis menentukan jenis fasilitas: **Pelayanan Primer → FKTP**, selainnya **FKRTL** — inilah dasar kartu Pemenuhan Target Kasus.
 
@@ -457,9 +461,15 @@ Menu **Logbook → Kasus Klinis** (`/clinical_cases`). Halaman daftar memuat **s
 
 Selama **Contextual Privacy Mode** menyala (bawaan), identitas pasien tampil **tersamar untuk semua orang termasuk Anda sendiri**: nama menjadi inisial (`AF***`), No. RM menjadi `RM-****56`, sisanya `••••`. Satu-satunya pengecualian adalah pembimbing kasus Anda — preseptor rotasi pada tanggal kasus dan dosen yang memverifikasinya — yang melihat identitas langsung. Untuk membukanya sesaat, klik **Break Glass**, tulis alasan (minimal 10 karakter), dan identitas terbuka **30 menit** pada akun Anda. Setiap pembukaan tercatat permanen (siapa, kapan, alasan, alamat IP) dan dapat dilihat admin. Rincian ada di [Bab 7](#bab-7--privasi--keamanan-data-pasien).
 
+![Panel Identitas Pasien yang tersamar oleh Privacy Mode — nama menjadi inisial, No. RM terpotong — dengan tombol Break Glass](panduan/4-3-privacy-break-glass.png)
+
 #### Persetujuan pasien lewat QR
 
 Pada kasus yang sudah tersimpan, klik **Terbitkan QR Persetujuan**. Pasien memindai QR (atau membuka tautannya) di ponselnya **tanpa login**, mencentang tiga butir — data kasus dipakai untuk pendidikan, foto klinis boleh disertakan, kasus boleh dipublikasikan setelah dianonimkan — lalu menulis nama dan relasi (pasien sendiri / wali). Jawaban tampil butir per butir di halaman kasus. Bila ada lampiran tetapi foto tidak disetujui, halaman memberi peringatan. **Terbitkan ulang** membatalkan lembar lama; **Cabut** menarik persetujuan.
+
+![Panel Persetujuan Pasien di halaman kasus: QR, tautan persetujuan, dan status Menunggu jawaban pasien](panduan/4-3-qr-persetujuan.png)
+
+![Lembar Persetujuan Pasien di ponsel, tanpa login: tiga butir persetujuan, nama, hubungan dengan pasien, dan tombol Kirim Jawaban](panduan/4-3-lembar-persetujuan.png)
 
 #### Meminta asesmen dari kasus
 
@@ -609,6 +619,8 @@ Notifikasi ke Anda **baru terkirim saat evaluasi berstatus Terkirim** — draf p
 
 **Assessment Form Builder** (`/assessment_form_templates`) — termasuk membuka dan mengisi formulir seperti **Evaluasi Dosen Tutor** dan **Evaluasi Blok** — hanya dapat diakses **kaprodi dan admin**; menunya tidak tampil bagi mahasiswa. Jawaban yang pernah Anda kirim, atau lembar yang menilai Anda, tetap dapat dibuka di `/assessment_form_submissions`; pada formulir **anonim**, identitas responden hanya terlihat oleh responden sendiri dan admin.
 
+![Halaman Jawaban Formulir Saya berisi formulir Evaluasi Blok yang pernah dikirim](panduan/4-12-jawaban-formulir.png)
+
 ### 4.13 Peta Kompetensi (Analisis Capaian Pembelajaran)
 
 **Kompetensi & Prestasi → Peta Kompetensi** (`/capaian-belajar`) adalah potret pribadi **satu periode akademik** (pilih dari dropdown). Sengaja tidak ada grafik tren antar-periode, karena jenis dan bobot asesmen berganti tiap periode sehingga tren rata-ratanya menyesatkan.
@@ -681,6 +693,8 @@ Jadwal DOPS/Mini-CEX di panel *Jadwal Evaluasi Bulan Ini* hilang sendiri begitu 
 
 Kasus yang sudah Anda verifikasi, minta revisi, atau tolak keluar dari antrean, tetapi tetap bisa dibuka ulang lewat tab **Riwayat Verifikasi** (`/clinical_cases?scope=reviewed`) di halaman yang sama.
 
+![Tab Riwayat Verifikasi: kasus yang sudah Anda putuskan, dengan status dan nama pembimbing](panduan/5-2-riwayat-verifikasi.png)
+
 Anda tidak dapat memverifikasi kasus milik akun sendiri — kasus itu juga tidak masuk antrean Anda — dan **draf** mahasiswa tidak dapat dibuka sebelum dikirim. Bila Anda pembimbing kasus itu — yang ditandai mahasiswa, preseptor rotasi mahasiswa pada tanggal kasus, atau dosen yang sudah memverifikasi, meminta revisi, atau menolaknya — identitas pasien tampil langsung. Pengajar lain melihatnya tersamar oleh Privacy Mode; gunakan Break Glass hanya bila benar-benar perlu — semua pembukaan Break Glass diaudit.
 
 ### 5.3 Validasi Kegiatan
@@ -746,6 +760,8 @@ Tiap baris memuat jumlah kegiatan pada periode terpilih (kolom **Kegiatan Period
 
 **Coaching Center → Daftar Mahasiswa** membuka halaman Pencarian (`/cari`) — cari nama/email, lalu klik kartu mahasiswa untuk membuka **Dasbor Mahasiswa** (hanya-baca) dan dari sana ke Evaluasi Akademik, Peta Kompetensi, Peta EPA, dsb. Kaprodi hanya menemukan dan membuka mahasiswa prodi binaannya; alamat `?student_id=` mahasiswa prodi lain ditolak dengan pesan *tidak memiliki akses*.
 
+![Dasbor Mahasiswa (hanya-baca) dibuka dosen: rotasi berjalan, jumlah nilai, asesmen menunggu, kegiatan, kasus terverifikasi, dan pintasan ke halaman asesmen](panduan/5-9-dasbor-mahasiswa.png)
+
 ### 5.10 Khusus kaprodi
 
 - **Relabel Prodi Mahasiswa** (`/admin/student_relabel/new`): unggah CSV `email,npm,angkatan` → pratinjau per baris → terapkan. Kaprodi dapat **Pindah** mahasiswa prodinya sendiri atau **Label ke prodi saya** (mengklaim mahasiswa dari prodi mana pun ke prodi Anda). Rincian format di [Relabel Prodi Mahasiswa](#relabel-prodi-mahasiswa).
@@ -754,6 +770,8 @@ Tiap baris memuat jumlah kegiatan pada periode terpilih (kolom **Kegiatan Period
 - **Coaching Center → Learning Unit & Matrix** (`/admin/learning_units`): hanya unit prodi Anda; prodi unit baru otomatis dikunci ke prodi Anda, dan komponen Assessment Matrix dipilih dari event prodi Anda atau event lintas prodi. Lihat [Bab 6](#bab-6--panduan-admin-konfigurasi).
 - **Coaching Center → Ekspor Data (CSV)** (`/admin/exports`): unduh data mahasiswa prodi Anda — data mahasiswa, rekap capaian, logbook, kasus (tanpa draf dan tanpa identitas pasien), rotasi, tutorial, tugas akhir, DOPS/Mini-CEX, nilai event asesmen, keputusan EPA, jadwal, dan jawaban Assessment Form. Pilihan prodi terkunci ke prodi Anda; dataset Pengguna & Peran dan Master Data khusus admin. Lihat [Ekspor Data (CSV)](#ekspor-data-csv).
 - Kaprodi **tidak** memverifikasi kasus/kegiatan, tidak menilai DOPS/Mini-CEX, dan tidak memutuskan tingkat EPA, sehingga menu Validasi tidak ditawarkan. Lembar Penguji tetap terbuka bila admin menunjuk Anda sebagai penguji suatu percobaan.
+
+![Dashboard Analitik kaprodi: bagian Program Studi dengan radar DOPS & Mini-CEX kohort, tabel mahasiswa prodi, dan tautan Ekspor CSV](panduan/5-10-analitik-kaprodi.png)
 
 ---
 
@@ -792,6 +810,8 @@ budi@kampus.ac.id,Budi Santoso,dosen+preseptor,
 - `peran`: kode dipisah `+` atau `;` (mahasiswa, dosen, preseptor, kaprodi, admin); kosong → mahasiswa.
 - `prodi`: kode atau nama prodi; kosong → tidak diubah.
 - Akun baru: kata sandi sementara acak per akun, langsung terkonfirmasi, wajib diganti saat masuk pertama. Daftar email + kata sandi sementara ditampilkan **sekali** di halaman hasil impor (tombol **Unduh CSV**) — simpan sebelum meninggalkan halaman. Akun lama: hanya nama/peran/prodi yang diperbarui, kata sandi tidak disentuh. Setiap baris gagal dilaporkan dengan nomor barisnya.
+
+Berkas CSV boleh disimpan sebagai *CSV UTF-8* maupun *CSV (dipisahkan koma)* bawaan Excel di Windows — nama beraksen seperti *José* atau *Behçet* tetap terbaca. Ketentuan ini berlaku untuk semua impor CSV: pengguna, master data, nilai Assessment Event, CBT & OSCE format Glide, dan relabel prodi.
 
 ![Halaman Impor Pengguna dari CSV dengan contoh format berkas](panduan/6-3-impor-pengguna.png)
 
@@ -879,6 +899,8 @@ Aturan pengaman:
 - Mahasiswa yang sudah punya nilai OSCE dari sumber lain (input manual / impor generik) pada event tujuan tidak ditimpa station Glide.
 - Setelah impor, halaman **ringkasan** menampilkan baris dibaca, nilai/station masuk, alasan dilewati, contoh galat, dan event yang terisi. **Rollback** di halaman itu menghapus semua yang dibuat unggahan tersebut (station, peserta, event baru yang kosong) dan mengembalikan peserta yang sebelumnya terdaftar ke status *Terdaftar*. Untuk mengoreksi nilai: rollback, perbaiki berkas, lalu unggah ulang.
 
+![Ringkasan impor CBT: baris dibaca, nilai masuk, dilewati, galat, event yang terisi, dan tombol Rollback](panduan/6-5-hasil-impor-glide.png)
+
 #### Kelola Ujian CBT
 
 **Konfigurasi → Kelola Ujian CBT** (`/admin/cbt_exams`) mendaftar seluruh event CBT & Progress Test beserta kode ujian, tipe, jumlah peserta, tanggal, dan progres pemetaan dimensi. Klik **judul** atau **tanggal** untuk menyunting di tempat; mengoreksi tanggal ikut memindahkan tanggal nilai hasil impor sehingga grafik tren tetap benar. **Kelola Pemetaan** membuka tab Dimensi event untuk memetakan dimensi ke ranah kompetensi. Berbeda dari jejak.pro, ujian yang sudah bernilai **tidak dapat dihapus** dari sini — batalkan lewat rollback impor, atau ubah status event menjadi Ditutup.
@@ -905,15 +927,17 @@ Aturan menghapus butir:
 
 ### 6.8 Blueprint Asesmen
 
-`/assessment_blueprints` — nama, deskripsi, daftar **capaian pembelajaran**, dan pemetaan **kompetensi → bobot** (ditambahkan satu per satu dari formulir di halaman detail, total dianjurkan 100%; radar chart bobot di halaman detail). Blueprint dapat dirujuk oleh Learning Unit; menghapus blueprint tidak menghapus Learning Unit yang merujuknya — rujukannya saja yang dilepas.
+`/assessment_blueprints` — nama, deskripsi, daftar **capaian pembelajaran**, dan pemetaan **kompetensi → bobot** (ditambahkan satu per satu dari formulir di halaman detail, total bobot paling banyak 100% — mapping yang melebihi sisa bobot ditolak; selama total belum 100% halaman detail menampilkan *sisa X%*, dan nama/deskripsi blueprint tetap bisa disunting; radar chart bobot di halaman detail). Blueprint dapat dirujuk oleh Learning Unit; menghapus blueprint tidak menghapus Learning Unit yang merujuknya — rujukannya saja yang dilepas.
 
 ![Blueprint Asesmen: capaian pembelajaran, pemetaan kompetensi → bobot, dan radar bobot](panduan/6-8-blueprint-asesmen.png)
 
 ### 6.9 Learning Unit & Matrix
 
-`/admin/learning_units` (admin untuk semua prodi; kaprodi hanya unit prodi binaannya) — blok/modul per prodi (opsional per periode, SKS, blueprint). **Assessment Matrix**: tambahkan komponen berupa Assessment Event beserta bobot; total 100% ditandai hijau. Halaman unit menampilkan **rekap nilai per mahasiswa** — rata-rata terbobot dari komponen yang sudah dinilai (bobot tanpa nilai tidak menjadi penyebut).
+`/admin/learning_units` (admin untuk semua prodi; kaprodi hanya unit prodi binaannya) — blok/modul per prodi (opsional per periode, SKS, blueprint). **Assessment Matrix**: tambahkan komponen berupa Assessment Event beserta bobot; total bobot paling banyak 100% (komponen yang melebihi sisa bobot ditolak) dan total 100% ditandai hijau. Halaman unit menampilkan **rekap nilai per mahasiswa** — rata-rata terbobot dari komponen yang sudah dinilai (bobot tanpa nilai tidak menjadi penyebut).
 
 ![Daftar Learning Unit](panduan/6-9-learning-unit.png)
+
+![Halaman Learning Unit: Assessment Matrix dengan bobot tiap event (total 100%) dan rekap nilai unit per mahasiswa](panduan/6-9-assessment-matrix.png)
 
 ### 6.10 Target Kasus Logbook
 
@@ -970,6 +994,8 @@ Rotasi yang sudah punya penilaian **DOPS/Mini-CEX tidak dapat dihapus** — nila
 1. Atur **filter** di kepala halaman: **Program Studi** (admin: satu prodi atau *Semua prodi*; kaprodi: selalu prodi binaannya dan tidak dapat diganti), **Periode Akademik**, **Dari/Sampai tanggal**, dan **Format berkas**.
 2. Tekan **Terapkan filter** untuk melihat jumlah baris tiap dataset sesuai filter (angka di pojok kartu).
 3. Tekan **Unduh CSV** pada kartu dataset yang diinginkan.
+
+![Halaman Ekspor Data (CSV): filter prodi, periode, tanggal, dan format, lalu kartu dataset dengan jumlah baris dan tombol Unduh CSV](panduan/6-17-ekspor-data.png)
 
 Filter yang berlaku untuk tiap dataset ditandai label di kartunya (**Prodi**, **Periode**, **Tanggal**, **Formulir**); filter lain diabaikan. **Periode** menyaring data yang bertaut ke periode (rotasi, enrolment tutorial, event asesmen) atau — untuk data bertanggal — yang tanggalnya jatuh dalam rentang periode; **Dari/Sampai** menyempitkannya lagi. Rotasi dan enrolment ikut bila rentang penempatannya *bersinggungan* dengan Dari/Sampai. Prodi menyaring menurut prodi **mahasiswa**, bukan prodi event.
 
