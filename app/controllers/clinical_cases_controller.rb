@@ -143,6 +143,7 @@ class ClinicalCasesController < ApplicationController
 
   def create
     @clinical_case = current_user.clinical_cases.build(clinical_case_params)
+    @clinical_case.evidence_files.attach(new_evidence_files) if new_evidence_files.any?
 
     if @clinical_case.save
       redirect_to @clinical_case, notice: "Kasus klinis disimpan sebagai draf."
@@ -157,7 +158,9 @@ class ClinicalCasesController < ApplicationController
 
   def update
     authorize @clinical_case
-    if @clinical_case.update(clinical_case_params)
+    @clinical_case.assign_attributes(clinical_case_params)
+    @clinical_case.evidence_files.attach(new_evidence_files) if new_evidence_files.any?
+    if @clinical_case.save
       redirect_to @clinical_case, notice: "Kasus klinis diperbarui."
     else
       render :edit, status: :unprocessable_entity
@@ -242,6 +245,16 @@ class ClinicalCasesController < ApplicationController
     @clinical_case = ClinicalCase.find(params[:id])
   end
 
+  # Bukti pendukung DITAMBAHKAN lewat attach, bukan ikut di-assign lewat
+  # params: di Rails 8 assign menggantikan seluruh lampiran, dan isian kosong
+  # dari input `multiple` (hidden field bawaan) menghapus semua bukti setiap
+  # kali kasus disunting. Pola yang sama dengan ActivityLogsController.
+  def new_evidence_files
+    @new_evidence_files ||= Array(params.dig(:clinical_case, :evidence_files)).select do |file|
+      file.respond_to?(:original_filename)
+    end
+  end
+
   def clinical_case_params
     permitted = params.require(:clinical_case).permit(
       :case_date, :chief_complaint, :patient_age_group, :patient_gender,
@@ -250,7 +263,7 @@ class ClinicalCasesController < ApplicationController
       :clinical_setting, :case_complexity,
       :anamnesis, :general_condition, :physical_examination, :family_history,
       :laboratory_results, :radiology_results, :other_investigations,
-      :diagnosis, :management, :learning_points, :supervisor_id, evidence_files: [],
+      :diagnosis, :management, :learning_points, :supervisor_id,
       prescription_items_attributes: %i[id medication_name strength dosage_form quantity signa route notes _destroy],
       vital_signs: ClinicalCase::VITAL_SIGN_FIELDS.keys
     )

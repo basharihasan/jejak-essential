@@ -4,9 +4,9 @@
     <p class="text-sm text-gray-400 mt-1">Ringkasan progres mahasiswa dari sudut pandang peran Anda.</p>
   </div>
   <% if @academic_periods.any? %>
-    <%= form_with url: analytics_path, method: :get do %>
+    <%= form_with url: analytics_path, method: :get, data: { controller: "auto-submit" } do %>
       <%= hidden_field_tag :study_program_id, params[:study_program_id] if params[:study_program_id].present? %>
-      <select name="academic_period_id" onchange="this.form.requestSubmit()"
+      <select name="academic_period_id" data-action="change->auto-submit#submit"
             class="rounded-xl border-0 py-2 px-3.5 text-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500">
         <% @academic_periods.each do |period| %>
           <option value="<%= period.id %>" <%= "selected" if @selected_period == period %>><%= period.name %></option>
@@ -91,9 +91,9 @@
     <div class="flex items-center justify-between flex-wrap gap-3 mb-3">
       <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Program Studi</h2>
       <% if @study_programs.size > 1 %>
-        <%= form_with url: analytics_path, method: :get do %>
+        <%= form_with url: analytics_path, method: :get, data: { controller: "auto-submit" } do %>
           <%= hidden_field_tag :academic_period_id, @selected_period&.id if @selected_period %>
-          <select name="study_program_id" onchange="this.form.requestSubmit()"
+          <select name="study_program_id" data-action="change->auto-submit#submit"
                 class="rounded-xl border-0 py-1.5 px-3 text-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500">
             <% @study_programs.each do |program| %>
               <option value="<%= program.id %>" <%= "selected" if @selected_program == program %>><%= program.name %></option>

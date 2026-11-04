@@ -18,9 +18,9 @@
 
   <% if current_user.roles.size > 1 %>
     <div class="hidden md:flex items-center gap-3">
-      <%= form_with url: switch_roles_path, method: :patch, class: "flex items-center space-x-2" do %>
+      <%= form_with url: switch_roles_path, method: :patch, class: "flex items-center space-x-2", data: { controller: "auto-submit" } do %>
         <label for="role_code" class="text-[10px] font-bold uppercase tracking-widest text-slate-400"><%= t("chrome.topbar.active_role") %></label>
-        <select name="role_code" id="role_code" onchange="this.form.requestSubmit();"
+        <select name="role_code" id="role_code" data-action="change->auto-submit#submit"
                 class="text-xs font-medium rounded-md border-slate-300 py-1.5 pl-3 pr-8 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 text-slate-700 shadow-sm cursor-pointer">
           <% current_user.roles.each do |role| %>
             <option value="<%= role.code %>" <%= "selected" if role == current_user.active_role %>><%= role.name %></option>
@@ -31,11 +31,14 @@
   <% end %>
 
   <div class="flex items-center gap-1 sm:gap-3 ml-auto sm:ml-0">
-    <%= link_to search_path, title: t("chrome.topbar.search"),
-          class: "inline-flex items-center gap-2 rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors" do %>
-      <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-      </svg>
+    <%# Pencarian pengguna khusus pengajar/kaprodi/admin (SearchController). %>
+    <% if current_user.can_view_students? %>
+      <%= link_to search_path, title: t("chrome.topbar.search"),
+            class: "inline-flex items-center gap-2 rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors" do %>
+        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      <% end %>
     <% end %>
 
     <button type="button"

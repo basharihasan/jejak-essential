@@ -243,6 +243,24 @@ Diminta pengguna (dengan tangkapan layar menu Konfigurasi): "`/activity_logs/new
 - **Paket migrasi format 1.1**: `logbook_kegiatan.csv` + `domain subdomain bentuk_kegiatan waktu_mulai waktu_selesai link_bukti link_dokumen` di ujung (aditif); `data/*.json` ikut tiga tabel taksonomi & `terminology_overrides`. Sisi jejak.pro (`JejakLiteBundleImporter`, repo PFKV2) mencocokkan nama ke taksonomi jejak.pro. Nama tak dikenal hanya diperingatkan. Dry-run paket asli ke DB dev jejak.pro: Prestasi Kemahasiswaan → Kompetisi → Juara-1 dikenali.
 - Verifikasi: 368 test hijau (30 baru), rubocop & brakeman bersih, smoke HTTP 6 akun × 55 URL lolos, headless Chrome (isian bertingkat, simpan, penyaring & ganti label, lebar 400px tanpa scroll horizontal). **Jebakan uji browser**: dialog "kata sandi bocor" Chrome (password123) menelan ketikan selenium hanya pada sebagian akun. Matikan `PasswordLeakDetection` di opsi Chrome. **Jebakan dev**: `public/assets/.manifest.json` basi membuat controller Stimulus baru tidak dimuat (hapus manifest, jangan precompile ulang).
 
+### ✅ Pengerasan Keamanan setelah Evaluasi Situs Demo (23 Oktober 2026)
+
+Diminta pengguna: evaluasi mendalam situs demo Render, lalu "perbaiki semuanya sampai tuntas". Situs live sedang tidak bisa diakses (`x-render-routing: hibernate-wake-error` — Render gagal membangunkan service; dugaan: Postgres gratis kedaluwarsa, perlu dicek di dashboard Render), jadi evaluasi dijalankan pada kode yang sama secara lokal: crawl HTTP 7 akun demo (±1.750 halaman, 334 bentuk rute, nol 500), uji IDOR lintas akun, Brakeman/bundler-audit/RuboCop (bersih). Celah yang ditemukan dan ditutup:
+
+1. **Daftar mandiri sebagai dosen/preseptor** (kritis) — `Role::SELF_REGISTRABLE_CODES` memuat `dosen preseptor`, dan tanpa SMTP konfirmasi email dimatikan, jadi siapa pun di internet langsung menjadi pengajar: membaca semua kasus klinis, memverifikasi kasus, dan Break Glass identitas pasien. Kini hanya `mahasiswa`; form Daftar tanpa pilihan peran.
+2. **Kata sandi bawaan publik `password123`** untuk impor CSV & reset admin + **tanpa pembatasan login** (rack-attack terpasang tapi tak dikonfigurasi, Devise tanpa `:lockable`, minimal 6 karakter). Kini: kata sandi sementara acak (`User#assign_temporary_password`, tampil sekali — flash untuk reset, tabel + Unduh CSV di peramban untuk impor), kolom `must_change_password` + `ApplicationController#require_password_change`; akun yang masih masuk dengan `password123` (selain domain demo `@jejaklite.test`) ditandai wajib ganti saat login (`User#valid_password?`), dan `password123` ditolak sebagai kata sandi baru. Devise `:lockable` (10 kali → 15 menit, buka kunci berbasis waktu; reset admin ikut membuka), `:timeoutable` 2 jam, minimal 8 karakter. `config/initializers/rack_attack.rb`: login per email & per IP (longgar — kampus/CGNAT berbagi IP), daftar, reset kata sandi, halaman publik bertoken; 429 berbahasa Indonesia.
+3. **`/cari` membuka direktori semua pengguna** (nama, email, peran) bagi mahasiswa. Kini khusus pengajar/kaprodi/admin; non-admin hanya menemukan mahasiswa, kaprodi hanya prodi binaannya.
+4. **Kaprodi tidak terikat prodi** saat membuka mahasiswa (`viewed_student` memakai `User.find` tanpa saringan; `?student_id=` juga menerima akun non-mahasiswa). Kini `User#can_view_student?` dipakai `viewed_student`, Dasbor Mahasiswa, dan Peta EPA; target yang tidak berhak ditolak (bukan diam-diam dialihkan ke diri sendiri).
+5. **`allow_browser :modern`** (Safari 17.2+) menolak iPhone 8/X yang mentok di iOS 16. Kini mengikuti dukungan Tailwind v4 (Safari 16.4, Chrome 111, Firefox 128); halaman 406 berbahasa Indonesia.
+6. **Unggahan tanpa validasi** jenis/ukuran. `AttachmentValidation` (jenis dibaca dari isi berkas; hanya lampiran baru yang diperiksa supaya rekaman lama tetap bisa disunting). Gem `active_storage_validations` yang terpasang tapi tak pernah dipakai dihapus. **Ikut ditemukan**: menyunting Kasus Klinis menghapus semua bukti (bug sama dengan yang dulu diperbaiki di Logbook Kegiatan — `evidence_files: []` di-assign lewat params); form profil yang gagal disimpan meledak saat menampilkan foto baru yang belum tersimpan.
+7. **Tanpa CSP**, Chart.js/Chartkick dari CDN berversi mengambang, dan `onchange` inline. Kini CSP ketat (skrip `'self'` + nonce per sesi disimpan di sesi — `request.session.id` bawaan template kosong pada kunjungan pertama), Chart.bundle/chartkick dari aset gem, `auto-submit`/`appearance-preview` Stimulus menggantikan handler inline.
+8. **Skala**: daftar tanpa paginasi (Validasi Kegiatan seluruh mahasiswa, rotasi, enrolment, tugas akhir, lembar penguji), `has_role?` satu query per panggilan (sampai 36/request), N+1 `active_role` di daftar pengguna admin.
+9. **Storage**: README mengklaim `aws-sdk-s3` ada di Gemfile padahal tidak. Kini ditambahkan (`require: false`) dan dipilih lewat `ACTIVE_STORAGE_SERVICE=s3` + `S3_*` (`config/storage.yml`); `render.yaml` diberi `healthCheckPath: /up`.
+
+**Tidak diubah (keputusan produk)**: pengajar tetap melihat kasus klinis seluruh mahasiswa (bukan hanya bimbingannya) — kini aman karena akun pengajar hanya bisa dibuat admin. Bahasa EN tetap hanya menu/topbar/autentikasi seperti yang sudah dinyatakan halaman Pengaturan; README diselaraskan.
+
+Verifikasi: 531 test hijau (31 baru), Brakeman/RuboCop bersih; crawl HTTP ulang 5 akun di **mode production lokal** (Solid Queue dalam Puma, Solid Cache untuk Rack::Attack — permintaan login ke-11 → 429) nol 500; headless Chrome 5 akun × 259 halaman nol pelanggaran CSP/galat JS, grafik tetap tampil, navigasi Turbo 12 klik tanpa muat ulang, ganti peran, pratinjau tema, impor CSV → CSV kata sandi sementara. **Jebakan uji browser** (lagi): setelah login `password123`, dialog kebocoran kata sandi Chrome menelan klik native Selenium di halaman berikutnya — klik lewat JS atau matikan `PasswordLeakDetection`.
+
 ## Model Data (ringkas, akan detail per fase saat digarap)
 
 | Tabel | Fase | Status |
@@ -271,7 +289,7 @@ Diminta pengguna (dengan tangkapan layar menu Konfigurasi): "`/activity_logs/new
 ```bash
 bin/rails db:setup   # create + migrate + seed peran dasar
 bin/dev              # server + Tailwind watcher
-bin/rails test       # 309 test lulus per Fase 27
+bin/rails test       # ±530 test, semuanya harus hijau
 ```
 
 ## Yang Sengaja Disederhanakan/Ditunda

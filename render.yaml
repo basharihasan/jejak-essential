@@ -14,6 +14,9 @@ services:
     plan: free
     buildCommand: "./bin/render-build.sh"
     startCommand: "bundle exec rails server"
+    # Render menunggu /up hijau sebelum mengalihkan lalu lintas ke deploy baru
+    # — deploy yang gagal boot tidak menggantikan versi yang masih jalan.
+    healthCheckPath: /up
     envVars:
       - key: RAILS_MASTER_KEY
         sync: false
@@ -102,6 +105,24 @@ services:
       # - key: SMTP_PASSWORD
       #   sync: false
       # - key: MAILER_SENDER
+      #   sync: false
+      # Disarankan untuk penggunaan sungguhan: simpan berkas unggahan (bukti
+      # kegiatan/kasus, dokumen asesmen, foto profil) di penyimpanan
+      # S3-compatible. Tanpa ini berkas tersimpan di disk container dan
+      # HILANG setiap deploy ulang. Lihat config/storage.yml.
+      # Contoh Cloudflare R2: S3_ENDPOINT=https://<account>.r2.cloudflarestorage.com,
+      # S3_REGION=auto. AWS S3 asli: kosongkan S3_ENDPOINT, isi S3_REGION.
+      # - key: ACTIVE_STORAGE_SERVICE
+      #   value: s3
+      # - key: S3_BUCKET
+      #   sync: false
+      # - key: S3_ACCESS_KEY_ID
+      #   sync: false
+      # - key: S3_SECRET_ACCESS_KEY
+      #   sync: false
+      # - key: S3_REGION
+      #   sync: false
+      # - key: S3_ENDPOINT
       #   sync: false
       # Opsional, isi kalau ingin login Google aktif:
       # - key: GOOGLE_CLIENT_ID

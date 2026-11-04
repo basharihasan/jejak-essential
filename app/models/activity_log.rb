@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class ActivityLog < ApplicationRecord
+  include AttachmentValidation
   CATEGORIES = { "klinis" => "Klinis", "non_klinis" => "Non-Klinis" }.freeze
   DELIVERY_MODES = { "luring" => "Luring", "daring" => "Daring" }.freeze
 
@@ -22,6 +23,7 @@ class ActivityLog < ApplicationRecord
   has_many :reflection_entries, dependent: :nullify
 
   has_many_attached :evidence_files
+  validates_attachments :evidence_files, content_types: IMAGE_TYPES + DOCUMENT_TYPES, max_size: 10.megabytes, max_count: 10
 
   # Dinyalakan ActivityLogsController: isian yang wajib di form (domain,
   # waktu mulai, metode) tidak dipaksakan pada jalur lain — fixture, demo,

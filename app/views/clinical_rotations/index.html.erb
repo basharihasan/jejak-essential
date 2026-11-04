@@ -50,4 +50,5 @@
   <% if @rotations.empty? %>
     <p class="text-sm text-gray-400">Belum ada rotasi terjadwal.</p>
   <% end %>
+  <%= paginate @rotations %>
 </div>

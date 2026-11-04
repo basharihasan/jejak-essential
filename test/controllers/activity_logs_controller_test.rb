@@ -142,15 +142,15 @@ class ActivityLogsControllerTest < ActionDispatch::IntegrationTest
     log = activity_logs(:jaga_igd)
     log.update_columns(academic_activity_domain_id: academic_activity_domains(:praktek).id, delivery_mode: "luring",
                        started_at: log.activity_date.in_time_zone.change(hour: 8))
-    log.evidence_files.attach(io: StringIO.new("bukti lama"), filename: "lama.txt", content_type: "text/plain")
+    log.evidence_files.attach(io: StringIO.new("%PDF-1.4 bukti lama"), filename: "lama.pdf", content_type: "application/pdf")
 
     patch activity_log_path(log), params: { activity_log: { title: log.title, evidence_files: [ "" ] } }
     assert_redirected_to activity_log_path(log)
-    assert_equal [ "lama.txt" ], log.reload.evidence_files.map { |file| file.filename.to_s }
+    assert_equal [ "lama.pdf" ], log.reload.evidence_files.map { |file| file.filename.to_s }
 
-    upload = Rack::Test::UploadedFile.new(StringIO.new("baru"), "text/plain", original_filename: "baru.txt")
+    upload = Rack::Test::UploadedFile.new(StringIO.new("%PDF-1.4 baru"), "application/pdf", original_filename: "baru.pdf")
     patch activity_log_path(log), params: { activity_log: { title: log.title, evidence_files: [ "", upload ] } }
-    assert_equal %w[baru.txt lama.txt], log.reload.evidence_files.map { |file| file.filename.to_s }.sort
+    assert_equal %w[baru.pdf lama.pdf], log.reload.evidence_files.map { |file| file.filename.to_s }.sort
   end
 
   test "pengajar bisa melihat (untuk memverifikasi) kegiatan mahasiswa lain, tapi tidak bisa menyunting" do
@@ -162,7 +162,7 @@ class ActivityLogsControllerTest < ActionDispatch::IntegrationTest
   test "mahasiswa lain (bukan pengajar) tidak bisa melihat kegiatan milik orang lain" do
     sign_out users(:budi)
     sign_in users(:siti)
-    other = User.create!(full_name: "Mahasiswa Lain", email: "mhs.lain@example.com", password: "password123", confirmed_at: Time.current)
+    other = User.create!(full_name: "Mahasiswa Lain", email: "mhs.lain@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     other.roles << roles(:mahasiswa)
     log = other.activity_logs.create!(title: "Kegiatan rahasia", category: "non_klinis", activity_date: Date.current)
 

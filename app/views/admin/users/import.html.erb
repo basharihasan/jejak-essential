@@ -3,7 +3,7 @@
   <div>
     <%= link_to "← Pengguna", admin_users_path, class: "text-xs text-gray-500 hover:text-indigo-600" %>
     <h1 class="text-xl font-bold text-gray-900 mt-1">Impor Pengguna dari CSV</h1>
-    <p class="text-sm text-gray-500 mt-0.5">Akun baru dibuat dengan kata sandi bawaan <code class="bg-gray-100 px-1 rounded"><%= User::DEFAULT_PASSWORD %></code> dan langsung terkonfirmasi; akun yang sudah ada hanya diperbarui nama, peran, dan prodinya.</p>
+    <p class="text-sm text-gray-500 mt-0.5">Akun baru menerima kata sandi sementara acak (wajib diganti saat masuk pertama) dan langsung terkonfirmasi; akun yang sudah ada hanya diperbarui nama, peran, dan prodinya.</p>
   </div>
 
   <% if defined?(@result) && @result %>
@@ -23,6 +23,42 @@
         </ul>
       <% end %>
     </div>
+
+    <%# Kata sandi sementara hanya ada di respons ini — tidak tersimpan terbaca
+        di server. Unduhan CSV dibuat di peramban dari tabel ini. %>
+    <% if @result.credentials.any? %>
+      <div class="bg-white rounded-2xl ring-1 ring-amber-200 p-5 space-y-3" data-controller="csv-download"
+           data-csv-download-filename-value="kata-sandi-sementara-<%= Date.current.iso8601 %>.csv" data-testid="import-credentials">
+        <div class="flex items-start justify-between gap-3 flex-wrap">
+          <div>
+            <h2 class="text-sm font-semibold text-gray-800">Kata sandi sementara akun baru</h2>
+            <p class="text-xs text-amber-800 mt-0.5">Hanya ditampilkan sekali. Unduh atau salin sekarang, lalu sampaikan ke masing-masing pengguna — mereka wajib menggantinya saat masuk.</p>
+          </div>
+          <button type="button" data-action="csv-download#download"
+                  class="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-2 cursor-pointer">Unduh CSV</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-xs" data-csv-download-target="table">
+            <thead>
+              <tr class="text-left text-gray-500">
+                <th class="py-1.5 pr-4 font-semibold">email</th>
+                <th class="py-1.5 pr-4 font-semibold">nama</th>
+                <th class="py-1.5 font-semibold">kata_sandi_sementara</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <% @result.credentials.each do |cred| %>
+                <tr>
+                  <td class="py-1.5 pr-4 text-gray-700"><%= cred.email %></td>
+                  <td class="py-1.5 pr-4 text-gray-700"><%= cred.full_name %></td>
+                  <td class="py-1.5 font-mono text-gray-900 select-all"><%= cred.temporary_password %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
   <% end %>
 
   <%# Jawaban aksi ini berupa halaman (200), bukan redirect. Turbo menolak

@@ -182,7 +182,7 @@ class AssessmentPipelineTest < ActionDispatch::IntegrationTest
     assert_select '[data-testid="cohort-position"]', 0 # kohort baru 1 orang
 
     2.times do |i|
-      u = User.create!(full_name: "Kohort #{i}", email: "kohort#{i}@example.com", password: "password123", confirmed_at: Time.current)
+      u = User.create!(full_name: "Kohort #{i}", email: "kohort#{i}@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
       AssessmentInstance.create!(assessment_event: event, student: u, attempt_number: 1, status: "scored", source: "import",
                                  score: 70 + i * 10, max_score: 100, scored_at: Time.current)
     end
@@ -202,7 +202,7 @@ class AssessmentPipelineTest < ActionDispatch::IntegrationTest
     assert_no_match "Persentil", response.body
 
     2.times do |i|
-      u = User.create!(full_name: "Kohort #{i}", email: "kohort#{i}@example.com", password: "password123", confirmed_at: Time.current)
+      u = User.create!(full_name: "Kohort #{i}", email: "kohort#{i}@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
       AssessmentInstance.create!(assessment_event: event, student: u, attempt_number: 1, status: "scored", source: "import",
                                  score: 70 + i * 10, max_score: 100, scored_at: Time.current)
     end
@@ -363,7 +363,7 @@ class AssessmentPipelineTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_no_match "Isi Penilaian", response.body
 
-    stranger = User.create!(full_name: "Dosen Asing", email: "asing@example.com", password: "password123", confirmed_at: Time.current)
+    stranger = User.create!(full_name: "Dosen Asing", email: "asing@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     stranger.roles << roles(:dosen)
     sign_in stranger
     assert_no_difference "EntrustmentDecision.count" do

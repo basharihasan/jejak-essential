@@ -7,7 +7,7 @@ class RoleAccessTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   def create_student(name, program)
-    User.create!(full_name: name, email: "#{name.parameterize}@example.com", password: "password123",
+    User.create!(full_name: name, email: "#{name.parameterize}@example.com", password: "rahasia-kuat-1",
                  confirmed_at: Time.current, study_program: study_programs(program)).tap do |user|
       user.roles << roles(:mahasiswa)
     end
@@ -54,15 +54,17 @@ class RoleAccessTest < ActionDispatch::IntegrationTest
     get student_dashboard_path(pspd)
     assert_redirected_to search_path
 
+    # ?student_id= mahasiswa prodi lain ditolak terang-terangan, bukan diam-diam
+    # menampilkan data kaprodi sendiri (lihat ApplicationController#viewed_student).
     get exam_scores_path(student_id: pspd.id)
-    assert_response :success
-    assert_select '[data-testid="viewing-student-banner"]', 0
+    assert_response :redirect
+    assert_match "tidak memiliki akses", flash[:alert]
 
     get entrustment_decisions_path(student_id: pspd.id)
-    assert_no_match pspd.full_name, response.body
+    assert_response :redirect
 
     get search_path, params: { q: "rani" }
-    assert_select "a[href=?]", student_dashboard_path(pspd), 0
+    assert_no_match pspd.full_name, response.body
 
     sign_in users(:budi)
     get student_dashboard_path(pspd)
@@ -120,14 +122,14 @@ class RoleAccessTest < ActionDispatch::IntegrationTest
 
   # ── Pencarian ───────────────────────────────────────────────────────────
 
-  test "mahasiswa menemukan pengajar lewat pencarian, tetapi tidak sesama mahasiswa" do
+  # Pencarian pengguna bukan direktori umum: daftar email adalah bahan menebak
+  # kata sandi, jadi mahasiswa tidak dapat memakainya sama sekali.
+  test "mahasiswa tidak dapat memakai pencarian; pengajar menemukan mahasiswa" do
     create_student("Rani Sarjana", :sarjana_kedokteran)
 
     sign_in users(:siti)
-    get search_path, params: { q: "rani" }
-    assert_no_match "Rani Sarjana", response.body
     get search_path, params: { q: "wati" }
-    assert_match users(:wati).full_name, response.body
+    assert_redirected_to dashboard_path
 
     sign_in users(:budi)
     get search_path, params: { q: "rani" }

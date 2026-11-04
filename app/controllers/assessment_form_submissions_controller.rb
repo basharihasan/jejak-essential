@@ -39,10 +39,15 @@ class AssessmentFormSubmissionsController < ApplicationController
 
   # Kandidat subjek mengikuti konteks, bukan selalu dosen: rubrik yang dipakai
   # menilai mahasiswa (mis. dari lembar penguji) harus bisa memilih mahasiswa.
+  # Subjek yang dipilih lewat ?subject_user_id= selalu ikut di daftar meski
+  # tidak berperan itu. Peran disaring lewat subquery, bukan joins+distinct:
+  # Relation#or menolak relasi yang strukturnya berbeda, dan dulu setiap
+  # ?subject_user_id= (sah atau tidak) berakhir ArgumentError → galat 500.
   def load_subject_candidates
     codes = params[:subject_role].to_s == "mahasiswa" ? %w[mahasiswa] : %w[dosen preseptor]
-    @subject_candidates = User.joins(:roles).where(roles: { code: codes }).distinct.order(:full_name)
-    @subject_candidates = User.where(id: params[:subject_user_id]).or(@subject_candidates) if params[:subject_user_id].present?
+    scope = User.where(id: User.joins(:roles).where(roles: { code: codes }).select(:id))
+    scope = scope.or(User.where(id: params[:subject_user_id])) if params[:subject_user_id].present?
+    @subject_candidates = scope.order(:full_name)
   end
 
   def submission_params

@@ -24,7 +24,8 @@ Rails.application.configure do
   # Unggahan disimpan di Cloudflare R2 bila R2_BUCKET diisi (lihat
   # config/storage.yml), selain itu di disk lokal — cocok untuk NAS dengan
   # volume persisten, TIDAK untuk Render free (disknya terhapus tiap deploy).
-  # ACTIVE_STORAGE_SERVICE menimpa pilihan otomatis ini.
+  # ACTIVE_STORAGE_SERVICE menimpa pilihan otomatis ini, mis. "s3" untuk
+  # AWS S3 / Backblaze B2 / MinIO.
   config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE") { ENV["R2_BUCKET"].present? ? "cloudflare" : "local" }.to_sym
 
   # Render (dan PaaS sejenis) mengakhiri SSL di reverse proxy-nya, jadi

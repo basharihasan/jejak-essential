@@ -52,7 +52,7 @@ class AnalyticsControllerTest < ActionDispatch::IntegrationTest
       procedure_name: "Kasus Risiko Rendah", evaluated_at: Date.current,
       scores: { komunikasi: 2, profesionalisme: 2, penilaian_global: 2 }
     )
-    mahasiswa_pintar = User.create!(full_name: "Mahasiswa Nilai Tinggi", email: "pintar@example.com", password: "password123", confirmed_at: Time.current)
+    mahasiswa_pintar = User.create!(full_name: "Mahasiswa Nilai Tinggi", email: "pintar@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     mahasiswa_pintar.roles << roles(:mahasiswa)
     rotasi_pintar = ClinicalRotation.create!(user: mahasiswa_pintar, academic_period: academic_periods(:current_period), station_name: "Bedah", start_date: 1.day.ago, end_date: 10.days.from_now)
     DopsEvaluation.create!(

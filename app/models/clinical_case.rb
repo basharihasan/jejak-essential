@@ -2,6 +2,7 @@
 
 class ClinicalCase < ApplicationRecord
   include ClinicalContextOptions
+  include AttachmentValidation
 
   # rejected = final: kasus tidak layak dijadikan bukti (mis. bukan kasus
   # sungguhan/duplikat) — beda dari needs_revision yang masih bisa diperbaiki.
@@ -83,6 +84,7 @@ class ClinicalCase < ApplicationRecord
   accepts_nested_attributes_for :prescription_items, allow_destroy: true
 
   has_many_attached :evidence_files
+  validates_attachments :evidence_files, content_types: IMAGE_TYPES + DOCUMENT_TYPES, max_size: 10.megabytes, max_count: 10
 
   validates :chief_complaint, :case_date, presence: true
   validates :status, inclusion: { in: STATUSES }

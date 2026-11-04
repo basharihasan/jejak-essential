@@ -25,9 +25,7 @@ module GlideCsv
   # Teks UTF-8 tanpa BOM. Berkas yang bukan UTF-8 (simpanan Excel Windows)
   # dibaca sebagai Windows-1252 supaya nama beraksen tidak membuat CSV gagal.
   def read(raw)
-    text = raw.to_s.dup.force_encoding("UTF-8")
-    text = raw.to_s.dup.force_encoding("Windows-1252").encode("UTF-8") unless text.valid_encoding?
-    text.delete_prefix("﻿")
+    CsvUpload.decode(raw)
   end
 
   def parse(text)

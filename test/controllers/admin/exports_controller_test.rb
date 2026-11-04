@@ -13,7 +13,7 @@ class Admin::ExportsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def create_student(email, program:)
-    user = User.create!(full_name: email.split("@").first.capitalize, email: email, password: "password123",
+    user = User.create!(full_name: email.split("@").first.capitalize, email: email, password: "rahasia-kuat-1",
                         confirmed_at: Time.current, study_program: program)
     user.roles << roles(:mahasiswa)
     user

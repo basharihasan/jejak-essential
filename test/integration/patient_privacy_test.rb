@@ -123,7 +123,7 @@ class PatientPrivacyTest < ActionDispatch::IntegrationTest
   end
 
   test "pengguna yang tidak boleh membuka kasus tidak bisa Break Glass" do
-    other_student = User.create!(full_name: "Mahasiswa Lain", email: "lain@example.com", password: "password123",
+    other_student = User.create!(full_name: "Mahasiswa Lain", email: "lain@example.com", password: "rahasia-kuat-1",
                                  confirmed_at: Time.current)
     other_student.roles << roles(:mahasiswa)
     sign_in other_student
@@ -293,7 +293,7 @@ end
 
   # Pengajar yang bukan pembimbing kasus fixture (tidak memegang rotasi siti).
   def instructor(role_code, email: "#{role_code}.baru@example.com")
-    user = User.create!(full_name: "Pengajar Baru", email: email, password: "password123", confirmed_at: Time.current)
+    user = User.create!(full_name: "Pengajar Baru", email: email, password: "rahasia-kuat-1", confirmed_at: Time.current)
     user.roles << roles(role_code)
     user
   end

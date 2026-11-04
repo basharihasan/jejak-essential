@@ -16,9 +16,14 @@ class ExaminerEvaluationsController < ApplicationController
   def index
     @mine = AssessmentInstance.for_examiner(current_user).includes(:student, :assessment_event)
                               .order(Arel.sql("CASE status WHEN 'scored' THEN 1 ELSE 0 END"), :submitted_at)
+                              .page(params[:mine_page]).per(50)
+    # Nilai CBT/OSCE hasil impor tidak diambil dari sini, dan penguji
+    # multi-peran tidak mengambil percobaannya sendiri. Disaring di SQL (bukan
+    # .reject) supaya antrean tetap bisa dipaginasi.
     @unassigned = AssessmentInstance.where(examiner_id: nil, status: "submitted").where.not(student_id: current_user.id)
+                                    .where.not(assessment_event_id: AssessmentEvent.importable.select(:id))
                                     .includes(:student, :assessment_event).order(:submitted_at)
-                                    .reject { |i| i.assessment_event.importable? }
+                                    .page(params[:unassigned_page]).per(50)
   end
 
   def show

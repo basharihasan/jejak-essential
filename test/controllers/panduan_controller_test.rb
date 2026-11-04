@@ -32,6 +32,21 @@ class PanduanControllerTest < ActionDispatch::IntegrationTest
     assert_empty leaked, "teks mentah bocor: #{leaked.map(&:text).first(3)}"
   end
 
+  # image_path melempar galat bila berkas di app/assets/images/panduan/ tidak
+  # ada, jadi tes ini juga menangkap screenshot yang terhapus atau salah nama.
+  test "screenshot dimuat malas dari aset ber-digest dan punya teks alt" do
+    sign_in users(:budi)
+    get panduan_path
+
+    imgs = Nokogiri::HTML5(response.body).css(".markdown-body img")
+    assert_operator imgs.size, :>=, 40
+    imgs.each do |img|
+      assert_match %r{\A/assets/panduan/[\w-]+-\w+\.png\z}, img["src"]
+      assert_equal "lazy", img["loading"]
+      assert img["alt"].present?, "alt kosong: #{img['src']}"
+    end
+  end
+
   test "setiap tautan anchor di panduan mengarah ke id yang ada" do
     sign_in users(:budi)
     get panduan_path

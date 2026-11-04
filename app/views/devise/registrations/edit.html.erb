@@ -12,6 +12,13 @@
     </p>
   </div>
 
+  <% if resource.must_change_password? %>
+    <div class="rounded-2xl bg-amber-50 ring-1 ring-amber-200 p-4 text-sm text-amber-900" data-testid="must-change-password">
+      <p class="font-semibold">Buat kata sandi baru untuk melanjutkan</p>
+      <p class="mt-1 text-xs">Anda masuk dengan kata sandi sementara dari admin (atau kata sandi bawaan yang diketahui publik). Isi <strong>Kata Sandi Baru</strong>, ulangi, lalu masukkan kata sandi sementara itu sebagai <strong>Kata Sandi Saat Ini</strong>.</p>
+    </div>
+  <% end %>
+
   <%# Dikirim tanpa Turbo, sama seperti formulir login/daftar: Devise
       me-redirect setelah berhasil dan merender ulang (422) bila gagal. %>
   <%= form_for(resource, as: resource_name, url: registration_path(resource_name),

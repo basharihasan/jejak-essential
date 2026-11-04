@@ -74,6 +74,27 @@ class StudentDashboardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "scored", mine.reload.status
   end
 
+  test "kaprodi tidak bisa membuka mahasiswa di luar prodi binaannya, termasuk lewat student_id" do
+    users(:siti).update!(study_program: study_programs(:profesi_dokter))
+    sign_in users(:dedi)
+
+    get student_dashboard_path(users(:siti))
+    assert_redirected_to search_path
+
+    STUDENT_PAGES.each do |helper|
+      get send(helper, student_id: users(:siti).id)
+      assert_response :redirect, "#{helper} harus menolak"
+      assert_match "tidak memiliki akses", flash[:alert]
+    end
+  end
+
+  test "student_id yang menunjuk akun bukan-mahasiswa ditolak" do
+    sign_in users(:budi)
+    get academic_assessments_path(student_id: users(:wati).id)
+    assert_response :redirect
+    assert_match "tidak memiliki akses", flash[:alert]
+  end
+
   test "student_id diabaikan bagi mahasiswa: tetap melihat data sendiri tanpa banner" do
     sign_in users(:siti)
     get exam_scores_path(student_id: users(:budi).id)

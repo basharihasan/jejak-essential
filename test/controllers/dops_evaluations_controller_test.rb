@@ -16,7 +16,7 @@ class DopsEvaluationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "mahasiswa tidak bisa melihat evaluasi milik mahasiswa lain" do
-    other = User.create!(full_name: "Lain", email: "dopslain@example.com", password: "password123", confirmed_at: Time.current)
+    other = User.create!(full_name: "Lain", email: "dopslain@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     other.roles << roles(:mahasiswa)
 
     sign_in other
@@ -43,7 +43,7 @@ class DopsEvaluationsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "mahasiswa lain (bukan penilai) tidak bisa menyunting evaluasi" do
-    dosen_lain = User.create!(full_name: "Dosen Lain", email: "dosenlain@example.com", password: "password123", confirmed_at: Time.current)
+    dosen_lain = User.create!(full_name: "Dosen Lain", email: "dosenlain@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     dosen_lain.roles << roles(:dosen)
 
     sign_in dosen_lain

@@ -29,4 +29,5 @@
   <% if @final_projects.empty? %>
     <p class="text-sm text-gray-400">Belum ada tugas akhir terdaftar.</p>
   <% end %>
+  <%= paginate @final_projects %>
 </div>

@@ -6,6 +6,7 @@ class TutorialEnrollmentsController < ApplicationController
 
   def index
     @enrollments = policy_scope(TutorialEnrollment).includes(:academic_period, :tutor, :user).ordered
+                                                   .page(params[:page]).per(50)
   end
 
   def new

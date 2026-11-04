@@ -35,6 +35,22 @@ class AssessmentFormSubmissionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
+  # Dulu setiap ?subject_user_id= berakhir ArgumentError (Relation#or antar
+  # relasi berbeda struktur) → galat 500, sah maupun tidak.
+  test "subjek dari ?subject_user_id= terpilih dan ikut di daftar meski bukan dosen" do
+    sign_in users(:dedi) # Form Builder: kaprodi & admin
+    template = assessment_form_templates(:tutor_evaluation)
+    siti = users(:siti) # mahasiswa — bukan kandidat bawaan (dosen/preseptor)
+
+    get new_assessment_form_template_assessment_form_submission_path(template, subject_user_id: siti.id)
+    assert_response :success
+    assert_select "select[name=?] option[selected][value=?]", "assessment_form_submission[subject_user_id]", siti.id.to_s
+    assert_select "select[name=?] option[value=?]", "assessment_form_submission[subject_user_id]", users(:wati).id.to_s
+
+    get new_assessment_form_template_assessment_form_submission_path(template, subject_user_id: "bukan-angka")
+    assert_response :success
+  end
+
   test "pertanyaan wajib yang tidak dipilih tidak lagi lolos diam-diam" do
     sign_in users(:dedi)
     template = assessment_form_templates(:tutor_evaluation)

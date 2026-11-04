@@ -13,6 +13,18 @@ class CompetencyMappingTest < ActionDispatch::IntegrationTest
                                  study_program: study_programs(:sarjana_kedokteran), academic_period: @period, credits: 6)
   end
 
+  test "komponen Assessment Matrix yang mendorong total bobot melewati 100% ditolak" do
+    sign_in @admin
+    post add_mapping_admin_learning_unit_path(@unit), params: { assessment_event_id: assessment_events(:cbt_blok).id, weight: 60 }
+
+    assert_no_difference "AssessmentMapping.count" do
+      post add_mapping_admin_learning_unit_path(@unit), params: { assessment_event_id: assessment_events(:soca_kardio).id, weight: 60 }
+    end
+    assert_redirected_to admin_learning_unit_path(@unit)
+    assert_match "tersisa 40.0%", flash[:alert]
+    assert_equal 60.0, @unit.reload.total_weight
+  end
+
   test "admin menyusun Assessment Matrix; total bobot ditandai lengkap/belum" do
     sign_in @admin
     get admin_learning_units_path
@@ -95,7 +107,7 @@ class CompetencyMappingTest < ActionDispatch::IntegrationTest
 
   test "persentil dihitung per tipe asesmen dengan kohort gabungan PSSK+PSPD" do
     peers = 4.times.map do |i|
-      u = User.create!(full_name: "Peer #{i}", email: "peer#{i}@example.com", password: "password123", confirmed_at: Time.current,
+      u = User.create!(full_name: "Peer #{i}", email: "peer#{i}@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current,
                        study_program: i.even? ? study_programs(:sarjana_kedokteran) : study_programs(:profesi_dokter))
       u.roles << roles(:mahasiswa)
       AssessmentInstance.create!(assessment_event: assessment_events(:cbt_blok), student: u, attempt_number: 1,
@@ -123,7 +135,7 @@ class CompetencyMappingTest < ActionDispatch::IntegrationTest
     other = AcademicPeriod.create!(name: "Periode Lampau", start_date: 2.years.ago.to_date, end_date: 1.year.ago.to_date)
     event = AssessmentEvent.create!(name: "CBT Lampau", assessment_type: "cbt", academic_period: other, status: "published")
     3.times do |i|
-      u = User.create!(full_name: "Lama #{i}", email: "lama#{i}@example.com", password: "password123", confirmed_at: Time.current,
+      u = User.create!(full_name: "Lama #{i}", email: "lama#{i}@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current,
                        study_program: study_programs(:sarjana_kedokteran))
       u.roles << roles(:mahasiswa)
       AssessmentInstance.create!(assessment_event: event, student: u, attempt_number: 1, status: "scored", score: 80, max_score: 100, scored_at: Time.current)

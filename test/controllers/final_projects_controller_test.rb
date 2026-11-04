@@ -4,7 +4,7 @@ class FinalProjectsControllerTest < ActionDispatch::IntegrationTest
   include Devise::Test::IntegrationHelpers
 
   test "mahasiswa lain tidak melihat tugas akhir orang lain di index" do
-    other = User.create!(full_name: "Mahasiswa Lain", email: "fplain@example.com", password: "password123", confirmed_at: Time.current)
+    other = User.create!(full_name: "Mahasiswa Lain", email: "fplain@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     other.roles << roles(:mahasiswa)
 
     sign_in other

@@ -17,7 +17,7 @@ class ClinicalCasesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "mahasiswa tidak bisa melihat detail kasus milik orang lain" do
-    other = User.create!(full_name: "Mahasiswa Lain", email: "lain@example.com", password: "password123", confirmed_at: Time.current)
+    other = User.create!(full_name: "Mahasiswa Lain", email: "lain@example.com", password: "rahasia-kuat-1", confirmed_at: Time.current)
     other.roles << roles(:mahasiswa)
 
     sign_in other

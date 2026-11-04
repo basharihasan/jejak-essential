@@ -58,13 +58,26 @@
     </div>
   <% end %>
 
+  <%# Kata sandi sementara hasil Reset hanya dibawa flash satu kali — tidak
+      disimpan dalam bentuk terbaca di mana pun. %>
+  <% if flash[:temporary_password].present? %>
+    <div class="rounded-2xl bg-emerald-50 ring-1 ring-emerald-200 p-5" data-testid="temporary-password">
+      <p class="text-sm font-semibold text-emerald-900">Kata sandi sementara <%= @user.full_name %></p>
+      <p class="mt-2 font-mono text-lg tracking-wide text-emerald-950 select-all"><%= flash[:temporary_password] %></p>
+      <p class="mt-2 text-xs text-emerald-800">Sampaikan langsung ke pengguna. Kata sandi ini hanya ditampilkan sekarang; pengguna wajib menggantinya saat masuk.</p>
+    </div>
+  <% end %>
+
   <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-6 flex items-center justify-between gap-4 flex-wrap">
     <div>
       <h2 class="text-sm font-semibold text-gray-800">Reset kata sandi</h2>
-      <p class="text-xs text-gray-500 mt-0.5">Mengembalikan ke kata sandi bawaan <code class="bg-gray-100 px-1 rounded"><%= User::DEFAULT_PASSWORD %></code>. Minta pengguna segera menggantinya di Pengaturan Akun.</p>
+      <p class="text-xs text-gray-500 mt-0.5">Membuat kata sandi sementara acak (ditampilkan sekali) dan membuka kunci akun. Pengguna wajib menggantinya saat masuk.</p>
+      <% if @user.access_locked? %>
+        <p class="text-xs text-rose-700 mt-1" data-testid="account-locked">Akun terkunci sampai <%= l(@user.locked_at + User.unlock_in, format: :short) %> karena terlalu banyak salah kata sandi.</p>
+      <% end %>
     </div>
-    <%= button_to "Reset ke Bawaan", reset_password_admin_user_path(@user), method: :patch,
-          form: { data: { turbo_confirm: "Reset kata sandi #{@user.full_name} ke bawaan?" } },
+    <%= button_to "Reset Kata Sandi", reset_password_admin_user_path(@user), method: :patch,
+          form: { data: { turbo_confirm: "Buat kata sandi sementara baru untuk #{@user.full_name}? Kata sandi lamanya tidak berlaku lagi." } },
           class: "rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-semibold px-4 py-2 cursor-pointer" %>
   </div>
 </div>

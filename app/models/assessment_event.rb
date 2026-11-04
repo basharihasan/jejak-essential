@@ -75,8 +75,13 @@ class AssessmentEvent < ApplicationRecord
   end
 
   # Nilai masuk lewat impor CSV massal (ujian tulis/praktik).
+  IMPORTABLE_FAMILIES = %i[written practical].freeze
+  IMPORTABLE_TYPES = TYPES.select { |_, (_, family, _)| IMPORTABLE_FAMILIES.include?(family) }.keys.freeze
+
+  scope :importable, -> { where(assessment_type: IMPORTABLE_TYPES) }
+
   def importable?
-    %i[written practical].include?(family)
+    IMPORTABLE_FAMILIES.include?(family)
   end
 
   # Event berdimensi: nilainya disusun dari nilai per mata uji/station.
