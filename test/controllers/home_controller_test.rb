@@ -22,18 +22,4 @@ class HomeControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match "dikembangkan dengan dukungan AIPKI", response.body
   end
-
-  test "beranda menutup dengan narasi jejak.pro yang menyesuaikan peran aktif" do
-    sign_in users(:budi) # active_role: dosen
-
-    get dashboard_path
-
-    assert_select "a[href='https://jejak.pro'][target='_blank'][rel='noopener']"
-    assert_select "[data-controller='upgrade-showcase'] [role='tab']", 3
-    assert_select "[role='tabpanel'][hidden]", 2
-    assert_select "#jejak-pro-upgrade-body[hidden]" # tertutup secara bawaan
-    assert_select "button[aria-controls='jejak-pro-upgrade-body'][aria-expanded='false']"
-    assert_match "bank soal prodi", response.body
-    assert_no_match "dikte suara", response.body # narasi khusus mahasiswa
-  end
 end

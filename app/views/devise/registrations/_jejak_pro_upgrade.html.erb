@@ -42,13 +42,14 @@
     "admin" => {
       lead: "Konfigurasi yang Anda rawat di sini tetap berguna saat kebutuhan institusi bertambah. jejak.pro menyiapkan lapisan berikutnya:",
       points: [
-        { icon: :layers, title: "Kurikulum, wahana & mitra", text: "Penjadwalan kurikulum, wahana pendidikan, dan pengelolaan kerja sama mitra." },
+        { icon: :layers, title: "Wahana & mitra", text: "Wahana pendidikan dan pengelolaan kerja sama mitra." },
         { icon: :globe, title: "Alumni, komunitas & hibah", text: "Pelacakan alumni, komunitas, serta pengelolaan hibah dan riset." },
         { icon: :shield, title: "Tata kelola multi-prodi", text: "Tata kelola data dan pembagian peran untuk skala multi-program studi." }
       ]
     }
   }
-  copy = upgrade_copy.fetch(@active_role&.code, upgrade_copy["mahasiswa"])
+  active_code = (current_user.active_role || current_user.roles.first)&.code
+  copy = upgrade_copy.fetch(active_code, upgrade_copy["mahasiswa"])
 
   icon_shapes = {
     mic:       '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8.5 21h7"/>',
@@ -70,7 +71,7 @@
   }
 %>
 
-<section class="mt-10 border-t border-gray-200 pt-6" aria-labelledby="jejak-pro-upgrade-title">
+<section aria-labelledby="jejak-pro-upgrade-title">
   <div class="relative overflow-hidden rounded-2xl bg-white ring-1 ring-gray-200 shadow-sm"
        data-controller="upgrade-showcase"
        data-upgrade-showcase-active-class="bg-indigo-50 ring-indigo-200 text-gray-900"

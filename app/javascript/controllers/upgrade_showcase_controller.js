@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Kartu "Tumbuh bersama JEJAK" di Beranda: tab fitur jejak.pro yang berganti
+// Kartu "Tumbuh bersama JEJAK" di Pengaturan Akun: tab fitur jejak.pro yang berganti
 // sendiri (berhenti saat disorot/difokus, berhenti permanen begitu pengguna
 // memilih tab), tertutup secara bawaan, dan status buka/tutup diingat per peramban.
 // Menghormati prefers-reduced-motion: tanpa putar otomatis dan tanpa animasi.

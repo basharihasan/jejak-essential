@@ -69,4 +69,7 @@
       jejak pendidikan milik program studi (lihat
       Users::RegistrationsController#destroy). %>
   <p class="text-xs text-gray-400">Ingin menutup akun? Hubungi admin program studi Anda.</p>
+
+  <%# Selama wajib ganti kata sandi, halaman ini hanya untuk satu pekerjaan itu. %>
+  <%= render "devise/registrations/jejak_pro_upgrade" unless resource.must_change_password? %>
 </div>

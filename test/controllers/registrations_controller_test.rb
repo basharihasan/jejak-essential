@@ -65,6 +65,45 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_select "form[action=?] input[name=_method][value=delete]", user_registration_path, count: 0
   end
 
+  test "Pengaturan Akun menutup dengan narasi jejak.pro yang menyesuaikan peran aktif" do
+    sign_in users(:budi) # active_role: dosen
+
+    get edit_user_registration_path
+
+    assert_select "a[href='https://jejak.pro'][target='_blank'][rel='noopener']"
+    assert_select "[data-controller='upgrade-showcase'] [role='tab']", 3
+    assert_select "[role='tabpanel'][hidden]", 2
+    assert_select "#jejak-pro-upgrade-body[hidden]" # tertutup secara bawaan
+    assert_select "button[aria-controls='jejak-pro-upgrade-body'][aria-expanded='false']"
+    assert_match "bank soal prodi", response.body
+    assert_no_match "dikte suara", response.body # narasi khusus mahasiswa
+  end
+
+  test "narasi jejak.pro untuk admin menawarkan wahana & mitra tanpa kurikulum" do
+    admin_user = users(:budi)
+    admin_user.roles << roles(:admin)
+    admin_user.update!(active_role: roles(:admin))
+    sign_in admin_user
+
+    get edit_user_registration_path
+
+    assert_select "[role='tab']", /Wahana & mitra/
+    assert_select "[role='tabpanel']", /Wahana pendidikan dan pengelolaan kerja sama mitra\./
+    assert_no_match "urikulum", css_select("[data-controller='upgrade-showcase']").text
+  end
+
+  test "narasi jejak.pro disembunyikan selama wajib ganti kata sandi" do
+    siti = users(:siti)
+    siti.update_columns(must_change_password: true)
+    sign_in siti
+
+    get edit_user_registration_path
+
+    assert_response :success
+    assert_select "[data-testid='must-change-password']"
+    assert_select "[data-controller='upgrade-showcase']", count: 0
+  end
+
   test "hapus akun mandiri ditolak dengan pesan, bukan galat foreign key" do
     sign_in users(:budi)
     assert_no_difference "User.count" do
