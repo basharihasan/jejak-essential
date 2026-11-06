@@ -4,11 +4,13 @@
 # dibuka; kaprodi memantau lewat SrqMonitoringController.
 class SrqScreeningsController < ApplicationController
   before_action :authenticate_user!
-  before_action :require_student!
+  before_action :require_srq_access!
+  before_action :require_srq_open!, only: %i[new create]
 
   def index
     @screenings = current_user.srq_screenings.recent
     @filled_today = @screenings.find { |screening| screening.screened_on == Date.current }
+    @can_fill = current_user.can_fill_srq?
   end
 
   def show
@@ -38,10 +40,17 @@ class SrqScreeningsController < ApplicationController
 
   private
 
-  def require_student!
-    return if current_user.has_role?("mahasiswa")
+  def require_srq_access!
+    return if current_user.srq_accessible?
 
-    redirect_to dashboard_path, alert: "Halaman ini khusus mahasiswa."
+    message = current_user.has_role?("mahasiswa") ? "SRQ-20 belum diaktifkan oleh prodi Anda." : "Halaman ini khusus mahasiswa."
+    redirect_to dashboard_path, alert: message
+  end
+
+  def require_srq_open!
+    return if current_user.can_fill_srq?
+
+    redirect_to srq_screenings_path, alert: "Pengisian SRQ-20 sedang dinonaktifkan oleh prodi Anda. Riwayat Anda tetap dapat dibuka."
   end
 
   # Parameter bukan-hash (kiriman yang dirusak) terbaca kosong, bukan galat.

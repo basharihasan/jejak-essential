@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::RegistrationsController < Devise::RegistrationsController
+  before_action :ensure_registration_open, only: %i[new create]
+
   def create
     super do |user|
       assign_initial_role(user) if user.persisted?
@@ -31,6 +33,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  def ensure_registration_open
+    return if AppSetting.registration_open?
+
+    redirect_to new_user_session_path, alert: "Pendaftaran mandiri ditutup. Minta akun ke admin program studi."
+  end
 
   # role_code cuma dipakai assign_initial_role, bukan kolom User — kalau
   # dibiarkan ikut ke User.new (lewat sign_up_params bawaan Devise) akan

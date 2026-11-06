@@ -36,20 +36,44 @@ Simpan `.env`. Ganti kunci enkripsi nanti = data pasien lama tidak terbaca.
 ```bash
 docker compose pull
 docker compose up -d
-docker compose exec web bin/rails db:seed
-docker compose exec web bin/rails demo:seed   # opsional
 ```
 
 Podman: ganti dengan `podman-compose` / `podman compose`.
 
-Buka `http://<APP_HOST>`. Demo: lihat README (`password123`).
+Data rujukan terisi otomatis saat basis data pertama kali dibuat. Buka `http://<APP_HOST>`, lalu buat akun admin pertama (langkah berikutnya).
 
 Kalau `pull` → **unauthorized**: paket GHCR masih privat. Owner repo harus
 **Packages → jejak-lite → Change visibility → Public** (atau workflow
 `docker-publish` yang sudah mencoba set public setelah push). Sementara:
 `docker login ghcr.io` + PAT `read:packages`.
 
-## 3. Port
+## 3. Akun admin pertama
+
+Halaman Daftar hanya menghasilkan akun Mahasiswa, dan instalasi baru mulai dengan pendaftaran mandiri tertutup. Pilih salah satu cara:
+
+**Lewat `.env`, tanpa terminal.** Isi sebelum `docker compose up -d`:
+
+```bash
+ADMIN_EMAIL=admin@kampus.ac.id
+ADMIN_PASSWORD=kata-sandi-awal
+ADMIN_NAME=Nama Admin
+```
+
+Akun dibuat sekali saat kontainer berjalan, selama belum ada admin sama sekali. Kata sandinya wajib diganti saat masuk pertama, dan tidak pernah direset ulang saat kontainer dimulai lagi. Kosongkan `ADMIN_PASSWORD` setelah berhasil masuk.
+
+**Lewat terminal:**
+
+```bash
+docker compose exec -e ADMIN_EMAIL=admin@kampus.ac.id -e ADMIN_PASSWORD='kata-sandi-kuat' -e ADMIN_NAME='Nama Admin' web bin/rails users:create_admin
+```
+
+Perintah ini juga mereset kata sandi bila akunnya sudah ada.
+
+Setelah masuk, ikuti daftar **Langkah Penyiapan** di Beranda dan **Panduan Penyiapan** di menu Panduan Penggunaan.
+
+> **Jangan jalankan `demo:seed` di server sungguhan.** Perintah itu membuat akun contoh, termasuk Admin, yang bebas dari kewajiban ganti kata sandi. Di mode produksi ia ditolak kecuali diminta dengan `ALLOW_DEMO_DATA=1` dan `DEMO_PASSWORD`, khusus untuk instance percobaan.
+
+## 4. Port
 
 `HOST_PORT` di host → **3000 di dalam** kontainer. Contoh benar:
 `"6969:3000"`. Salah: `"6969:6969"`.
@@ -60,7 +84,7 @@ Kalau `pull` → **unauthorized**: paket GHCR masih privat. Owner repo harus
 2. Environment Variables = isi `.env` (`SECRET_KEY_BASE`, tiga
    `AR_ENCRYPTION_*`, `POSTGRES_PASSWORD`, `APP_HOST`, `HOST_PORT`, …
    — **bukan** `RAILS_MASTER_KEY`)
-3. Setelah Running → Exec `web` → `bin/rails demo:seed`
+3. Untuk admin pertama, isi juga `ADMIN_EMAIL` dan `ADMIN_PASSWORD` di Environment Variables, lalu kosongkan `ADMIN_PASSWORD` setelah berhasil masuk. Alternatifnya: setelah Running → Exec `web`, lalu jalankan `users:create_admin` seperti di atas.
 
 ## Update versi
 

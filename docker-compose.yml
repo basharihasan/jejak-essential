@@ -5,7 +5,8 @@
 # Cara pakai (lihat NAS_DEPLOY.md):
 #   1. ./script/setup-env.sh   (Linux/macOS)  atau  script\setup-env.cmd (Windows)
 #   2. docker compose pull && docker compose up -d
-#   3. docker compose exec web bin/rails demo:seed
+#   3. Admin pertama: isi ADMIN_EMAIL & ADMIN_PASSWORD di .env sebelum langkah 2,
+#      atau jalankan users:create_admin sesudahnya (lihat NAS_DEPLOY.md).
 #
 # Podman: ganti `docker compose` → `podman-compose` (atau `podman compose`).
 #
@@ -51,6 +52,10 @@ services:
       AR_ENCRYPTION_DETERMINISTIC_KEY: ${AR_ENCRYPTION_DETERMINISTIC_KEY:?isi di .env}
       AR_ENCRYPTION_KEY_DERIVATION_SALT: ${AR_ENCRYPTION_KEY_DERIVATION_SALT:?isi di .env}
       APP_HOST: ${APP_HOST:-localhost:3000}
+      # Admin pertama (opsional): dibuat sekali selama belum ada admin.
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_NAME: ${ADMIN_NAME:-}
       R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:-}
       R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:-}
       R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:-}

@@ -8,7 +8,7 @@ class EntrustmentDecisionsController < ApplicationController
   before_action :set_student
 
   def index
-    @framework = CompetencyFramework.order(:id).first
+    @framework = CompetencyFramework.for_student(@student)
     @map = @framework ? EntrustmentDecision.map_for(@student, @framework) : []
     @history = EntrustmentDecision.where(student: @student).includes(:competency_item, :decided_by, :clinical_case).history.limit(30)
     @can_decide = can_decide?

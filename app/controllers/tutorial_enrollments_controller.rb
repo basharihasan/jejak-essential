@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TutorialEnrollmentsController < ApplicationController
+  include PlacementCsvImportActions
+
   before_action :authenticate_user!
   before_action :set_enrollment, only: %i[edit update destroy toggle_active]
 
@@ -56,13 +58,17 @@ class TutorialEnrollmentsController < ApplicationController
 
   private
 
+  def placement_model = TutorialEnrollment
+  def placement_importer = TutorialEnrollmentCsvImport
+  def import_success_path = tutorial_enrollments_path
+
   def set_enrollment
     @enrollment = TutorialEnrollment.find(params[:id])
   end
 
   def load_form_collections
-    @students = User.joins(:roles).where(roles: { code: "mahasiswa" }).order(:full_name)
-    @tutors = User.joins(:roles).where(roles: { code: "dosen" }).distinct.order(:full_name)
+    @students = User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }).order(:full_name)
+    @tutors = User.active_accounts.joins(:roles).where(roles: { code: "dosen" }).distinct.order(:full_name)
     @academic_periods = AcademicPeriod.ordered
   end
 

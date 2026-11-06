@@ -7,6 +7,12 @@ class SrqMonitoringController < ApplicationController
   before_action :authenticate_user!
   before_action :require_srq_monitor!
 
+  READINESS_ITEMS = {
+    "ready_sop" => "SOP tindak lanjut hasil \"Perlu Perhatian Segera\" sudah berjalan di prodi.",
+    "ready_instrument" => "Rumusan 20 butir sudah ditinjau ahli konten, dan ambang skor sudah disepakati.",
+    "ready_counselor" => "Kontak konselor sudah diinformasikan kepada mahasiswa."
+  }.freeze
+
   def index
     @academic_periods = AcademicPeriod.ordered
     @selected_period = selected_period
@@ -21,6 +27,21 @@ class SrqMonitoringController < ApplicationController
 
     screening.record_follow_up!(by: current_user, note: note)
     redirect_back_to_monitoring(notice: "Tindak lanjut tercatat.")
+  end
+
+  # Tanda "Perlu Perhatian Segera" hanya terlihat kaprodi, jadi kaprodi yang
+  # mengaktifkan, setelah menyatakan tiga kesiapan ini.
+  def update_status
+    program = current_user.study_program
+    if params[:enabled] != "1"
+      program.disable_srq!
+      redirect_back_to_monitoring(notice: "SRQ-20 dinonaktifkan untuk #{program.name}. Riwayat hasil tetap tersimpan.")
+    elsif READINESS_ITEMS.keys.all? { |item| params[item] == "1" }
+      program.enable_srq!(by: current_user)
+      redirect_back_to_monitoring(notice: "SRQ-20 aktif untuk #{program.name}.")
+    else
+      redirect_back_to_monitoring(alert: "Centang ketiga kesiapan sebelum mengaktifkan SRQ-20.")
+    end
   end
 
   private

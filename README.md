@@ -48,12 +48,16 @@ Cara utama: **Docker atau Podman** — tarik image dari GHCR. **Tidak perlu** in
 
    Image default: `ghcr.io/basharihasan/jejak-lite:latest`. Kalau `pull` gagal `unauthorized`, paket GHCR masih privat — `docker login ghcr.io` (PAT `read:packages`) atau minta owner set Packages → Public. Detail: [`NAS_DEPLOY.md`](NAS_DEPLOY.md).
 
-3. Seed data rujukan + akun demo (opsional):
+3. Buat akun admin pertama. Halaman Daftar hanya menghasilkan akun Mahasiswa, jadi pilih salah satu cara:
 
-   ```bash
-   docker compose exec web bin/rails db:seed
-   docker compose exec web bin/rails demo:seed
-   ```
+   - **Lewat `.env`, tanpa terminal (cocok untuk NAS):** isi `ADMIN_EMAIL` dan `ADMIN_PASSWORD` sebelum `docker compose up -d`. Akun dibuat sekali saat kontainer berjalan, selama belum ada admin sama sekali, dan kata sandinya wajib diganti saat masuk pertama. Kosongkan `ADMIN_PASSWORD` sesudahnya.
+   - **Lewat terminal:**
+
+     ```bash
+     docker compose exec -e ADMIN_EMAIL=admin@kampus.ac.id -e ADMIN_PASSWORD='kata-sandi-kuat' -e ADMIN_NAME='Nama Admin' web bin/rails users:create_admin
+     ```
+
+   Data rujukan (peran, prodi, master data) terisi otomatis saat basis data pertama kali dibuat. Instalasi baru mulai dengan pendaftaran mandiri **tertutup**; admin dapat membukanya di **Konfigurasi → Pengguna**. Langkah berikutnya ada di **Panduan Penyiapan** pada menu Panduan Penggunaan, dan Beranda admin menampilkan daftar langkah yang belum selesai.
 
 4. Buka <http://127.0.0.1:3000> (atau `http://<APP_HOST>`).
 
@@ -63,7 +67,13 @@ QNAP/Synology, HTTPS (Caddy), R2: [`NAS_DEPLOY.md`](NAS_DEPLOY.md).
 
 ### Data demo (akun contoh)
 
-`demo:seed` membuat 7 akun contoh (password semua: `password123` — **hanya demo**):
+`demo:seed` membuat 7 akun contoh, termasuk **Admin**. **Jangan jalankan di server sungguhan.** Di mode produksi, termasuk Compose, perintah ini ditolak kecuali diminta eksplisit dengan kata sandi sendiri:
+
+```bash
+docker compose exec -e ALLOW_DEMO_DATA=1 -e DEMO_PASSWORD='sandi-demo-anda' web bin/rails demo:seed
+```
+
+Pada pengembangan lokal (Ruby native) kata sandi bawaannya `password123`.
 
 | Email | Peran | Kegunaan |
 |---|---|---|
@@ -75,7 +85,7 @@ QNAP/Synology, HTTPS (Caddy), R2: [`NAS_DEPLOY.md`](NAS_DEPLOY.md).
 | `mahasiswa1.demo@jejaklite.test` | Mahasiswa | Punya logbook, kasus klinis, DOPS/Mini-CEX, tugas akhir, nilai ujian |
 | `mahasiswa2.demo@jejaklite.test` | Mahasiswa | Kasus klinis & nilai ujian (untuk melihat agregasi lintas mahasiswa) |
 
-Idempoten; terpisah dari `db/seeds.rb` (data rujukan aplikasi). Isi `DEMO_PASSWORD` untuk memakai kata sandi lain. Akun berdomain `@jejaklite.test` sengaja dikecualikan dari kewajiban ganti kata sandi supaya bisa dipakai bergantian; akun lain yang masuk dengan `password123` langsung diarahkan untuk menggantinya.
+Idempoten; terpisah dari `db/seeds.rb` (data rujukan aplikasi, aman dijalankan ulang). Akun berdomain `@jejaklite.test` sengaja dikecualikan dari kewajiban ganti kata sandi supaya bisa dipakai bergantian saat mencoba.
 
 ### Alternatif: Ruby native (pengembang)
 

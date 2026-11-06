@@ -10,6 +10,7 @@
   is_prodi_manager      = local_assigns[:is_prodi_manager] || false
   is_form_manager       = local_assigns[:is_form_manager] || false
   is_srq_monitor        = local_assigns[:is_srq_monitor] || false
+  is_srq_student        = local_assigns[:is_srq_student] || false
   pending_verifications = local_assigns[:pending_verifications] || 0
   pending_activity_verifications = local_assigns[:pending_activity_verifications] || 0
 
@@ -73,7 +74,7 @@
   <%= render "shared/nav_item", label: term("nav.final_projects"), path: final_projects_path,
       active: active_class.call("/final_projects") %>
 
-  <% if is_student %>
+  <% if is_srq_student %>
     <%= render "shared/nav_item", label: term("nav.srq_self_report"), path: srq_screenings_path,
         active: active_class.call("/kesehatan-mental") %>
   <% end %>

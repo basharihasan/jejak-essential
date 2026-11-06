@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ClinicalRotationsController < ApplicationController
+  include PlacementCsvImportActions
+
   before_action :authenticate_user!
   before_action :set_clinical_rotation, only: %i[edit update destroy]
 
@@ -54,15 +56,19 @@ class ClinicalRotationsController < ApplicationController
 
   private
 
+  def placement_model = ClinicalRotation
+  def placement_importer = ClinicalRotationCsvImport
+  def import_success_path = clinical_rotations_path
+
   def set_clinical_rotation
     @clinical_rotation = ClinicalRotation.find(params[:id])
   end
 
   def load_form_collections
-    @students = User.joins(:roles).where(roles: { code: "mahasiswa" }).order(:full_name)
+    @students = User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }).order(:full_name)
     # Preseptor rotasi: peran Preseptor (pembimbing klinik) dan Dosen. Dulu
     # hanya Dosen, sehingga akun berperan Preseptor tidak dapat dipilih.
-    @preceptors = User.joins(:roles).where(roles: { code: %w[preseptor dosen] }).distinct.order(:full_name)
+    @preceptors = User.active_accounts.joins(:roles).where(roles: { code: %w[preseptor dosen] }).distinct.order(:full_name)
     @academic_periods = AcademicPeriod.ordered
   end
 

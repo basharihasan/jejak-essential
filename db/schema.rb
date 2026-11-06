@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_020001) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_030002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -782,12 +782,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_020001) do
 
   create_table "study_programs", force: :cascade do |t|
     t.string "code"
+    t.bigint "competency_framework_id"
     t.datetime "created_at", null: false
     t.string "level"
     t.string "name", null: false
+    t.datetime "srq_enabled_at"
+    t.bigint "srq_enabled_by_id"
     t.datetime "updated_at", null: false
+    t.index ["competency_framework_id"], name: "index_study_programs_on_competency_framework_id"
     t.index ["code"], name: "index_study_programs_on_code", unique: true
     t.index ["name"], name: "index_study_programs_on_name", unique: true
+    t.index ["srq_enabled_by_id"], name: "index_study_programs_on_srq_enabled_by_id"
   end
 
   create_table "terminology_overrides", force: :cascade do |t|
@@ -840,6 +845,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_020001) do
     t.datetime "created_at", null: false
     t.datetime "current_sign_in_at"
     t.string "current_sign_in_ip"
+    t.datetime "deactivated_at"
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.integer "failed_attempts", default: 0, null: false
@@ -977,6 +983,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_020001) do
   add_foreign_key "reflection_entries", "users"
   add_foreign_key "srq_screenings", "users"
   add_foreign_key "srq_screenings", "users", column: "followed_up_by_id"
+  add_foreign_key "study_programs", "competency_frameworks"
+  add_foreign_key "study_programs", "users", column: "srq_enabled_by_id"
   add_foreign_key "terminology_overrides", "users", column: "updated_by_id"
   add_foreign_key "tutorial_enrollments", "academic_periods"
   add_foreign_key "tutorial_enrollments", "users"

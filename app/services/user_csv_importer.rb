@@ -8,7 +8,8 @@ require "csv"
 #   email* | nama* | peran | prodi
 #   - peran : kode dipisah "+" atau ";" (mahasiswa, dosen, preseptor, kaprodi, admin);
 #             kosong → mahasiswa
-#   - prodi : kode StudyProgram (pssk / pspd) atau namanya; kosong → tidak diubah
+#   - prodi : kode StudyProgram (pssk / pspd) atau namanya; kosong → tidak diubah.
+#             Wajib bagi kaprodi yang bukan admin: itulah prodi binaannya.
 #
 # Akun baru dibuat dengan kata sandi sementara acak per akun (wajib diganti
 # saat masuk) dan langsung terkonfirmasi (admin yang mengimpor bertanggung
@@ -65,6 +66,11 @@ class UserCsvImporter
       end
 
       user = User.find_or_initialize_by(email: email)
+      if User.program_required_for_roles?(roles.map(&:code) | user.roles.map(&:code)) && (study_program || user.study_program).nil?
+        result.errors << "Baris #{line}: kaprodi wajib punya prodi — isi kolom prodi dengan prodi binaannya."
+        next
+      end
+
       new_record = user.new_record?
       user.full_name = name
       user.study_program = study_program if study_program

@@ -19,9 +19,13 @@ if [ -n "${ADMIN_EMAIL}" ] && [ -n "${ADMIN_PASSWORD}" ]; then
 fi
 
 # Akun & data demo untuk mencoba tiap peran. Tidak pernah jalan kecuali
-# DEMO_SEED diisi, karena situs ini terbuka di internet. Isi DEMO_PASSWORD
-# dengan kata sandi sendiri — tanpa itu akun demo memakai password123 yang
-# tercantum publik di repositori.
+# DEMO_SEED diisi, karena situs ini terbuka di internet. demo:seed menolak
+# berjalan di production tanpa DEMO_PASSWORD, supaya akun Admin demo tidak
+# memakai kata sandi yang tercantum publik di repositori.
 if [ -n "${DEMO_SEED}" ]; then
-  bundle exec rails demo:seed
+  if [ -n "${DEMO_PASSWORD}" ]; then
+    ALLOW_DEMO_DATA=1 bundle exec rails demo:seed
+  else
+    echo "DEMO_SEED diisi tanpa DEMO_PASSWORD: data demo dilewati."
+  fi
 fi

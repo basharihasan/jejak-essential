@@ -13,6 +13,7 @@ id:
     failure:
       account_archived: "Akun ini sudah dinonaktifkan atas permintaan pemiliknya. Hubungi admin bila perlu diaktifkan kembali."
       already_authenticated: "Anda sudah masuk."
+      deactivated: "Akun Anda dinonaktifkan. Hubungi admin program studi."
       inactive: "Akun Anda belum diaktifkan."
       invalid: "%{authentication_keys} atau kata sandi salah."
       locked: "Akun Anda terkunci."

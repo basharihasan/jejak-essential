@@ -18,5 +18,11 @@
       <%= f.select :level, StudyProgram::LEVELS.invert, {}, class: "block w-full rounded-xl border-0 py-2.5 px-3.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm" %>
     </div>
   </div>
+  <div>
+    <%= f.label :competency_framework_id, "Kerangka Peta EPA", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+    <%= f.collection_select :competency_framework_id, CompetencyFramework.order(:name), :id, :name, { include_blank: "Bawaan (kerangka paling awal)" },
+          class: "block w-full rounded-xl border-0 py-2.5 px-3.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm" %>
+    <p class="text-xs text-gray-400 mt-1">Dipakai Peta EPA mahasiswa prodi ini dan pilihan EPA saat verifikasi kasus.</p>
+  </div>
   <%= f.submit "Simpan", class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm cursor-pointer" %>
 <% end %>

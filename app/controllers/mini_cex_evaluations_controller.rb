@@ -64,7 +64,7 @@ class MiniCexEvaluationsController < ApplicationController
   end
 
   def load_form_collections
-    @students = User.joins(:roles).where(roles: { code: "mahasiswa" }).order(:full_name)
+    @students = User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }).order(:full_name)
     @clinical_rotations = ClinicalRotation.includes(:user).order(start_date: :desc)
   end
 

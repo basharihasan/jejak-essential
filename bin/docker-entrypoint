@@ -3,6 +3,12 @@
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
+
+  # Admin pertama dari .env, supaya tidak perlu terminal. Hanya berjalan selama
+  # belum ada admin sama sekali; lihat lib/tasks/users.rake.
+  if [ -n "${ADMIN_EMAIL:-}" ] && [ -n "${ADMIN_PASSWORD:-}" ]; then
+    ./bin/rails users:bootstrap_admin
+  fi
 fi
 
 exec "${@}"

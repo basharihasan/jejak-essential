@@ -32,7 +32,7 @@ class SearchController < ApplicationController
   def searchable_users
     return User.all if current_user.has_role?("admin")
 
-    students = User.where(id: UserRole.joins(:role).where(roles: { code: "mahasiswa" }).select(:user_id))
+    students = User.active_accounts.where(id: UserRole.joins(:role).where(roles: { code: "mahasiswa" }).select(:user_id))
     current_user.study_program_bound? ? students.where(study_program_id: current_user.study_program_id) : students
   end
 end

@@ -6,7 +6,8 @@
 class Admin::UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin!
-  before_action :set_user, only: %i[edit update reset_password confirm_email]
+  before_action :set_user, only: %i[edit update destroy reset_password confirm_email deactivate reactivate]
+  before_action :reject_own_account, only: %i[destroy deactivate]
 
   def index
     @query = params[:q].to_s.strip
@@ -24,6 +25,7 @@ class Admin::UsersController < ApplicationController
     @users = scope.page(params[:page]).per(25)
     @roles = Role.order(:name)
     @study_programs = StudyProgram.ordered
+    @registration_open = AppSetting.registration_open?
   end
 
   def edit
@@ -38,8 +40,15 @@ class Admin::UsersController < ApplicationController
       return render :edit, status: :unprocessable_entity
     end
 
+    @user.assign_attributes(user_params)
+    if User.program_required_for_roles?(Role.where(id: role_ids).pluck(:code)) && @user.study_program_id.nil?
+      @user.errors.add(:base, "Kaprodi wajib punya Program Studi: itulah prodi binaannya.")
+      load_form_collections
+      return render :edit, status: :unprocessable_entity
+    end
+
     User.transaction do
-      @user.update!(user_params)
+      @user.save!
       @user.role_ids = role_ids
       @user.update!(active_role_id: role_ids.first) unless role_ids.include?(@user.active_role_id)
     end
@@ -69,6 +78,33 @@ class Admin::UsersController < ApplicationController
     redirect_to edit_admin_user_path(@user), notice: "Email #{@user.email} ditandai terkonfirmasi.", status: :see_other
   end
 
+  def deactivate
+    @user.update_column(:deactivated_at, Time.current)
+    redirect_to edit_admin_user_path(@user), notice: "Akun #{@user.full_name} dinonaktifkan.", status: :see_other
+  end
+
+  def reactivate
+    @user.update_column(:deactivated_at, nil)
+    redirect_to edit_admin_user_path(@user), notice: "Akun #{@user.full_name} diaktifkan kembali.", status: :see_other
+  end
+
+  # Hanya akun tanpa rekam jejak; lihat User#deletable?.
+  def destroy
+    unless @user.deletable?
+      return redirect_to edit_admin_user_path(@user), status: :see_other,
+                         alert: "Akun #{@user.full_name} sudah punya rekam jejak dan tidak dapat dihapus. Nonaktifkan saja."
+    end
+
+    @user.destroy!
+    redirect_to admin_users_path, notice: "Akun #{@user.full_name} dihapus.", status: :see_other
+  end
+
+  def registration
+    AppSetting.set_registration_open!(params[:open], by: current_user)
+    state = AppSetting.registration_open? ? "dibuka" : "ditutup"
+    redirect_to admin_users_path, notice: "Pendaftaran mandiri #{state}.", status: :see_other
+  end
+
   def import; end
 
   def import_create
@@ -92,6 +128,13 @@ class Admin::UsersController < ApplicationController
 
   def set_user
     @user = User.find(params[:id])
+  end
+
+  # Supaya admin tidak mengunci dirinya sendiri, dan selalu tersisa satu admin aktif.
+  def reject_own_account
+    return unless @user == current_user
+
+    redirect_to edit_admin_user_path(@user), alert: "Akun yang sedang Anda pakai tidak dapat dinonaktifkan atau dihapus.", status: :see_other
   end
 
   def load_form_collections

@@ -6,7 +6,7 @@ class CompetencyFrameworksController < ApplicationController
 
   def index
     authorize CompetencyFramework
-    @competency_frameworks = CompetencyFramework.order(:name)
+    @competency_frameworks = CompetencyFramework.includes(:study_programs).order(:name)
   end
 
   def show

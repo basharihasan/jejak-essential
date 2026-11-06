@@ -2,6 +2,8 @@ sarjana_kedokteran:
   name: Sarjana Kedokteran
   code: pssk
   level: sarjana
+  # Kebanyakan tes SRQ memakai prodi ini; aktivasinya diuji di setup_controls_test.
+  srq_enabled_at: <%= Time.current %>
 
 profesi_dokter:
   name: Profesi Dokter

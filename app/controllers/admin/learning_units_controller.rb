@@ -17,7 +17,7 @@ class Admin::LearningUnitsController < ApplicationController
   def show
     @mappings = @unit.assessment_mappings.includes(:assessment_event)
     @available_events = event_scope.ordered.where.not(id: @mappings.map(&:assessment_event_id))
-    students = User.joins(:roles).where(roles: { code: "mahasiswa" }).where(study_program_id: @unit.study_program_id).distinct.order(:full_name)
+    students = User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }).where(study_program_id: @unit.study_program_id).distinct.order(:full_name)
     @recap = students.map { |s| { student: s, score: @unit.score_for(s), components: @unit.components_for(s) } }
   end
 

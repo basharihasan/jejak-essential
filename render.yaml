@@ -85,9 +85,9 @@ services:
         sync: false
       # Opsional, akun & data demo (lib/tasks/demo.rake) — dijalankan
       # bin/render-build.sh saat build HANYA bila DEMO_SEED terisi (mis.
-      # "1"). Isi DEMO_PASSWORD dengan sandi sendiri; tanpa itu akun demo
-      # memakai password123 yang tercantum publik. Setelah mengubah
-      # keduanya, jalankan deploy ulang supaya seed berjalan.
+      # "1") dan DEMO_PASSWORD terisi sandi sendiri; tanpa itu data demo
+      # dilewati. Setelah mengubah keduanya, jalankan deploy ulang supaya
+      # seed berjalan.
       # - key: DEMO_SEED
       #   sync: false
       # - key: DEMO_PASSWORD

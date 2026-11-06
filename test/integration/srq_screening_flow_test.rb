@@ -84,7 +84,7 @@ class SrqScreeningFlowTest < ActionDispatch::IntegrationTest
 
   test "mahasiswa hanya membuka hasil miliknya" do
     screening = screening_for(users(:siti), 1)
-    sign_in account(:mahasiswa, "mahasiswa-lain")
+    sign_in account(:mahasiswa, "mahasiswa-lain", program: study_programs(:sarjana_kedokteran))
     get srq_screening_path(screening)
     assert_response :not_found
   end

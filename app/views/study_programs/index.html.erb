@@ -13,6 +13,7 @@
         <th class="text-left px-5 py-3">Nama</th>
         <th class="text-left px-5 py-3">Kode</th>
         <th class="text-left px-5 py-3">Jenjang</th>
+        <th class="text-left px-5 py-3">Kerangka Peta EPA</th>
         <th class="text-right px-5 py-3">Pengguna</th>
         <th class="px-5 py-3"></th>
       </tr>
@@ -23,6 +24,7 @@
           <td class="px-5 py-3 font-semibold text-gray-800"><%= sp.name %></td>
           <td class="px-5 py-3"><code class="text-xs bg-gray-100 px-1.5 py-0.5 rounded"><%= sp.code %></code></td>
           <td class="px-5 py-3 text-gray-600"><%= sp.level_label %></td>
+          <td class="px-5 py-3 text-gray-600"><%= sp.competency_framework&.name || "Bawaan" %></td>
           <td class="px-5 py-3 text-right text-gray-600"><%= sp.users.size %></td>
           <td class="px-5 py-3 text-right"><%= link_to "Sunting", edit_study_program_path(sp), class: "text-indigo-600 font-medium hover:underline" %></td>
         </tr>

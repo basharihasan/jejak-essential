@@ -70,10 +70,21 @@ Rails.application.routes.draw do
   get   "persetujuan/:token", to: "public/patient_consents#show",   as: :public_patient_consent
   patch "persetujuan/:token", to: "public/patient_consents#update"
 
-  resources :clinical_rotations, except: %i[show]
+  resources :clinical_rotations, except: %i[show] do
+    collection do
+      get  :import
+      post :import, action: :import_create
+      get  :import_template
+    end
+  end
   # Enrolment Tutorial (PSSK) — padanan rotasi klinik untuk blok/sistem.
   resources :tutorial_enrollments, except: %i[show] do
     member { patch :toggle_active }
+    collection do
+      get  :import
+      post :import, action: :import_create
+      get  :import_template
+    end
   end
   resources :academic_periods, except: %i[show]
   resources :study_programs, only: %i[index new create edit update]
@@ -139,14 +150,17 @@ Rails.application.routes.draw do
         delete "mapping/:mapping_id", action: :remove_mapping, as: :remove_mapping
       end
     end
-    resources :users, only: %i[index edit update] do
+    resources :users, only: %i[index edit update destroy] do
       member do
         patch :reset_password
         patch :confirm_email
+        patch :deactivate
+        patch :reactivate
       end
       collection do
         get  :import
         post :import, action: :import_create
+        patch :registration
       end
     end
     # Relabel massal prodi mahasiswa dari CSV (pindah / label ke prodi saya) —
@@ -163,6 +177,7 @@ Rails.application.routes.draw do
   # Skrining mandiri SRQ-20 (mahasiswa) dan pemantauannya (kaprodi).
   resources :srq_screenings, only: %i[index new create show], path: "kesehatan-mental"
   get   "monitoring-srq",     to: "srq_monitoring#index",  as: :srq_monitoring
+  patch "monitoring-srq/status", to: "srq_monitoring#update_status", as: :srq_monitoring_status
   patch "monitoring-srq/:id", to: "srq_monitoring#update", as: :srq_monitoring_follow_up
 
   resources :dops_evaluations, except: %i[index] do

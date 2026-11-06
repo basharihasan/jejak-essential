@@ -311,7 +311,7 @@
             <%= f.check_box :recommend_remediation, class: "rounded border-gray-300" %>
             Rekomendasikan remediasi tambahan
           </label>
-          <% epa_items = CompetencyFramework.order(:id).first&.domains || [] %>
+          <% epa_items = CompetencyFramework.for_student(@clinical_case.user)&.domains || [] %>
           <% if epa_items.any? %>
             <div>
               <p class="text-xs font-semibold text-gray-600 mb-1">EPA / ranah kompetensi yang dibuktikan kasus ini <span class="font-normal text-gray-400">(menulis level entrustment 1–5 ke Peta EPA)</span></p>

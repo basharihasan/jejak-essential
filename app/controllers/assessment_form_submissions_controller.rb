@@ -45,7 +45,7 @@ class AssessmentFormSubmissionsController < ApplicationController
   # ?subject_user_id= (sah atau tidak) berakhir ArgumentError → galat 500.
   def load_subject_candidates
     codes = params[:subject_role].to_s == "mahasiswa" ? %w[mahasiswa] : %w[dosen preseptor]
-    scope = User.where(id: User.joins(:roles).where(roles: { code: codes }).select(:id))
+    scope = User.where(id: User.active_accounts.joins(:roles).where(roles: { code: codes }).select(:id))
     scope = scope.or(User.where(id: params[:subject_user_id])) if params[:subject_user_id].present?
     @subject_candidates = scope.order(:full_name)
   end

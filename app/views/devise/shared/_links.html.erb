@@ -2,7 +2,7 @@
   <p><%= link_to "Masuk", new_session_path(resource_name) %></p>
 <% end %>
 
-<%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+<%- if devise_mapping.registerable? && controller_name != 'registrations' && AppSetting.registration_open? %>
   <p><%= link_to "Daftar", new_registration_path(resource_name) %></p>
 <% end %>
 

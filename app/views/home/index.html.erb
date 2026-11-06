@@ -81,7 +81,9 @@
 
       <div class="flex items-center gap-2">
         <%= link_to "Masuk", new_user_session_path, class: "rounded-xl px-4 py-2 text-sm font-semibold text-white hover:bg-white/10" %>
-        <%= link_to "Daftar", new_user_registration_path, class: "hidden rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/20 sm:inline-block" %>
+        <% if AppSetting.registration_open? %>
+          <%= link_to "Daftar", new_user_registration_path, class: "hidden rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/20 hover:bg-white/20 sm:inline-block" %>
+        <% end %>
       </div>
     </nav>
   </header>
@@ -323,10 +325,12 @@
   <section class="bg-white pb-20 sm:pb-24">
     <div class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
       <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Mulai catat jejak belajar hari ini</h2>
-      <p class="mx-auto mt-4 max-w-xl text-gray-600">Masuk dengan akun institusi Anda, atau daftar lalu tunggu admin program studi menetapkan peran Anda.</p>
+      <p class="mx-auto mt-4 max-w-xl text-gray-600"><%= AppSetting.registration_open? ? "Masuk dengan akun institusi Anda, atau daftar lalu tunggu admin program studi menetapkan peran Anda." : "Masuk dengan akun yang diberikan admin program studi Anda." %></p>
       <div class="mt-8 flex flex-wrap justify-center gap-3">
         <%= link_to "Masuk", new_user_session_path, class: "rounded-xl bg-indigo-600 px-7 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700" %>
-        <%= link_to "Daftar akun", new_user_registration_path, class: "rounded-xl px-7 py-3 text-sm font-semibold text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50" %>
+        <% if AppSetting.registration_open? %>
+          <%= link_to "Daftar akun", new_user_registration_path, class: "rounded-xl px-7 py-3 text-sm font-semibold text-gray-700 ring-1 ring-gray-300 hover:bg-gray-50" %>
+        <% end %>
       </div>
     </div>
   </section>

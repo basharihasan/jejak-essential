@@ -17,6 +17,36 @@
   <% end %>
 </div>
 
+<% program = current_user.study_program %>
+<% if program.srq_enabled? %>
+  <div class="mt-4 bg-white rounded-2xl ring-1 ring-emerald-200 px-5 py-4 flex items-center justify-between gap-4 flex-wrap" data-testid="srq-status">
+    <div>
+      <p class="text-sm font-semibold text-emerald-800">SRQ-20 aktif untuk <%= program.name %></p>
+      <p class="text-xs text-gray-500 mt-0.5">Diaktifkan <%= program.srq_enabled_by&.full_name || "—" %> pada <%= l(program.srq_enabled_at.to_date, format: :long) %>. Menu Kesehatan Mental tampil bagi mahasiswa prodi ini.</p>
+    </div>
+    <%= button_to "Nonaktifkan", srq_monitoring_status_path, method: :patch, params: { enabled: "0" },
+          form: { data: { turbo_confirm: "Nonaktifkan SRQ-20? Mahasiswa tidak dapat mengisi lagi, tetapi riwayat hasil tetap tersimpan." } },
+          class: "rounded-xl bg-white ring-1 ring-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-semibold px-4 py-2 cursor-pointer" %>
+  </div>
+<% else %>
+  <%= form_with url: srq_monitoring_status_path, method: :patch, class: "mt-4 bg-white rounded-2xl ring-1 ring-amber-200 p-5 space-y-3", data: { testid: "srq-status" } do %>
+    <%= hidden_field_tag :enabled, "1", id: nil %>
+    <div>
+      <p class="text-sm font-semibold text-amber-900">SRQ-20 belum aktif untuk <%= program.name %></p>
+      <p class="text-xs text-gray-600 mt-0.5">Menu Kesehatan Mental belum tampil bagi mahasiswa. Aktifkan setelah hal berikut siap, karena tanda "Perlu Perhatian Segera" hanya muncul di halaman ini dan harus ada yang menindaklanjuti.</p>
+    </div>
+    <div class="space-y-1.5">
+      <% SrqMonitoringController::READINESS_ITEMS.each do |item, label| %>
+        <label class="flex items-start gap-2 text-sm text-gray-700">
+          <%= check_box_tag item, "1", false, required: true, class: "mt-0.5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" %>
+          <span><%= label %></span>
+        </label>
+      <% end %>
+    </div>
+    <%= submit_tag "Aktifkan SRQ-20", class: "rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2 cursor-pointer" %>
+  <% end %>
+<% end %>
+
 <div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 text-xs text-slate-600">
   Data kesehatan bersifat rahasia dan diberikan mahasiswa dengan persetujuan untuk tindak lanjut. SRQ-20 adalah penapisan, bukan diagnosis, dan tidak boleh memengaruhi penilaian akademik.
 </div>
