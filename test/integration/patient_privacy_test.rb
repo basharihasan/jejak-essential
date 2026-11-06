@@ -193,7 +193,73 @@ class PatientPrivacyTest < ActionDispatch::IntegrationTest
 
     sign_in users(:siti)
     get clinical_case_path(@case)
-    assert_match "Dijawab oleh Ahmad F.", response.body
+    assert_match "Dijawab oleh AF***", response.body # tersamar, bahkan bagi pemilik
+    assert_no_match "Ahmad F.", response.body
+  end
+
+  test "nama penanda tangan tersamar bagi pengajar lain dan terbuka bagi pembimbing atau lewat Break Glass" do
+    @case.create_patient_consent!.sign!(answers: { "education" => "1" }, signer_name: "Ahmad Fauzi", signer_relation: "pasien")
+    outsider = User.create!(full_name: "Dosen Luar", email: "dosen-luar@example.com", password: "Str0ngPass!x", confirmed_at: Time.current)
+    outsider.roles << roles(:dosen)
+
+    sign_in outsider
+    get clinical_case_path(@case)
+    assert_match "Dijawab oleh AF***", response.body
+    assert_no_match "Dijawab oleh Ahmad Fauzi", response.body
+
+    post break_glass_clinical_case_path(@case), params: { reason: "Perlu memastikan identitas pasien" }
+    get clinical_case_path(@case)
+    assert_match "Dijawab oleh Ahmad Fauzi", response.body
+    sign_out outsider
+
+    @case.update!(supervisor: users(:budi))
+    sign_in users(:budi)
+    get clinical_case_path(@case)
+    assert_match "Dijawab oleh Ahmad Fauzi", response.body
+  end
+
+  test "nama yang dikirim pasien tidak tercatat di log" do
+    consent = @case.create_patient_consent!
+    logged = nil
+    capture = ->(_name, _started, _finished, _id, payload) { logged = payload[:params] }
+    ActiveSupport::Notifications.subscribed(capture, "start_processing.action_controller") do
+      patch public_patient_consent_path(consent.token), params: { items: { education: "1" }, signer_name: "Ahmad Fauzi", signer_relation: "pasien" }
+    end
+
+    assert_equal "[FILTERED]", logged["signer_name"]
+    assert_equal "Ahmad Fauzi", consent.reload.signer_name
+  end
+
+  test "lembar yang sudah dijawab tidak bisa ditimpa pemegang tautan" do
+    consent = @case.create_patient_consent!
+    patch public_patient_consent_path(consent.token), params: { items: { education: "1", photo: "1" }, signer_name: "Pasien Asli", signer_relation: "pasien" }
+    signed_at = consent.reload.signed_at
+
+    patch public_patient_consent_path(consent.token), params: { items: { education: "0" }, signer_name: "Orang Lain", signer_relation: "wali" }
+    assert_redirected_to public_patient_consent_path(consent.token)
+    consent.reload
+    assert_equal "Pasien Asli", consent.signer_name
+    assert consent.granted?("photo")
+    assert_equal signed_at, consent.signed_at
+  end
+
+  test "lembar persetujuan terbuka di ponsel lama; halaman lain tetap menolak peramban lama" do
+    chrome_100 = { "User-Agent" => "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36" }
+    ios_15 = { "User-Agent" => "Mozilla/5.0 (iPhone; CPU iPhone OS 15_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Mobile/15E148 Safari/604.1" }
+    consent = @case.create_patient_consent!
+
+    [ chrome_100, ios_15 ].each do |headers|
+      get public_patient_consent_path(consent.token), headers: headers
+      assert_response :success
+      assert_match "@supports not", response.body
+    end
+
+    patch public_patient_consent_path(consent.token), headers: chrome_100,
+                                                      params: { items: { education: "1" }, signer_name: "Pasien", signer_relation: "pasien" }
+    assert consent.reload.signed?
+
+    get new_user_session_path, headers: chrome_100
+    assert_response :not_acceptable
   end
 
   test "pasien tanpa nama ditolak dan lembar yang dicabut tidak bisa diisi" do

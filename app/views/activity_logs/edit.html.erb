@@ -4,5 +4,10 @@
     <%= link_to "← #{@activity_log.title}", activity_log_path(@activity_log), class: "text-sm text-indigo-600 hover:text-indigo-800" %>
     <h1 class="mt-2 text-xl font-bold text-gray-900"><%= term("terms.edit_activity") %></h1>
   </div>
+  <% if @activity_log.verified? %>
+    <div class="rounded-xl bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
+      Kegiatan ini sudah diverifikasi. Mengubah isi, waktu, bukti, atau kompetensi mengembalikannya ke antrean verifikasi. Kolom refleksi boleh diubah tanpa verifikasi ulang.
+    </div>
+  <% end %>
   <%= render "form", activity_log: @activity_log %>
 </div>

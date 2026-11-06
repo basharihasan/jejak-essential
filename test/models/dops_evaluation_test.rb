@@ -69,6 +69,18 @@ class DopsEvaluationTest < ActiveSupport::TestCase
     assert dops.submitted?
   end
 
+  test "permintaan yang dikirim lewat form sunting memberi tahu mahasiswa sekali" do
+    dops = DopsEvaluation.create!(student: users(:siti), evaluator: users(:budi), clinical_rotation: clinical_rotations(:ongoing_rotation_siti),
+                                  evaluated_at: Date.current, procedure_name: "Hecting", status: "requested", scores: {})
+
+    assert_difference -> { users(:siti).notifications.count }, 1 do
+      dops.update!(status: "submitted", scores: { "komunikasi" => 6, "profesionalisme" => 7, "penilaian_global" => 6 })
+    end
+    assert_no_difference "Notification.count" do
+      dops.update!(overall_feedback: "Suntingan sesudah terkirim")
+    end
+  end
+
   test "avg_dimension_scores menghitung rata-rata per dimensi lintas evaluasi" do
     averages = DopsEvaluation.avg_dimension_scores(DopsEvaluation.where(id: dops_evaluations(:dops_siti_infus).id))
     assert_equal 7.0, averages["persiapan"]

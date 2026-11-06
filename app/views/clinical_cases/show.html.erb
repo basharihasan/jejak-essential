@@ -60,7 +60,8 @@
         identity_visible: @identity_visible, privacy_mode: @privacy_mode, break_glass: @break_glass %>
 
   <% if policy(@clinical_case).issue_consent? || @patient_consent %>
-    <%= render "clinical_cases/patient_consent", clinical_case: @clinical_case, consent: @patient_consent %>
+    <%= render "clinical_cases/patient_consent", clinical_case: @clinical_case, consent: @patient_consent,
+          identity_visible: @identity_visible %>
   <% end %>
 
   <%# Mini-CEX / DOPS — diinisiasi mahasiswa dari kasus ini (Pilar B). %>
@@ -281,7 +282,7 @@
       <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Bukti Pendukung</p>
       <div class="flex flex-wrap gap-2">
         <% @clinical_case.evidence_files.each do |file| %>
-          <%= link_to rails_blob_path(file, disposition: "attachment"), class: "text-xs bg-gray-50 hover:bg-gray-100 rounded-lg px-3 py-2 text-gray-600" do %>
+          <%= link_to stored_attachment_path(file), class: "text-xs bg-gray-50 hover:bg-gray-100 rounded-lg px-3 py-2 text-gray-600" do %>
             📎 <%= file.filename %>
           <% end %>
         <% end %>

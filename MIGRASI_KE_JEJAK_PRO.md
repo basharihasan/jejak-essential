@@ -55,9 +55,9 @@ Paket berformat **1.1** sejak 17 September 2026: `logbook_kegiatan.csv` mendapat
 
 ### Data pasien
 
-Secara bawaan, identitas pasien (nama, No. RM, tanggal lahir, telepon, alamat) **tidak ikut**: kolomnya dikosongkan dan lampiran kasus/persetujuan pasien dilewati. `INCLUDE_PATIENT_IDENTITY=true` memindahkannya sebagai teks biasa, dan manifest mencatat pilihan itu. Perlakukan paket tersebut sebagai rekam medis. No. RM tidak pernah tersimpan di jejak.pro karena jejak.pro hanya menyimpan hash-nya.
+Secara bawaan, identitas pasien (nama, No. RM, tanggal lahir, telepon, alamat, serta nama penanda tangan lembar persetujuan) **tidak ikut**: kolomnya dikosongkan dan lampiran kasus/persetujuan pasien dilewati. `INCLUDE_PATIENT_IDENTITY=true` memindahkannya sebagai teks biasa, dan manifest mencatat pilihan itu. Perlakukan paket tersebut sebagai rekam medis. No. RM tidak pernah tersimpan di jejak.pro karena jejak.pro hanya menyimpan hash-nya.
 
-Kata sandi dan token tidak pernah ikut dalam kondisi apa pun.
+Kata sandi dan token (termasuk token lembar persetujuan) tidak pernah ikut dalam kondisi apa pun.
 
 ## 3–5. Impor (jejak.pro)
 

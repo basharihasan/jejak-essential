@@ -29,7 +29,7 @@
         <%# persisted?: saat form gagal disimpan, foto baru yang belum tersimpan
             belum punya URL — tampilkan foto lama (atau inisial) saja. %>
         <% if @user.avatar.attached? && @user.avatar.persisted? %>
-          <%= image_tag @user.avatar, class: "h-20 w-20 rounded-full object-cover ring-1 ring-gray-200" %>
+          <%= image_tag stored_attachment_path(@user.avatar.attachment), alt: @user.full_name, class: "h-20 w-20 rounded-full object-cover ring-1 ring-gray-200" %>
         <% else %>
           <span class="h-20 w-20 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center text-2xl font-bold"><%= @user.full_name.first.upcase %></span>
         <% end %>

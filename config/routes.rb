@@ -17,6 +17,9 @@ Rails.application.routes.draw do
   get "mahasiswa/:id", to: "student_dashboards#show", as: :student_dashboard
   get "panduan", to: "panduan#index", as: :panduan
   get "brand", to: "brand#index", as: :brand
+  # Unduhan lampiran (bukti kasus/kegiatan, dokumen asesmen, foto profil) —
+  # selalu diperiksa izinnya; rute bawaan Active Storage dimatikan.
+  get "lampiran/:id", to: "attachments#show", as: :stored_attachment, constraints: { id: /\d+/ }
 
   # Pengaturan Saya — tema & ukuran huruf (dipakai tombol tema topbar juga).
   get   "pengaturan",          to: "settings/preferences#edit",              as: :my_settings

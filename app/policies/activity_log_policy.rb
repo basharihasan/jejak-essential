@@ -12,8 +12,9 @@ class ActivityLogPolicy < ApplicationPolicy
     owner?
   end
 
+  # Kegiatan terverifikasi sudah menjadi bukti yang disahkan pembimbing.
   def destroy?
-    owner?
+    owner? && !record.verified?
   end
 
   def verify?

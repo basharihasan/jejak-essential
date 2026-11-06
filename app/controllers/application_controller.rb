@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   # Rails (Safari 17.2+): itu menolak iPhone 8/X yang mentok di iOS 16, padahal
   # masih banyak dipakai mahasiswa. Peramban tak dikenal (Samsung Internet,
   # Edge, webview aplikasi) tetap diizinkan.
-  allow_browser versions: { safari: 16.4, chrome: 111, firefox: 128, opera: 97, ie: false }
+  allow_browser versions: { safari: 16.4, chrome: 111, firefox: 128, opera: 97, ie: false }, unless: :open_to_any_browser?
 
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
@@ -83,6 +83,12 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  # Halaman yang harus terbuka walau perambannya lama; lihat
+  # Public::PatientConsentsController.
+  def open_to_any_browser?
+    false
+  end
 
   def reject_non_scalar_query_params
     # nil = kunci tanpa nilai (?unduh) — tetap skalar.

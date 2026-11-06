@@ -28,5 +28,10 @@ module JejakLite
     # halaman tidak pernah menampilkan "translation missing".
     config.i18n.fallbacks = { en: :id, id: :en }
     # config.eager_load_paths << Rails.root.join("extras")
+
+    # Rute bawaan Active Storage dimatikan: tautannya terbuka tanpa login dan
+    # tidak kedaluwarsa, padahal bukti kasus bisa memuat foto pasien. Semua
+    # unduhan lewat AttachmentsController yang memeriksa izin.
+    config.active_storage.draw_routes = false
   end
 end

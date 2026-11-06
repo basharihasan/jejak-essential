@@ -187,6 +187,70 @@ class RoleAccessTest < ActionDispatch::IntegrationTest
     assert_equal "submitted", own.reload.status
   end
 
+  test "kaprodi hanya mengambil percobaan prodinya; penguji yang ditunjuk tetap bisa menilai" do
+    kaprodi = users(:dedi) # prodi pssk
+    student = User.create!(full_name: "Mahasiswa PSPD", email: "mhs-pspd@example.com", password: "Str0ngPass!x",
+                           confirmed_at: Time.current, study_program: study_programs(:profesi_dokter))
+    student.roles << roles(:mahasiswa)
+    outside = student.assessment_instances.create!(assessment_event: assessment_events(:soca_kardio), attempt_number: 1, max_score: 100,
+                                                   status: "submitted", submitted_at: Time.current, self_evaluation: "EVALUASI-DIRI-RAHASIA")
+    inside = users(:siti).assessment_instances.create!(assessment_event: assessment_events(:soca_kardio), attempt_number: 1, max_score: 100,
+                                                       status: "submitted", submitted_at: Time.current)
+
+    sign_in kaprodi
+    get examiner_evaluations_path
+    assert_select "a[href=?]", examiner_evaluation_path(inside)
+    assert_select "a[href=?]", examiner_evaluation_path(outside), 0
+
+    get examiner_evaluation_path(outside)
+    assert_response :redirect
+    assert_no_match "EVALUASI-DIRI-RAHASIA", response.body
+
+    patch examiner_evaluation_path(outside), params: { assessment_instance: { score: 80 } }
+    assert_nil outside.reload.score
+    assert_equal "submitted", outside.status
+
+    patch examiner_evaluation_path(inside), params: { assessment_instance: { score: 80 } }
+    assert_equal 80, inside.reload.score.to_i
+
+    outside.update!(examiner: kaprodi)
+    get examiner_evaluation_path(outside)
+    assert_response :success
+    patch examiner_evaluation_path(outside), params: { assessment_instance: { score: 75 } }
+    assert_equal 75, outside.reload.score.to_i
+  end
+
+  test "dosen tetap boleh mengambil percobaan lintas prodi" do
+    student = User.create!(full_name: "Mahasiswa PSPD", email: "mhs-pspd@example.com", password: "Str0ngPass!x",
+                           confirmed_at: Time.current, study_program: study_programs(:profesi_dokter))
+    student.roles << roles(:mahasiswa)
+    instance = student.assessment_instances.create!(assessment_event: assessment_events(:soca_kardio), attempt_number: 1, max_score: 100,
+                                                    status: "submitted", submitted_at: Time.current)
+
+    sign_in users(:budi)
+    get examiner_evaluations_path
+    assert_select "a[href=?]", examiner_evaluation_path(instance)
+    patch examiner_evaluation_path(instance), params: { assessment_instance: { score: 70 } }
+    assert_equal 70, instance.reload.score.to_i
+  end
+
+  test "kaprodi tanpa prodi binaan tidak membuka mahasiswa yang juga tanpa prodi" do
+    kaprodi = User.create!(full_name: "Kaprodi Kosong", email: "kaprodi-kosong@example.com", password: "Str0ngPass!x", confirmed_at: Time.current)
+    kaprodi.roles << roles(:kaprodi)
+    student = User.create!(full_name: "Mahasiswa Kosong", email: "mhs-kosong@example.com", password: "Str0ngPass!x", confirmed_at: Time.current)
+    student.roles << roles(:mahasiswa)
+    instance = student.assessment_instances.create!(assessment_event: assessment_events(:soca_kardio), attempt_number: 1, max_score: 100,
+                                                    status: "submitted", submitted_at: Time.current)
+
+    assert_not kaprodi.can_view_student?(student)
+
+    sign_in kaprodi
+    get student_dashboard_path(student)
+    assert_response :redirect
+    get examiner_evaluations_path
+    assert_select "a[href=?]", examiner_evaluation_path(instance), 0
+  end
+
   test "mahasiswa tidak mengumpulkan dokumen ke ujian impor" do
     instance = users(:siti).assessment_instances.create!(assessment_event: assessment_events(:cbt_blok), attempt_number: 2, max_score: 100)
 

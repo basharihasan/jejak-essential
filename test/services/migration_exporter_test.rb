@@ -68,6 +68,25 @@ class MigrationExporterTest < ActiveSupport::TestCase
     assert @dir.join("data/terminology_overrides.json").exist?
   end
 
+  test "nama penanda tangan hanya ikut bila diminta; token lembar dan unlock_token tidak pernah" do
+    consent = clinical_cases(:submitted_case_siti).create_patient_consent!
+    consent.sign!(answers: { "education" => "1" }, signer_name: "Ny. Rahasia Sekali", signer_relation: "pasien")
+    users(:siti).update_column(:unlock_token, "TOKEN-BUKA-KUNCI")
+
+    MigrationExporter.new(dir: @dir.join("tanpa")).call
+    consents = @dir.join("tanpa/data/patient_consents.json").read
+    row = JSON.parse(consents).find { |r| r["id"] == consent.id }
+    assert_nil row["signer_name"]
+    assert_not row.key?("token")
+    assert_no_match consent.token, consents
+    assert_no_match "TOKEN-BUKA-KUNCI", @dir.join("tanpa/data/users.json").read
+
+    MigrationExporter.new(dir: @dir.join("dengan"), include_patient_identity: true).call
+    row = JSON.parse(@dir.join("dengan/data/patient_consents.json").read).find { |r| r["id"] == consent.id }
+    assert_equal "Ny. Rahasia Sekali", row["signer_name"]
+    assert_not row.key?("token")
+  end
+
   test "identitas pasien tidak ikut kecuali diminta" do
     kasus = clinical_cases(:submitted_case_siti)
     kasus.update!(patient_name: "Ny. Rahasia Sekali")

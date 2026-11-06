@@ -9,9 +9,10 @@
 #
 # Status draft/submitted meniru JEJAK: evaluator bisa mulai menilai lalu
 # menyelesaikannya nanti. Notifikasi ke mahasiswa BARU terkirim saat status
-# jadi "submitted" (lewat #submit! atau langsung dibuat submitted, default
-# kolom) — bukan saat draft dibuat, supaya mahasiswa tidak dapat notifikasi
-# untuk evaluasi yang belum selesai ditulis evaluatornya.
+# jadi "submitted" — lewat jalur mana pun (#submit!, tombol Kirim Evaluasi di
+# form sunting, atau langsung dibuat submitted) — bukan saat draft dibuat,
+# supaya mahasiswa tidak dapat notifikasi untuk evaluasi yang belum selesai
+# ditulis evaluatornya.
 module DimensionScorable
   extend ActiveSupport::Concern
 
@@ -39,7 +40,7 @@ module DimensionScorable
     belongs_to :clinical_case, optional: true
     scope :submitted, -> { where(status: "submitted") }
 
-    after_create_commit :notify_student, if: :submitted?
+    after_commit :notify_student_when_submitted, on: %i[create update]
   end
 
   def score_for(key)
@@ -73,7 +74,6 @@ module DimensionScorable
     return if submitted?
 
     update!(status: "submitted")
-    notify_student
   end
 
   # Rata-rata tiap dimensi lintas beberapa evaluasi (mis. semua DOPS milik
@@ -89,6 +89,15 @@ module DimensionScorable
   end
 
   private
+
+  # Satu callback untuk create & update: Rails menyatukan callback bermetode
+  # sama, jadi after_create_commit + after_update_commit :notify_student hanya
+  # menjalankan yang terakhir.
+  def notify_student_when_submitted
+    return unless submitted? && (previously_new_record? || saved_change_to_status?)
+
+    notify_student
+  end
 
   def required_dimensions_scored
     self.class::REQUIRED_DIMENSIONS.each do |dim|

@@ -5,6 +5,91 @@ class ActivityLogsControllerTest < ActionDispatch::IntegrationTest
 
   setup { sign_in users(:budi) }
 
+  def verified_log(**attrs)
+    log = users(:budi).activity_logs.create!(title: "Jaga malam", activity_date: Date.new(2026, 10, 1), category: "klinis",
+                                             started_at: Time.zone.local(2026, 10, 1, 8, 0), delivery_mode: "luring",
+                                             academic_activity_domain: academic_activity_domains(:praktek), **attrs)
+    log.verify!(by: users(:wati))
+    log
+  end
+
+  def form_params(log, **changes)
+    { title: log.title, academic_activity_domain_id: log.academic_activity_domain_id, delivery_mode: log.delivery_mode,
+      started_at: log.started_at&.strftime("%Y-%m-%dT%H:%M") || "2026-10-01T08:00" }.merge(changes)
+  end
+
+  test "mengubah isi kegiatan terverifikasi mengembalikannya ke antrean verifikasi" do
+    log = verified_log
+    patch activity_log_path(log), params: { activity_log: form_params(log, title: "Isi diubah") }
+
+    log.reload
+    assert_equal "Isi diubah", log.title
+    assert_not log.verified?
+    assert_nil log.verified_by
+    assert_match "diverifikasi ulang", flash[:notice]
+    assert_includes ActivityLog.awaiting_verification_by(users(:wati)), log
+  end
+
+  test "mengubah waktu kegiatan terverifikasi meminta verifikasi ulang" do
+    log = verified_log
+    patch activity_log_path(log), params: { activity_log: form_params(log, started_at: "2026-10-01T20:00") }
+    assert_not log.reload.verified?
+  end
+
+  test "menyimpan tanpa perubahan atau mengubah refleksi saja mempertahankan verifikasi" do
+    log = verified_log
+    log.update_column(:started_at, Time.zone.local(2026, 10, 1, 8, 0, 37)) # detik tidak terkirim dari form
+
+    patch activity_log_path(log), params: { activity_log: form_params(log) }
+    assert log.reload.verified?
+
+    patch activity_log_path(log), params: { activity_log: form_params(log, reflection: "Pelajaran dari jaga malam") }
+    log.reload
+    assert_equal "Pelajaran dari jaga malam", log.reflection
+    assert log.verified?
+    assert_equal users(:wati), log.verified_by
+  end
+
+  test "kegiatan lama tanpa jam tetap terverifikasi saat jam isian awal terkirim" do
+    log = verified_log
+    log.update_column(:started_at, nil)
+
+    patch activity_log_path(log), params: { activity_log: form_params(log, started_at: "2026-10-01T08:00") }
+    assert log.reload.verified?
+  end
+
+  test "menambah bukti atau mengubah kompetensi meminta verifikasi ulang" do
+    log = verified_log
+    upload = Rack::Test::UploadedFile.new(StringIO.new("%PDF-1.4 bukti"), "application/pdf", original_filename: "baru.pdf")
+    patch activity_log_path(log), params: { activity_log: form_params(log, evidence_files: [ "", upload ]) }
+    assert_not log.reload.verified?
+
+    tagged = verified_log
+    patch activity_log_path(tagged), params: { activity_log: form_params(tagged, competency_item_ids: [ "", CompetencyItem.first.id ]) }
+    assert_not tagged.reload.verified?
+  end
+
+  test "membuat kode pasien tidak membatalkan verifikasi" do
+    log = verified_log
+    post generate_patient_code_activity_log_path(log)
+    assert log.reload.patient_code.present?
+    assert log.verified?
+  end
+
+  test "kegiatan terverifikasi tidak bisa dihapus dan tombolnya tidak ditawarkan" do
+    log = verified_log
+    get activity_log_path(log)
+    assert_select "form[action=?][method=post] input[name=_method][value=delete]", activity_log_path(log), 0
+
+    delete activity_log_path(log)
+    assert ActivityLog.exists?(log.id)
+  end
+
+  test "form sunting kegiatan terverifikasi memberi peringatan" do
+    get edit_activity_log_path(verified_log)
+    assert_match "antrean verifikasi", response.body
+  end
+
   test "menolak akses tanpa login" do
     sign_out users(:budi)
     get activity_logs_path
