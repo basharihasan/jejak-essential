@@ -11,11 +11,15 @@ class StudyProgramsController < ApplicationController
 
   def new
     authorize StudyProgram
+    return redirect_to study_programs_path, alert: program_locked_alert if StudyProgram.at_max_count?
+
     @study_program = StudyProgram.new(level: "sarjana")
   end
 
   def create
     authorize StudyProgram
+    return redirect_to study_programs_path, alert: program_locked_alert if StudyProgram.at_max_count?
+
     @study_program = StudyProgram.new(study_program_params)
     if @study_program.save
       redirect_to study_programs_path, notice: "Program studi berhasil ditambahkan."
@@ -38,6 +42,10 @@ class StudyProgramsController < ApplicationController
   end
 
   private
+
+  def program_locked_alert
+    "Jumlah program studi dikunci maksimal #{StudyProgram::MAX_COUNT}. Prodi yang ada dapat disunting, bukan ditambah."
+  end
 
   def set_study_program
     @study_program = StudyProgram.find(params[:id])
