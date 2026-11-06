@@ -10,3 +10,6 @@
 Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn, :cvv, :cvc, :signer_name
 ]
+
+# Jawaban SRQ dan catatan tindak lanjutnya adalah data kesehatan.
+Rails.application.config.filter_parameters += [ :srq_answers, :follow_up_note ]

@@ -273,6 +273,10 @@ Hasil pemeriksaan terhadap KAK dan uji perilaku:
 - Notifikasi DOPS/Mini-CEX terkirim lewat jalur mana pun saat status menjadi `submitted`.
 - Kegiatan terverifikasi kembali ke antrean bila isinya berubah, dan tidak bisa dihapus pemiliknya.
 
+### ✅ Self-Reporting Mental Health: SRQ-20 (6 November 2026)
+
+Skrining mandiri mahasiswa (`/kesehatan-mental`) dan Monitoring SRQ kaprodi (`/monitoring-srq`). Ambang 6 "ya" mengikuti Kemenkes; jawaban "ya" pada butir 17 selalu ditandai perlu perhatian segera. Hanya jawaban dan catatan tindak lanjut yang disimpan, terenkripsi; skor dan kategori dihitung dari jawaban, jadi agregat dihitung di memori. Pengisian mensyaratkan persetujuan. Kaprodi tidak melihat jawaban per butir, admin bukan kaprodi tidak punya akses, dan datanya tidak ikut Ekspor Data maupun paket migrasi. Rumusan butir bahasa Indonesia perlu ditinjau ahli konten terhadap versi resmi yang dipakai institusi.
+
 ## Model Data (ringkas, akan detail per fase saat digarap)
 
 | Tabel | Fase | Status |

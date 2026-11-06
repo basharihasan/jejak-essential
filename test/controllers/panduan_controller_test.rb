@@ -13,7 +13,7 @@ class PanduanControllerTest < ActionDispatch::IntegrationTest
     get panduan_path
 
     assert_response :success
-    assert_select "h1", "Panduan Pengguna JEJAK Essential"
+    assert_select "h1", "Panduan Penggunaan JEJAK Essential"
     assert_select "h2#daftar-isi"
   end
 
