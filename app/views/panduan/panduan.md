@@ -521,6 +521,7 @@ Instalasi baru menutup pendaftaran mandiri secara bawaan: tautan **Daftar** tida
 - **Akun terkunci**: setelah 10 kali salah kata sandi, akun terkunci 15 menit lalu terbuka sendiri; admin juga bisa membukanya lewat **Reset Kata Sandi**. Percobaan masuk yang terlalu cepat dari satu perangkat dibatasi sementara (pesan "Terlalu banyak percobaan").
 - **Sesi**: tanpa centang **Ingat saya**, sesi berakhir setelah 2 jam tidak aktif. Kata sandi `password123` tidak dapat dipakai karena tercantum publik.
 - **Ganti kata sandi / email**: menu akun (pojok kanan atas) → **Pengaturan Saya** → tautan **Pengaturan Akun**, atau langsung ke `/users/edit`. Ubah **Email** dan/atau isi **Kata Sandi Baru** + **Ulangi Kata Sandi Baru** (kosongkan bila tidak ingin mengganti), lalu isi **Kata Sandi Saat Ini** — wajib untuk menyimpan perubahan apa pun di halaman itu. Pada instalasi yang mengirim email, email baru berlaku setelah tautan konfirmasi yang dikirim ke alamat baru dibuka.
+- **Informasi jejak.pro**: kartu **Tumbuh bersama JEJAK** di bagian bawah **Pengaturan Akun** merangkum fitur jejak.pro sesuai peran aktif Anda. Kartu ini tertutup secara bawaan dan tidak tampil selama Anda wajib membuat kata sandi baru.
 - **Keluar**: menu akun → **Keluar**.
 
 ![Halaman Masuk dengan isian email, kata sandi, dan centang Ingat saya](panduan/1-2-masuk.png)
@@ -699,7 +700,7 @@ Beranda (`/dashboard`) mengikuti pola beranda jejak.pro, dari atas ke bawah:
 - **Tahap studi** (Pre-Klinik/Sarjana → Klinik/Profesi, dari jenjang prodi Anda), kartu **fokus yang sedang berjalan** (rotasi atau blok aktif, preseptor/tutor, jumlah kegiatan bulan ini, kasus terverifikasi, refleksi, dan tombol Catat Kasus/Kegiatan/Tulis Refleksi), serta **Kelengkapan Profil**.
 - **Perhatian Akademik**: muncul bila dalam 30 hari terakhir ada kasus yang diverifikasi dengan **rekomendasi remediasi**, atau rata-rata DOPS/Mini-CEX Anda **di bawah 4** (skala 1–9).
 - **Pusat Asesmen & Capaian**: enam kartu pintasan — Evaluasi Akademik (dengan lencana jumlah asesmen menunggu), Workplace Assessment, Rubric-based Assessment, Jurnal Umpan Balik, Peta Kompetensi, Peta EPA.
-- **Radar kompetensi** rata-rata dimensi DOPS & Mini-CEX Anda (bila sudah ada evaluasi terkirim), lalu kartu informasi peningkatan ke jejak.pro (bisa diciutkan).
+- **Radar kompetensi** rata-rata dimensi DOPS & Mini-CEX Anda (bila sudah ada evaluasi terkirim).
 
 ![Beranda mahasiswa: sapaan, sponsor, Agenda Mendatang, tahap studi, rotasi berjalan, dan kelengkapan profil](panduan/4-1-beranda-mahasiswa.png)
 

@@ -12,7 +12,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_user_session_path
   end
 
-  test "semua peran melihat sapaan, kartu sponsor AIPKI, dan narasi jejak.pro" do
+  test "semua peran melihat sapaan dan kartu sponsor AIPKI, tanpa narasi jejak.pro" do
     %i[siti budi].each do |user|
       sign_in users(user)
       get dashboard_path
@@ -20,7 +20,7 @@ class DashboardControllerTest < ActionDispatch::IntegrationTest
       assert_response :success
       assert_match users(user).full_name, section("welcome-header").text
       assert_match "Sponsor Pengembangan", response.body
-      assert_match "Dari Essential ke jejak.pro", response.body
+      assert_no_match "Dari Essential ke jejak.pro", response.body
     end
   end
 
