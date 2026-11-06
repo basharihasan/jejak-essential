@@ -51,7 +51,7 @@ class DataExport
       key: "students", label: "Data Mahasiswa", group: :people, filters: %i[program], admin_only: false,
       description: "Satu baris per mahasiswa: identitas akademik, angkatan, kontak, dan aktivitas login.",
       headers: [ "Nama", "Email", "NPM / NIM", "Program Studi", "Jenjang", "Angkatan", "Jenis Kelamin", "Telepon",
-                 "Login Terakhir", "Jumlah Login", "Terdaftar Sejak" ]
+                 "Login Terakhir", "Jumlah Login", "Terdaftar Sejak", "Status Akun" ]
     ),
     Dataset.new(
       key: "student_summary", label: "Rekap Capaian per Mahasiswa", group: :people, filters: %i[program period dates], admin_only: false,
@@ -65,7 +65,7 @@ class DataExport
       key: "users", label: "Pengguna & Peran", group: :people, filters: %i[program], admin_only: true,
       description: "Seluruh akun beserta perannya. Empat kolom pertama berformat Impor CSV Pengguna, jadi berkasnya bisa diimpor ulang.",
       headers: [ "email", "nama", "peran", "prodi", "NIP / NIDN / NPM", "Peran Aktif", "Unit Kerja", "Jabatan",
-                 "Kategori Profesi", "Spesialisasi", "Telepon", "Login Terakhir", "Terdaftar Sejak" ]
+                 "Kategori Profesi", "Spesialisasi", "Telepon", "Login Terakhir", "Terdaftar Sejak", "Status Akun" ]
     ),
     Dataset.new(
       key: "activity_logs", label: "Logbook Kegiatan", group: :learning, filters: %i[program period dates], admin_only: false,
@@ -328,9 +328,12 @@ class DataExport
     program_students.includes(:study_program).order(:full_name, :id)
   end
 
+  def account_status(user) = user.deactivated? ? "Nonaktif" : "Aktif"
+
   def students_row(user)
     [ user.full_name, user.email, user.identifier_number, user.study_program&.name, user.study_program&.level_label,
-      user.cohort_year, user.gender, user.phone, user.last_sign_in_at, user.sign_in_count, user.created_at.to_date ]
+      user.cohort_year, user.gender, user.phone, user.last_sign_in_at, user.sign_in_count, user.created_at.to_date,
+      account_status(user) ]
   end
 
   def users_scope
@@ -342,7 +345,7 @@ class DataExport
     [ user.email, user.full_name, user.roles.map(&:code).sort.join("+"),
       user.study_program&.code.presence || user.study_program&.name, user.identifier_number, user.active_role&.name,
       user.work_unit, user.position, user.profession_category, user.specialization, user.phone,
-      user.last_sign_in_at, user.created_at.to_date ]
+      user.last_sign_in_at, user.created_at.to_date, account_status(user) ]
   end
 
   def student_summary_count

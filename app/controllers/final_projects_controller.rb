@@ -57,7 +57,7 @@ class FinalProjectsController < ApplicationController
   end
 
   def load_supervisors
-    @supervisors = User.joins(:roles).where(roles: { code: "dosen" }).order(:full_name)
+    @supervisors = User.active_accounts.joins(:roles).where(roles: { code: "dosen" }).order(:full_name)
   end
 
   def final_project_params

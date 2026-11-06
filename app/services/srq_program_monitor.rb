@@ -14,7 +14,7 @@ class SrqProgramMonitor
   end
 
   def students
-    @students ||= User.where(study_program_id: @program.id).where.not(id: @viewer.id)
+    @students ||= User.active_accounts.where(study_program_id: @program.id).where.not(id: @viewer.id)
                       .where(id: UserRole.joins(:role).where(roles: { code: "mahasiswa" }).select(:user_id))
   end
 

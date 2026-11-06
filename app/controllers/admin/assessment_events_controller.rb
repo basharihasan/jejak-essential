@@ -23,8 +23,8 @@ class Admin::AssessmentEventsController < ApplicationController
     @competency_items = competency_item_choices
     @instances = @event.assessment_instances.includes(:student, :examiner, assessment_dimension_scores: :assessment_dimension)
                        .joins(:student).order("users.full_name", :attempt_number)
-    @students = User.joins(:roles).where(roles: { code: "mahasiswa" }).distinct.order(:full_name)
-    @examiners = User.joins(:roles).where(roles: { code: %w[dosen preseptor kaprodi] }).distinct.order(:full_name)
+    @students = User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }).distinct.order(:full_name)
+    @examiners = User.active_accounts.joins(:roles).where(roles: { code: %w[dosen preseptor kaprodi] }).distinct.order(:full_name)
   end
 
   def new
@@ -256,7 +256,7 @@ class Admin::AssessmentEventsController < ApplicationController
     return registered.order(:full_name) if registered.exists?
     return User.none if @event.study_program_id.blank?
 
-    User.joins(:roles).where(roles: { code: "mahasiswa" }, study_program_id: @event.study_program_id).distinct.order(:full_name)
+    User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }, study_program_id: @event.study_program_id).distinct.order(:full_name)
   end
 
   # Tebakan awal pemetaan dari nama header (admin tetap bisa mengubah).

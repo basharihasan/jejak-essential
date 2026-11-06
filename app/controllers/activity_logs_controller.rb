@@ -106,7 +106,7 @@ class ActivityLogsController < ApplicationController
   # (token acak 24-byte), jadi tidak perlu login supaya aplikasi kalender
   # eksternal (Google Calendar dsb) bisa subscribe langsung.
   def feed
-    user = User.find_by(calendar_feed_token: params[:token])
+    user = User.active_accounts.find_by(calendar_feed_token: params[:token])
     return head :not_found if user.nil?
 
     logs = user.activity_logs.with_taxonomy.order(:activity_date)

@@ -108,12 +108,12 @@ class AnalyticsController < ApplicationController
   end
 
   def program_student_snapshots(program)
-    User.joins(:roles).where(roles: { code: "mahasiswa" }, study_program: program).distinct
+    User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }, study_program: program).distinct
       .order(:full_name).map { |student| student_snapshot(student) }
   end
 
   def program_radar(program)
-    student_ids = User.joins(:roles).where(roles: { code: "mahasiswa" }, study_program: program).pluck(:id)
+    student_ids = User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }, study_program: program).pluck(:id)
     return nil if student_ids.empty?
 
     rotation_ids = ClinicalRotation.where(user_id: student_ids, academic_period: @selected_period).pluck(:id)

@@ -13,8 +13,8 @@
 #
 # Jalankan dari folder repo di NAS (SSH) — Caddyfile di-mount relatif:
 #   docker compose -f docker-compose.https.yml up -d
-#   docker compose -f docker-compose.https.yml exec web bin/rails db:seed   # data rujukan
-#   (lalu buat admin — lihat users:create_admin / runner di NAS_DEPLOY)
+#   Admin pertama: isi ADMIN_EMAIL & ADMIN_PASSWORD di .env sebelum `up`, atau
+#   jalankan users:create_admin sesudahnya (lihat NAS_DEPLOY).
 #
 # Catatan Container Station: alur "paste YAML" tidak menyertakan ./Caddyfile,
 # jadi jalankan varian HTTPS ini lewat SSH dari direktori repo (yang memuat
@@ -47,6 +47,10 @@ services:
     environment:
       RAILS_ENV: production
       SECRET_KEY_BASE: ${SECRET_KEY_BASE:?isi SECRET_KEY_BASE di .env}
+      # Admin pertama (opsional): dibuat sekali selama belum ada admin.
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      ADMIN_NAME: ${ADMIN_NAME:-}
       DATABASE_URL: postgresql://jejak_lite:${POSTGRES_PASSWORD}@db:5432/jejak_lite_production
       RAILS_LOG_TO_STDOUT: "true"
       RAILS_SERVE_STATIC_FILES: "true"

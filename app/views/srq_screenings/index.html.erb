@@ -8,7 +8,9 @@
   <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-5">
     <p class="text-sm text-gray-700">Skor dan kategori hasil terlihat oleh kaprodi prodi Anda agar dapat ditindaklanjuti. Jawaban per butir hanya terlihat oleh Anda.</p>
     <div class="mt-4">
-      <% if @filled_today %>
+      <% if !@can_fill %>
+        <p class="text-sm text-amber-800">Pengisian sedang dinonaktifkan oleh prodi Anda. Riwayat di bawah tetap dapat dibuka.</p>
+      <% elsif @filled_today %>
         <%= link_to "Lihat Hasil Hari Ini", srq_screening_path(@filled_today), class: "inline-block rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5" %>
       <% else %>
         <%= link_to "Isi SRQ-20", new_srq_screening_path, class: "inline-block rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5" %>

@@ -3,6 +3,9 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def google_oauth2
     user = User.from_google_omniauth(request.env["omniauth.auth"])
+    if user.nil?
+      return redirect_to new_user_session_path, alert: "Pendaftaran mandiri ditutup. Minta akun ke admin program studi."
+    end
 
     if user.persisted?
       assign_default_role(user)

@@ -49,9 +49,13 @@ class User < ApplicationRecord
   end
   alias can_verify_clinical_cases? instructor?
 
+  # Akun nonaktif tidak bisa masuk dan tidak ikut daftar pilihan atau hitungan
+  # prodi, tetapi rekam jejak pendidikannya tetap ada.
+  scope :active_accounts, -> { where(deactivated_at: nil) }
+
   # Calon pembimbing yang boleh ditandai mahasiswa pada kasus klinis.
   scope :case_supervisors, -> {
-    where(id: UserRole.joins(:role).where(roles: { code: %w[dosen preseptor] }).select(:user_id)).order(:full_name)
+    active_accounts.where(id: UserRole.joins(:role).where(roles: { code: %w[dosen preseptor] }).select(:user_id)).order(:full_name)
   }
 
   # Boleh membuka halaman mahasiswa lain (Peta EPA dsb.) — pengajar, plus
@@ -62,6 +66,22 @@ class User < ApplicationRecord
 
   # Monitoring SRQ: data kesehatan mental, jadi hanya kaprodi yang terhubung ke
   # prodi. Admin tidak otomatis ikut, berbeda dari fitur lain.
+  # Kaprodi tanpa peran admin terikat prodi, jadi prodinya wajib ada. Dipakai
+  # impor CSV dan Sunting Pengguna supaya akun seperti itu tidak terbentuk.
+  def self.program_required_for_roles?(codes)
+    codes.include?("kaprodi") && codes.exclude?("admin")
+  end
+
+  # SRQ-20 tampil bagi mahasiswa setelah kaprodi mengaktifkannya untuk prodinya.
+  def can_fill_srq?
+    has_role?("mahasiswa") && study_program&.srq_enabled? == true
+  end
+
+  # Hasil yang sudah ada tetap bisa dibuka pemiliknya walau SRQ dimatikan lagi.
+  def srq_accessible?
+    can_fill_srq? || (has_role?("mahasiswa") && srq_screenings.exists?)
+  end
+
   def can_monitor_srq?
     has_role?("kaprodi") && study_program_id.present?
   end
@@ -121,6 +141,32 @@ class User < ApplicationRecord
     self.must_change_password = true
     @temporary_password_assigned = true
     temporary
+  end
+
+  def deactivated? = deactivated_at.present?
+
+  def active_for_authentication? = super && !deactivated?
+
+  def inactive_message = deactivated? ? :deactivated : super
+
+  # Rujukan yang ikut hilang bersama akun tanpa menghapus rekam jejak apa pun.
+  DISPOSABLE_REFERENCES = [ %w[user_roles user_id], %w[notifications recipient_id], %w[device_push_tokens user_id] ].freeze
+
+  # Hapus permanen hanya untuk akun tanpa rekam jejak, mis. akun salah daftar.
+  # dependent: :destroy di atas akan ikut menghapus logbook dan nilai, jadi
+  # akun yang sudah punya riwayat dinonaktifkan, bukan dihapus. Diperiksa lewat
+  # foreign key supaya tabel baru otomatis ikut dihitung.
+  def deletable?
+    connection = self.class.connection
+    connection.tables.none? do |table|
+      connection.foreign_keys(table).any? do |key|
+        next false unless key.to_table == "users"
+        next false if DISPOSABLE_REFERENCES.include?([ table, key.column ])
+
+        rows = Arel::Table.new(table)
+        connection.select_value(rows.project(Arel.sql("1")).where(rows[key.column].eq(id)).take(1)).present?
+      end
+    end
   end
 
   def demo_account?
@@ -220,6 +266,9 @@ class User < ApplicationRecord
   # "sudah terverifikasi oleh Google".
   def self.from_google_omniauth(auth)
     user = find_or_initialize_by(provider: auth.provider, uid: auth.uid)
+    # Pendaftaran mandiri ditutup: hanya akun Google yang sudah ada boleh masuk.
+    return nil if user.new_record? && !AppSetting.registration_open?
+
     user.email ||= auth.info.email
     user.full_name = auth.info.name if user.full_name.blank?
 

@@ -54,6 +54,7 @@
         ("jadwal evaluasi dari prodi" if @show_schedule_tile)
       ].compact
     %>
+    <%= render "dashboard/setup_checklist" if @setup_checklist %>
     <%= render "dashboard/faculty_action_summary" %>
 
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
@@ -64,7 +65,9 @@
               subtitle: "#{action_scope.to_sentence(two_words_connector: ' dan ', last_word_connector: ', dan ').upcase_first}.",
               tone: "amber" %>
 
-        <% if @action_total.zero? %>
+        <% if @action_total.zero? && @setup_checklist %>
+          <p class="rounded-2xl border border-gray-200 bg-white px-5 py-4 text-sm text-gray-600" data-testid="no-queue-yet">Belum ada antrean. Panel ini terisi setelah penyiapan di atas selesai dan mahasiswa mulai mencatat.</p>
+        <% elsif @action_total.zero? %>
           <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-6 flex items-center gap-4" data-testid="all-clear">
             <div class="h-11 w-11 shrink-0 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-sm">
               <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>

@@ -71,6 +71,7 @@ class DashboardController < ApplicationController
     when :student then load_student_dashboard
     when :faculty then load_faculty_dashboard
     end
+    @setup_checklist = SetupChecklist.pending_for(current_user, @active_code) if @dashboard_mode == :faculty
   end
 
   private
@@ -220,7 +221,7 @@ class DashboardController < ApplicationController
   def load_attention_students
     population = @mentee_ids
     if @active_code == "kaprodi" && current_user.study_program_id
-      population |= User.joins(:roles).where(roles: { code: "mahasiswa" }, study_program_id: current_user.study_program_id)
+      population |= User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }, study_program_id: current_user.study_program_id)
                         .distinct.pluck(:id)
     end
 

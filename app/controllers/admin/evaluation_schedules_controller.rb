@@ -60,7 +60,7 @@ class Admin::EvaluationSchedulesController < ApplicationController
   end
 
   def student_scope
-    students = User.joins(:roles).where(roles: { code: "mahasiswa" }).distinct
+    students = User.active_accounts.joins(:roles).where(roles: { code: "mahasiswa" }).distinct
     current_user.study_program_bound? ? students.where(study_program_id: current_user.study_program_id) : students
   end
 
@@ -86,7 +86,7 @@ class Admin::EvaluationSchedulesController < ApplicationController
 
   def load_collections
     @students = student_scope.order(:full_name)
-    @evaluators = User.joins(:roles).where(roles: { code: %w[dosen preseptor] }).distinct.order(:full_name)
+    @evaluators = User.active_accounts.joins(:roles).where(roles: { code: %w[dosen preseptor] }).distinct.order(:full_name)
     @rotations = ClinicalRotation.where(user_id: student_scope.select(:id)).includes(:user).order(start_date: :desc).limit(200)
   end
 

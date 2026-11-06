@@ -10,6 +10,25 @@
   </div>
 </div>
 
+<div class="mt-4 bg-white rounded-2xl ring-1 ring-gray-200 p-4 flex items-center justify-between gap-4 flex-wrap" data-testid="registration-setting">
+  <div class="min-w-0">
+    <p class="text-sm font-semibold text-gray-800">
+      Pendaftaran mandiri:
+      <span class="<%= @registration_open ? "text-amber-700" : "text-emerald-700" %>"><%= @registration_open ? "Terbuka" : "Tertutup" %></span>
+    </p>
+    <p class="text-xs text-gray-500 mt-0.5 max-w-2xl">
+      <% if @registration_open %>
+        Siapa pun yang tahu alamat aplikasi dapat membuat akun Mahasiswa dan memilih prodi sendiri. Tutup bila akun dibuat lewat impor CSV.
+      <% else %>
+        Tautan Daftar disembunyikan, dan akun baru hanya dibuat admin lewat impor CSV.
+      <% end %>
+    </p>
+  </div>
+  <%= button_to (@registration_open ? "Tutup Pendaftaran" : "Buka Pendaftaran"), registration_admin_users_path, method: :patch,
+        params: { open: !@registration_open },
+        class: "rounded-xl #{@registration_open ? "bg-indigo-600 hover:bg-indigo-700 text-white" : "bg-white ring-1 ring-gray-300 hover:bg-gray-50 text-gray-700"} text-sm font-semibold px-4 py-2 cursor-pointer" %>
+</div>
+
 <%= form_with url: admin_users_path, method: :get, class: "mt-4 flex flex-wrap items-end gap-3" do |f| %>
   <div class="flex-1 min-w-48">
     <%= f.label :q, "Cari nama / email", class: "block text-xs font-semibold text-gray-500 mb-1" %>
@@ -42,7 +61,10 @@
     <tbody class="divide-y divide-gray-100">
       <% @users.each do |u| %>
         <tr>
-          <td class="px-5 py-3 font-semibold text-gray-800"><%= u.full_name %></td>
+          <td class="px-5 py-3 font-semibold text-gray-800">
+            <%= u.full_name %>
+            <% if u.deactivated? %><span class="ml-1 inline-flex rounded-full bg-gray-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-gray-500">Nonaktif</span><% end %>
+          </td>
           <td class="px-5 py-3 text-gray-600"><%= u.email %></td>
           <td class="px-5 py-3">
             <% u.roles.each do |r| %>

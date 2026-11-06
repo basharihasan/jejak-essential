@@ -1,0 +1,102 @@
+<%# Halaman impor CSV penempatan — dipakai Rotasi Klinik dan Enrolment Tutorial.
+    locals: title, back_label, back_path, import_path, template_path %>
+<% content_for :title, title %>
+<% input_class = "block w-full rounded-xl border-0 py-2 px-3 text-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500" %>
+<div class="max-w-5xl space-y-5">
+  <div>
+    <%= link_to "← #{back_label}", back_path, class: "text-xs text-gray-500 hover:text-indigo-600" %>
+    <h1 class="text-xl font-bold text-gray-900 mt-1"><%= title %></h1>
+    <p class="text-sm text-gray-500 mt-0.5">
+      Tempatkan banyak mahasiswa sekaligus. Sistem menampilkan pratinjau dulu; tidak ada yang tersimpan sebelum Anda menekan
+      <strong>Terapkan</strong>. Baris dengan mahasiswa, periode, dan <%= @importer_class::PLACE_LABEL.downcase %> yang sama
+      memperbarui data lama, jadi berkas yang sama aman diunggah ulang.
+    </p>
+  </div>
+
+  <%= form_with url: import_path, method: :post, multipart: true, class: "bg-white rounded-2xl ring-1 ring-gray-200 p-6 space-y-5" do %>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <%= label_tag :default_period_id, "Periode (bila kolom periode kosong)", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= select_tag :default_period_id,
+              options_for_select(@academic_periods.map { |period| [ period.name, period.id ] }, @default_period&.id),
+              include_blank: "— Ambil dari kolom periode —", class: input_class %>
+      </div>
+      <div>
+        <div class="flex items-center justify-between gap-3 mb-1">
+          <%= label_tag :file, "Berkas CSV", class: "block text-sm font-semibold text-gray-700" %>
+          <%= link_to "Unduh template CSV", template_path, data: { turbo: false },
+                class: "text-xs font-semibold text-indigo-600 hover:text-indigo-800" %>
+        </div>
+        <%= file_field_tag :file, accept: ".csv,text/csv", required: true,
+              class: "block w-full text-sm text-gray-700 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-50 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-indigo-700 hover:file:bg-indigo-100" %>
+      </div>
+    </div>
+    <div>
+      <pre class="text-xs bg-slate-900 text-slate-100 rounded-xl p-4 overflow-x-auto"><%= @importer_class::HEADERS.join(",") %>
+<%= @importer_class::EXAMPLE.join(",") %></pre>
+      <ul class="mt-2 text-xs text-gray-500 space-y-0.5 list-disc pl-5">
+        <li><strong>email</strong> wajib: email mahasiswa, atau NPM/NIM-nya.</li>
+        <li><strong><%= @importer_class::HEADERS[1] %></strong> ditulis persis seperti nama periode di aplikasi. Boleh dikosongkan bila periode dipilih di atas.</li>
+        <li><strong><%= @importer_class::HEADERS[2] %></strong> wajib. Tulis seragam, karena nama ini dicocokkan dengan blok/stase pada event asesmen.</li>
+        <li><strong>mulai</strong> dan <strong>selesai</strong>: <code>2026-10-12</code> atau <code>12/10/2026</code>.</li>
+        <li><strong><%= @importer_class::HEADERS[6] %></strong> diisi email akunnya, boleh kosong.</li>
+        <li>Pemisah koma atau titik koma. Maksimal <%= number_with_delimiter(PlacementCsvImport::MAX_ROWS, delimiter: ".") %> baris per unggahan.</li>
+      </ul>
+    </div>
+    <%= submit_tag "Pratinjau", class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm cursor-pointer" %>
+  <% end %>
+
+  <% if @matches.present? %>
+    <% eligible = @matches.count(&:eligible?) %>
+    <div class="bg-white rounded-2xl ring-1 ring-gray-200 overflow-hidden" data-testid="placement-preview">
+      <div class="px-5 py-3 bg-gray-50 border-b border-gray-100">
+        <span class="text-sm font-semibold text-gray-800">Pratinjau — <%= eligible %> dari <%= @matches.size %> baris siap diproses</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
+            <tr>
+              <th class="text-left px-4 py-2">Baris</th>
+              <th class="text-left px-4 py-2">Mahasiswa</th>
+              <th class="text-left px-4 py-2">Catatan</th>
+              <th class="text-left px-4 py-2">Periode</th>
+              <th class="text-left px-4 py-2"><%= @importer_class::PLACE_LABEL %></th>
+              <th class="text-left px-4 py-2"><%= @importer_class::DETAIL_LABEL %></th>
+              <th class="text-left px-4 py-2">Tanggal</th>
+              <th class="text-left px-4 py-2"><%= @importer_class::SUPERVISOR_LABEL %></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <% @matches.each do |match| %>
+              <tr>
+                <td class="px-4 py-2 text-xs text-gray-400"><%= match.line %></td>
+                <td class="px-4 py-2 text-gray-800"><%= match.student&.full_name || match.identifier %></td>
+                <td class="px-4 py-2 min-w-40">
+                  <span class="inline-block rounded-lg px-2 py-0.5 text-[11px] font-semibold <%= match.eligible? ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-800" %>">
+                    <%= match.eligible? ? match.action : match.note %>
+                  </span>
+                </td>
+                <td class="px-4 py-2 text-gray-600"><%= match.period&.name || "—" %></td>
+                <td class="px-4 py-2 text-gray-800"><%= match.place.presence || "—" %></td>
+                <td class="px-4 py-2 text-gray-600"><%= match.detail.presence || "—" %></td>
+                <td class="px-4 py-2 text-xs text-gray-600 whitespace-nowrap"><%= [ match.start_date, match.end_date ].compact.map { |date| date.strftime("%d/%m/%Y") }.join(" – ").presence || "—" %></td>
+                <td class="px-4 py-2 text-gray-600"><%= match.supervisor&.full_name || "—" %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <% if eligible.positive? %>
+        <div class="px-5 py-4 bg-gray-50 border-t border-gray-100">
+          <%= form_with url: import_path, method: :post, data: { turbo_confirm: "Simpan #{eligible} baris? Baris yang tidak siap dilewati." } do %>
+            <%= hidden_field_tag :apply, "1" %>
+            <%= hidden_field_tag :default_period_id, @default_period&.id, id: nil %>
+            <%= hidden_field_tag :csv_raw, @csv_raw %>
+            <%= submit_tag "Terapkan ke #{eligible} baris", class: "bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl text-sm cursor-pointer" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -8,13 +8,14 @@
 namespace :demo do
   desc "Buat akun & data demo untuk mencoba semua fitur jejak-lite (password: DEMO_PASSWORD, bawaan password123)"
   task seed: :environment do
-    # Instance publik wajib menimpa lewat DEMO_PASSWORD; bawaannya sengaja
-    # lemah supaya mencoba di komputer sendiri tetap sederhana.
-    demo_password = (ENV["DEMO_PASSWORD"].presence || "password123")
-    if Rails.env.production?
-      puts "Peringatan: menjalankan data DEMO di production."
-      puts "Hanya lakukan ini untuk instance demo/showcase, bukan deployment sungguhan."
+    # Akun demo, termasuk Admin, bebas dari kewajiban ganti kata sandi dan
+    # bawaannya berkata sandi publik. Di production harus diminta eksplisit
+    # dengan kata sandi sendiri; di komputer sendiri bawaannya tetap sederhana.
+    if Rails.env.production? && (ENV["ALLOW_DEMO_DATA"].blank? || ENV["DEMO_PASSWORD"].blank?)
+      abort "demo:seed ditolak di production karena membuat akun Admin demo. Untuk instance demo/showcase saja, " \
+            "jalankan dengan ALLOW_DEMO_DATA=1 dan DEMO_PASSWORD=<kata sandi sendiri>."
     end
+    demo_password = (ENV["DEMO_PASSWORD"].presence || "password123")
 
     def demo_user(email, full_name:, roles:, study_program: nil, password: (ENV["DEMO_PASSWORD"].presence || "password123"))
       user = User.find_or_initialize_by(email: email)
@@ -219,7 +220,46 @@ namespace :demo do
     end
 
     # Satu hasil di bawah ambang dan satu yang perlu tindak lanjut, supaya
+    # Learning Unit contoh + Assessment Matrix (bobot 100%): CBT 60%, SOCA 40%.
+    unit = LearningUnit.find_or_create_by!(name: "Blok Sistem Kardiovaskular", study_program: sarjana, academic_period: period) do |u|
+      u.code = "BLK-KV"
+      u.credits = 6
+      u.description = "Contoh unit dengan dua komponen nilai."
+    end
+    { cbt_event => 60, soca_event => 40 }.each do |event, weight|
+      AssessmentMapping.find_or_create_by!(learning_unit: unit, assessment_event: event) { |m| m.weight = weight }
+    end
+
+    # Dimensi asesmen contoh + pemetaannya ke ranah kompetensi: mata uji CBT dan
+    # station OSCE. Inilah yang membuat Peta Kompetensi terisi dari hasil ujian.
+    if (framework = CompetencyFramework.order(:id).first)
+      domains = framework.domains.index_by(&:title)
+      find_domain = ->(keyword) { domains.find { |title, _| title.include?(keyword) }&.last }
+
+      osce = AssessmentEvent.find_or_create_by!(name: "OSCE Akhir Blok Kardiovaskular", academic_period: period) do |e|
+        e.assessment_type = "osce"
+        e.study_program = sarjana
+        e.status = "published"
+        e.max_score = 100
+        e.exam_date = 2.days.ago.to_date
+      end
+      [
+        [ osce, "Station 1 — Anamnesis", "ST1", 10, 1, "Keterampilan" ],
+        [ osce, "Station 2 — Pemeriksaan Fisik", "ST2", 10, 1, "Keterampilan" ],
+        [ osce, "Station 3 — Komunikasi Efektif", "ST3", 10, 1, "Komunikasi" ],
+        [ osce, "Station 4 — Tata Laksana", "ST4", 10, 1, "Pengelolaan" ],
+        [ cbt_event, "Penalaran Klinis", "PK", 40, 2, "Pengelolaan" ],
+        [ cbt_event, "Literasi Sains", "LS", 30, 1, "Landasan" ],
+        [ cbt_event, "Keterampilan Klinis (tertulis)", "KK", 30, 1, "Keterampilan" ]
+      ].each do |event, name, code, max, weight, keyword|
+        dimension = event.assessment_dimensions.find_or_initialize_by(name: name)
+        dimension.assign_attributes(code: code, max_score: max, weight: weight, competency_item: find_domain.call(keyword))
+        dimension.save!
+      end
+    end
+
     # Monitoring SRQ kaprodi demo langsung berisi.
+    [ sarjana, profesi ].each { |program| program.enable_srq!(by: kaprodi) unless program.srq_enabled? }
     { mahasiswa1 => [ 0, 2 ], mahasiswa2 => [ 2, 8, 2, 8, 9, 10, 11, 14 ] }.each do |student, yes_items|
       next if student.srq_screenings.exists?
 

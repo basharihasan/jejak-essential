@@ -6,7 +6,7 @@ class StudyProgramsController < ApplicationController
 
   def index
     authorize StudyProgram
-    @study_programs = StudyProgram.ordered.includes(:users)
+    @study_programs = StudyProgram.ordered.includes(:users, :competency_framework)
   end
 
   def new
@@ -44,6 +44,6 @@ class StudyProgramsController < ApplicationController
   end
 
   def study_program_params
-    params.require(:study_program).permit(:name, :code, :level)
+    params.require(:study_program).permit(:name, :code, :level, :competency_framework_id)
   end
 end
