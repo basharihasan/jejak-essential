@@ -172,7 +172,8 @@ Bagian ini memandu Anda dari aplikasi kosong sampai mahasiswa dan dosen siap mem
 | Learning Unit, Jadwal DOPS & Mini-CEX, Relabel Prodi | | Semua prodi | Prodi sendiri |
 | Assessment Form Builder | | Ya | Ya |
 | Dashboard Analitik, Ekspor Data | | Semua prodi | Prodi sendiri |
-| Monitoring SRQ | | Tidak ada akses | Prodi sendiri |
+| Pendaftaran mandiri, nonaktifkan atau hapus akun | | Ya | |
+| Mengaktifkan dan memantau SRQ-20 | | Tidak ada akses | Prodi sendiri |
 
 Tiga hal yang sering keliru dipahami:
 
@@ -193,17 +194,19 @@ Siapkan bahan ini sebelum membuka aplikasi supaya penyiapan tidak terhenti di te
 | Cara menyampaikan kata sandi sementara secara pribadi, dan satu kontak bantuan | Admin | Tahap 3 dan 8 |
 | Kerangka kompetensi atau EPA, beserta target skornya | Kaprodi | Tahap 4 |
 | Target jumlah kasus FKTP dan FKRTL | Kaprodi | Tahap 4 |
-| Penempatan tiap mahasiswa. Profesi: stase, wahana, preseptor, tanggal. Sarjana: blok, kelompok, tutor | Kaprodi | Tahap 5 |
+| Penempatan tiap mahasiswa, sebaiknya satu berkas. Profesi: stase, wahana, preseptor, tanggal. Sarjana: blok, kelompok, tutor | Kaprodi | Tahap 5 |
 | Daftar ujian dan bobot nilai tiap blok atau stase | Kaprodi | Tahap 6 |
 | Aturan data pasien: kapan meminta persetujuan pasien, dan larangan menulis identitas di kolom bebas | Kaprodi | Tahap 8 |
-| SRQ-20: tinjauan rumusan butir oleh ahli konten, kesepakatan ambang skor, SOP untuk hasil "Perlu Perhatian Segera", dan nomor konselor | Kaprodi | Sebelum Tahap 8 |
+| SRQ-20: tinjauan rumusan butir oleh ahli konten, kesepakatan ambang skor, SOP untuk hasil "Perlu Perhatian Segera", dan nomor konselor | Kaprodi | Sebelum mengaktifkan SRQ-20 di Tahap 8 |
 
 ### Tahap 0 — Pasang aplikasi dan buat admin pertama
 
 *Dikerjakan pengelola server.*
 
-1. Pasang aplikasi mengikuti `NAS_DEPLOY.md` di repositori, termasuk `bin/rails db:seed` satu kali.
-2. Buat akun admin pertama. Pendaftaran lewat halaman **Daftar** selalu menghasilkan akun Mahasiswa, jadi admin pertama hanya dapat dibuat dari server:
+1. Pasang aplikasi mengikuti `NAS_DEPLOY.md` di repositori. Data rujukan terisi otomatis saat basis data pertama kali dibuat.
+2. Buat akun admin pertama. Halaman **Daftar** hanya menghasilkan akun Mahasiswa, jadi pilih salah satu cara:
+   - **Lewat `.env`, tanpa terminal.** Isi `ADMIN_EMAIL` dan `ADMIN_PASSWORD` sebelum kontainer dijalankan. Akun dibuat sekali selama belum ada admin sama sekali, dan kata sandinya wajib diganti saat masuk pertama. Kosongkan `ADMIN_PASSWORD` sesudahnya.
+   - **Lewat terminal,** dengan perintah berikut:
 
 ~~~
 docker compose exec \
@@ -223,7 +226,7 @@ docker compose exec \
 | Login Google | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Tombol **Masuk dengan Google** tidak tampil |
 | Notifikasi push | `VAPID_*` | Notifikasi hanya muncul di dalam aplikasi |
 
-> **Dua perintah yang tidak boleh dijalankan di server sungguhan.** `bin/rails demo:seed` membuat akun contoh dengan kata sandi yang diketahui publik, termasuk akun Admin. `bin/rails db:seed` yang dijalankan lagi setelah periode dibuat menambahkan event *OSCE Akhir Blok Kardiovaskular* dan Learning Unit *Blok Sistem Kardiovaskular* contoh.
+> **Jangan jalankan `bin/rails demo:seed` di server sungguhan.** Perintah itu membuat akun contoh, termasuk Admin, yang bebas dari kewajiban ganti kata sandi. Di mode produksi ia ditolak, kecuali diminta khusus untuk instance percobaan dengan `ALLOW_DEMO_DATA=1` dan `DEMO_PASSWORD`.
 
 **Selesai bila:** halaman Masuk terbuka dari komputer kampus, dan admin dapat masuk.
 
@@ -231,12 +234,12 @@ docker compose exec \
 
 *Dikerjakan admin.*
 
-1. Masuk dengan akun admin. Beranda menampilkan *Semua beres*: itu hanya berarti belum ada antrean, bukan penyiapan sudah selesai.
-2. Bila kata sandi Anda dibuat orang lain, ganti lewat **Pengaturan Akun**. Akun admin pertama tidak dipaksa menggantinya.
+1. Masuk dengan akun admin. Bila akun dibuat lewat `.env`, Anda langsung diminta membuat kata sandi baru. Bila dibuat orang lain lewat terminal, ganti sendiri lewat **Pengaturan Akun**.
+2. Beranda menampilkan **Langkah Penyiapan**: daftar pekerjaan yang dihitung dari data sungguhan. Kerjakan dari atas lewat tautan **Kerjakan** pada tiap baris. Panel ini hilang sendiri setelah semua langkah wajib selesai, dan langkah bertanda *Dianjurkan* tidak menahannya. Kaprodi melihat panel serupa untuk prodinya.
 
-![Beranda admin pada instalasi baru: semua angka nol dan pesan Semua beres](panduan/mulai-01-beranda-admin.png)
+![Beranda admin pada instalasi baru: panel Langkah Penyiapan berisi delapan langkah, dan semua angka ringkasan nol](panduan/mulai-01-beranda-admin.png)
 
-Instalasi baru sudah berisi data contoh. Cocokkan dengan daftar ini:
+Instalasi baru sudah berisi data contoh, dan pendaftaran mandirinya tertutup. Cocokkan dengan daftar ini:
 
 | Sudah terisi sebagai contoh | Masih kosong |
 |---|---|
@@ -272,24 +275,16 @@ annisa.putri@kampus.ac.id,Annisa Putri,mahasiswa,pspd
 ~~~
 
 - **Peran:** `mahasiswa`, `dosen`, `preseptor`, `kaprodi`, atau `admin`. Gabungkan dengan `+`.
-- **Isi prodi pada baris kaprodi.** Contoh di halaman impor mengosongkannya, padahal prodi itulah batas akses kaprodi.
+- **Prodi wajib diisi pada baris kaprodi,** karena itulah batas aksesnya. Baris kaprodi tanpa prodi ditolak.
 - Beri tanda kutip pada nama yang memuat koma, seperti contoh di atas.
 
 **Langkah 2: impor.** Buka **Konfigurasi → Pengguna → Impor CSV**, pilih berkas, lalu klik **Impor**.
 
-**Langkah 3: unduh kata sandi sementara saat itu juga.** Klik **Unduh CSV** pada kotak *Kata sandi sementara akun baru*. Daftar ini hanya tampil sekali. Bila terlewat, buka **Pengguna → Sunting → Reset Kata Sandi** untuk tiap akun.
+**Langkah 3: periksa hasilnya, dan unduh kata sandi sementara saat itu juga.** Klik **Unduh CSV** pada kotak *Kata sandi sementara akun baru*. Daftar ini hanya tampil sekali. Bila terlewat, buka **Pengguna → Sunting → Reset Kata Sandi** untuk tiap akun. Baris yang gagal disebutkan alasannya: perbaiki, lalu unggah baris itu saja.
 
-![Hasil impor: 11 akun baru dan tabel kata sandi sementara dengan tombol Unduh CSV](panduan/mulai-03-impor-hasil.png)
+![Hasil impor: akun baru, satu baris kaprodi tanpa prodi ditolak dengan alasannya, dan tabel kata sandi sementara dengan tombol Unduh CSV](panduan/mulai-03-impor-hasil.png)
 
-**Langkah 4: pastikan kaprodi punya prodi.** Kaprodi tanpa prodi akan ditolak dari halaman pengelolaan:
-
-![Pesan galat di beranda: Akun kaprodi Anda belum terhubung ke Program Studi](panduan/mulai-04-kaprodi-belum-terhubung.png)
-
-Perbaiki lewat **Pengguna → Sunting**: pilih **Program Studi**, lalu **Simpan**. Di halaman yang sama Anda juga dapat mengubah peran dan me-reset kata sandi.
-
-![Halaman sunting pengguna: nama, program studi, peran, dan Reset Kata Sandi](panduan/mulai-05-sunting-pengguna.png)
-
-**Langkah 5: isi NPM dan angkatan secara massal.** Berkas impor tidak memuat kolom ini. Mahasiswa dapat mengisinya sendiri di profil, tetapi lebih rapi diisi admin lewat **Konfigurasi → Relabel Prodi Mahasiswa**:
+**Langkah 4: isi NPM dan angkatan secara massal.** Berkas impor tidak memuat kolom ini. Mahasiswa dapat mengisinya sendiri di profil, tetapi lebih rapi diisi admin lewat **Konfigurasi → Relabel Prodi Mahasiswa**:
 
 1. Siapkan CSV berkolom `email,npm,angkatan`, satu berkas per prodi.
 2. Pilih **Prodi tujuan** yang sama dengan prodi mahasiswa itu sekarang, lalu klik **Pratinjau**.
@@ -297,27 +292,37 @@ Perbaiki lewat **Pengguna → Sunting**: pilih **Program Studi**, lalu **Simpan*
 
 ![Pratinjau relabel: empat mahasiswa berstatus siap dengan NPM dan angkatan baru](panduan/mulai-06-relabel-pratinjau.png)
 
-**Selesai bila:** semua orang ada di **Pengguna** dengan peran dan prodi yang benar. Kata sandi sementara baru dibagikan di Tahap 7 dan 8.
+**Langkah 5: tentukan pendaftaran mandiri.** Halaman **Konfigurasi → Pengguna** menampilkan statusnya. Instalasi baru mulai **tertutup**: tautan *Daftar* disembunyikan, dan akun hanya dibuat lewat impor. Instalasi lama tetap terbuka sampai Anda menutupnya. Klik **Buka Pendaftaran** hanya bila mahasiswa memang boleh mendaftar sendiri, karena siapa pun yang tahu alamat aplikasi lalu dapat membuat akun Mahasiswa dan memilih prodi sendiri.
 
-> **Halaman Daftar selalu terbuka.** Siapa pun yang tahu alamat aplikasi dapat membuat akun Mahasiswa dan memilih prodi sendiri di profilnya. Periksa **Pengguna** secara berkala. Akun tidak dapat dihapus dari aplikasi, jadi kosongkan **Program Studi** pada akun yang tidak dikenal supaya tidak ikut terhitung di prodi Anda.
+![Halaman Pengguna: status Pendaftaran mandiri Tertutup dengan tombol Buka Pendaftaran, dan daftar akun](panduan/mulai-04-pengguna.png)
+
+**Bila ada akun yang keliru atau sudah tidak dipakai,** buka **Pengguna → Sunting**. Di halaman yang sama Anda juga dapat mengubah peran dan prodi, serta me-reset kata sandi.
+
+- **Nonaktifkan Akun:** pengguna tidak dapat masuk, dan keluar dari daftar pilihan serta hitungan prodi. Rekam jejaknya tetap ada, dan akun dapat diaktifkan kembali.
+- **Hapus Akun:** hanya tersedia untuk akun yang belum punya rekam jejak sama sekali, mis. salah daftar.
+
+![Halaman sunting pengguna: nama, program studi, peran, Reset Kata Sandi, dan kartu Status akun dengan tombol Nonaktifkan dan Hapus](panduan/mulai-05-sunting-pengguna.png)
+
+**Selesai bila:** semua orang ada di **Pengguna** dengan peran dan prodi yang benar. Kata sandi sementara baru dibagikan di Tahap 7 dan 8.
 
 ### Tahap 4 — Kurikulum: kompetensi, target, dan master data
 
 *Kaprodi menetapkan isinya, admin memasukkannya. Kaprodi tidak punya akses ke menu-menu ini.*
 
-1. **Kerangka kompetensi** (**Konfigurasi → Kerangka Kompetensi**). Sesuaikan langsung kerangka contoh yang sudah ada: tambah atau hapus ranah dan sub-kompetensi, lalu isi target skor per periode lewat **Set Target**.
-2. **Target kasus** (**Konfigurasi → Target Kasus Logbook**). Buat satu target FKTP dan satu FKRTL per prodi. Kasus berlatar Pelayanan Primer dihitung FKTP, sisanya FKRTL. Tanpa target, kartu pemenuhan target tidak tampil bagi mahasiswa.
-3. **Domain kegiatan** (**Konfigurasi → Domain Kegiatan Akademik**). Nonaktifkan yang tidak dipakai supaya form mahasiswa ringkas.
-4. **Master data** (**Konfigurasi → Master Diagnosis, Keterampilan, Obat**). Tambahkan yang kurang, satu per satu atau lewat CSV. Kode ICD-10 dan level SKDI pada kasus terisi otomatis dari sini.
-5. **Blueprint dan formulir contoh.** Pakai, sesuaikan, atau hapus. Rinciannya ada di [Blueprint Asesmen](#blueprint-asesmen) dan [Assessment Form Builder](#assessment-form-builder-templat-formulir).
-
-> **Peta EPA memakai kerangka yang paling awal dibuat.** Bila Anda membuat kerangka baru, Peta EPA dan pilihan EPA saat verifikasi kasus tetap memakai kerangka contoh. Karena itu sunting kerangka contoh, atau hapus sebelum membuat yang baru. Menghapusnya juga mengosongkan pemetaan pada Blueprint contoh.
+1. **Kerangka kompetensi** (**Konfigurasi → Kerangka Kompetensi**). Sesuaikan kerangka contoh, atau buat kerangka baru: tambah atau hapus ranah dan sub-kompetensi, lalu isi target skor per periode lewat **Set Target**.
+2. **Kerangka Peta EPA tiap prodi** (**Konfigurasi → Program Studi → Sunting**). Pilih kerangka yang dipakai Peta EPA mahasiswa prodi itu dan pilihan EPA saat verifikasi kasus. Bila dikosongkan, dipakai kerangka yang paling awal dibuat.
+3. **Target kasus** (**Konfigurasi → Target Kasus Logbook**). Buat satu target FKTP dan satu FKRTL per prodi. Kasus berlatar Pelayanan Primer dihitung FKTP, sisanya FKRTL. Tanpa target, kartu pemenuhan target tidak tampil bagi mahasiswa.
+4. **Domain kegiatan** (**Konfigurasi → Domain Kegiatan Akademik**). Nonaktifkan yang tidak dipakai supaya form mahasiswa ringkas.
+5. **Master data** (**Konfigurasi → Master Diagnosis, Keterampilan, Obat**). Tambahkan yang kurang, satu per satu atau lewat CSV. Kode ICD-10 dan level SKDI pada kasus terisi otomatis dari sini.
+6. **Blueprint dan formulir contoh.** Pakai, sesuaikan, atau hapus. Rinciannya ada di [Blueprint Asesmen](#blueprint-asesmen) dan [Assessment Form Builder](#assessment-form-builder-templat-formulir).
 
 ![Kerangka kompetensi: tujuh ranah dengan sub-kompetensi dan pengisian target per periode](panduan/mulai-07-kerangka.png)
 
-![Daftar target kasus: FKTP 20 dan FKRTL 30 untuk Profesi Dokter](panduan/mulai-08-target.png)
+![Sunting Program Studi: pilihan Kerangka Peta EPA](panduan/mulai-08-prodi-epa.png)
 
-**Selesai bila:** kerangka sudah sesuai kurikulum Anda, dan target tiap prodi terisi.
+![Daftar target kasus: FKTP 20 dan FKRTL 30 untuk Profesi Dokter](panduan/mulai-09-target.png)
+
+**Selesai bila:** kerangka sudah sesuai kurikulum Anda, tiap prodi memilih kerangkanya, dan target tiap prodi terisi.
 
 ### Tahap 5 — Tempatkan mahasiswa
 
@@ -325,15 +330,22 @@ Perbaiki lewat **Pengguna → Sunting**: pilih **Program Studi**, lalu **Simpan*
 
 Penempatan menautkan mahasiswa ke preseptor atau tutornya. Tanpa penempatan, preseptor dan tutor belum melihat mahasiswanya di Beranda dan Dashboard Analitik, dan mahasiswa tidak melihat rotasi atau bloknya.
 
-**Profesi Dokter: Rotasi Klinik.** Buka **Rotasi Klinik → + Tambah Rotasi**. Ketik sebagian nama untuk memilih mahasiswa dan preseptor, lalu isi periode, bagian, wahana, dan tanggal.
+Buka **Rotasi Klinik → Impor CSV** untuk Profesi Dokter, atau **Enrolment Tutorial → Impor CSV** untuk Sarjana Kedokteran. Siapkan satu baris per mahasiswa per stase atau blok. Template tersedia di halaman itu:
 
-![Formulir Tambah Rotasi yang sudah terisi](panduan/mulai-09-rotasi-form.png)
+~~~
+email,periode,bagian,wahana,mulai,selesai,preseptor
+annisa.putri@kampus.ac.id,2026/2027 Ganjil,Ilmu Bedah,RSUD Kota,12/10/2026,20/12/2026,ari.nugroho@kampus.ac.id
+~~~
 
-**Sarjana Kedokteran: Enrolment Tutorial.** Buka **Enrolment Tutorial → + Tambah Enrolment**, lalu isi mahasiswa, tutor, periode, blok, kelompok, dan tanggal.
+Berkas enrolment memakai kolom `email,periode,blok,kelompok,mulai,selesai,tutor`.
 
-![Formulir Tambah Enrolment yang sudah terisi](panduan/mulai-10-tutorial-form.png)
+1. Pilih berkas, lalu klik **Pratinjau**. Kolom *Catatan* menyebut tiap baris *baru*, *diperbarui*, atau alasan penolakannya, mis. salah ketik email.
+2. Klik **Terapkan ke N baris** dan setujui konfirmasinya. Baris bermasalah dilewati.
+3. Perbaiki baris yang dilewati, lalu unggah ulang seluruh berkas. Baris yang sudah masuk diperbarui, bukan digandakan.
 
-> **Rotasi dan enrolment diisi satu per satu.** Belum ada impor CSV untuk keduanya, jadi sediakan waktu khusus: satu baris per mahasiswa per stase. Mulailah dari kelompok yang akan ikut uji coba di Tahap 7.
+![Pratinjau impor rotasi: tiga baris baru, satu preseptor salah ketik, dan satu mahasiswa tidak ditemukan](panduan/mulai-10-impor-rotasi.png)
+
+Untuk satu atau dua mahasiswa, pakai **+ Tambah Rotasi** atau **+ Tambah Enrolment**.
 
 > **Tulis nama stase dan blok secara seragam.** Nama blok pada event asesmen harus sama dengan nama stase atau blok di sini. Bila berbeda, event rubrik tidak tampil bagi mahasiswa.
 
@@ -376,7 +388,7 @@ Penempatan menautkan mahasiswa ke preseptor atau tutornya. Tanpa penempatan, pre
 
 *Kaprodi memimpin, dengan satu dosen atau preseptor dan satu mahasiswa.*
 
-Jangan langsung membuka untuk semua orang. Jalankan satu putaran penuh dengan kegiatan nyata, karena kasus dan kegiatan yang sudah diverifikasi tidak dapat dihapus, dan akun tidak dapat dihapus dari aplikasi.
+Jangan langsung membuka untuk semua orang. Jalankan satu putaran penuh dengan kegiatan nyata, karena kasus dan kegiatan yang sudah diverifikasi tidak dapat dihapus, dan akun yang sudah punya rekam jejak hanya dapat dinonaktifkan.
 
 <svg class="dg" viewBox="0 0 760 330" role="img" aria-label="Alur kerja harian antara mahasiswa, dosen atau preseptor, admin, dan kaprodi">
   <defs><marker id="ar-rutin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-arrowhead"/></marker></defs>
@@ -440,11 +452,9 @@ Pesan untuk mahasiswa:
 
 > Mulai **[tanggal]**, logbook dicatat di JEJAK: **[alamat aplikasi]**. Masuk dengan email **[email]** dan kata sandi sementara **[kata sandi]**, lalu buat kata sandi baru. Lakukan hari ini: (1) lengkapi profil, (2) periksa rotasi atau blok Anda di Beranda, (3) catat kegiatan dan kasus maksimal [batas waktu] setelah kejadian. Jangan menulis nama atau nomor identitas pasien di kolom bebas; hanya kolom Identitas Pasien yang terlindungi. Panduan: menu **Panduan Penggunaan**, Bab 4. Bantuan: **[kontak]**.
 
-Sebelum mengirim pesan mahasiswa, pastikan hal berikut sudah beres, karena menu **Kesehatan Mental (SRQ)** langsung tampil bagi semua mahasiswa dan tidak ada sakelar untuk mematikannya:
+**Aktifkan SRQ-20 saat prodi siap.** Menu **Kesehatan Mental (SRQ)** tidak tampil bagi mahasiswa sampai kaprodi mengaktifkannya untuk prodinya. Tanda "Perlu Perhatian Segera" hanya muncul di halaman kaprodi, jadi pastikan dulu ada yang menindaklanjutinya. Buka **Coaching Center → Monitoring SRQ**, centang ketiga pernyataan kesiapan, lalu klik **Aktifkan SRQ-20**. Bila perlu berhenti, klik **Nonaktifkan**: mahasiswa tidak dapat mengisi lagi, tetapi riwayatnya tetap tersimpan.
 
-- SOP untuk hasil "Perlu Perhatian Segera" sudah berjalan di prodi.
-- Rumusan 20 butir sudah ditinjau ahli konten, dan ambang skor sudah disepakati.
-- Nomor kontak konselor fakultas sudah disiapkan.
+![Monitoring SRQ sebelum aktif: tiga pernyataan kesiapan dan tombol Aktifkan SRQ-20](panduan/mulai-22-srq-aktivasi.png)
 
 **Selesai bila:** semua dosen dan mahasiswa sudah pernah masuk. Periksa kolom *Login Terakhir* pada dataset Data Mahasiswa di **Ekspor Data**. Untuk dosen, admin memakai dataset Pengguna & Peran.
 
@@ -454,23 +464,26 @@ Sebelum mengirim pesan mahasiswa, pastikan hal berikut sudah beres, karena menu 
 |---|---|---|
 | Setiap minggu | Periksa **Mahasiswa Perlu Perhatian** di Beranda, **Dashboard Analitik**, dan **Monitoring SRQ**, lalu catat tindak lanjutnya | Reset kata sandi dan buka akun terkunci bila diminta |
 | Setiap selesai ujian | Periksa nilai unit di **Learning Unit & Matrix** | Impor nilai ke event terkait |
-| Setiap bulan | **Ekspor Data** untuk rapat evaluasi prodi | Periksa akun tak dikenal, **Riwayat Ekspor**, dan audit **Data Governance** |
-| Setiap semester | Tetapkan target kasus dan bobot baru | Buat periode, rotasi, enrolment, event, dan target baru; akun baru lewat impor; pindah prodi lewat **Relabel Prodi** |
+| Setiap bulan | **Ekspor Data** untuk rapat evaluasi prodi | Nonaktifkan atau hapus akun yang tak dikenal, lalu periksa **Riwayat Ekspor** dan audit **Data Governance** |
+| Setiap semester | Tetapkan target kasus dan bobot baru | Buat periode, event, dan target baru; impor akun, rotasi, dan enrolment; pindah prodi lewat **Relabel Prodi** |
 | Saat aplikasi dimutakhirkan | Coba satu alur singkat sesudahnya | Minta IT mencadangkan data sebelum `docker compose pull` |
 
 Kaprodi memantau satu mahasiswa lewat **Daftar Mahasiswa**: cari nama, lalu buka Dasbor Mahasiswa (hanya-baca). Dari sana tersedia Evaluasi Akademik, Peta Kompetensi, dan Peta EPA mahasiswa itu.
 
-![Beranda kaprodi: ringkasan hari ini, Perlu Tindakan Anda, dan menu Monitoring SRQ serta Ekspor Data di sidebar](panduan/mulai-21-beranda-kaprodi.png)
+![Beranda kaprodi: panel Langkah Penyiapan untuk prodinya, ringkasan hari ini, dan menu Monitoring SRQ serta Ekspor Data di sidebar](panduan/mulai-21-beranda-kaprodi.png)
 
-![Monitoring SRQ: jumlah yang sudah mengisi, kategori hasil, dan rekap per angkatan](panduan/mulai-22-monitoring-srq.png)
+![Monitoring SRQ setelah aktif: status, jumlah yang sudah mengisi, kategori hasil, dan rekap per angkatan](panduan/mulai-23-monitoring-srq.png)
 
-![Ekspor Data versi kaprodi: prodi terkunci, filter periode dan tanggal, serta kartu dataset](panduan/mulai-23-ekspor-kaprodi.png)
+![Ekspor Data versi kaprodi: prodi terkunci, filter periode dan tanggal, serta kartu dataset](panduan/mulai-24-ekspor-kaprodi.png)
 
 ### Bila ada kendala
 
 | Gejala | Penyebab | Yang dilakukan |
 |---|---|---|
-| Kaprodi melihat *Akun kaprodi Anda belum terhubung ke Program Studi* | Prodi pada akunnya kosong | Admin: **Pengguna → Sunting → Program Studi** |
+| Kaprodi melihat *Akun kaprodi Anda belum terhubung ke Program Studi* | Prodi pada akun lama kosong | Admin: **Pengguna → Sunting → Program Studi** |
+| Pengguna melihat *Akun Anda dinonaktifkan* | Admin menonaktifkan akunnya | Admin: **Pengguna → Sunting → Aktifkan Kembali** |
+| Tautan *Daftar* tidak tampil | Pendaftaran mandiri tertutup | Akun dibuat lewat impor, atau admin: **Pengguna → Buka Pendaftaran** |
+| Mahasiswa tidak melihat menu **Kesehatan Mental (SRQ)** | Kaprodi belum mengaktifkannya | Kaprodi: **Monitoring SRQ → Aktifkan SRQ-20** |
 | Menu **Rotasi Klinik** atau **Kasus Klinis** kaprodi kosong | Wajar: menu itu hanya memuat data akunnya sendiri | Pantau lewat **Dashboard Analitik**, **Daftar Mahasiswa**, atau **Ekspor Data** |
 | Menu **Konfigurasi** tidak tampil | Akun tidak berperan Admin | Admin lain menambahkan perannya lewat **Pengguna → Sunting** |
 | Lupa kata sandi, atau akun terkunci setelah 10 kali salah | Tanpa email, tautan *Lupa kata sandi* tidak tersedia | Admin: **Pengguna → Sunting → Reset Kata Sandi**. Akun terkunci juga terbuka sendiri setelah 15 menit |
@@ -479,7 +492,7 @@ Kaprodi memantau satu mahasiswa lewat **Daftar Mahasiswa**: cari nama, lalu buka
 | Hasil impor melaporkan email tak dikenal | Email di berkas nilai berbeda dengan email akun | Samakan emailnya, lalu impor ulang |
 | Kartu target kasus tidak tampil | Belum ada target untuk prodi itu | Admin: **Target Kasus Logbook → + Tambah Target** |
 | Pembimbing tidak melihat mahasiswanya | Belum ada penempatan yang menunjuknya | Admin: isi preseptor pada rotasi atau tutor pada enrolment |
-| Kerangka baru tidak muncul di Peta EPA | Peta EPA memakai kerangka paling awal | Pindahkan isinya ke kerangka awal, atau hapus kerangka awal bila belum ada keputusan EPA |
+| Peta EPA menampilkan kerangka yang keliru | Prodi belum memilih, atau memilih kerangka lain | Admin: **Program Studi → Sunting → Kerangka Peta EPA** |
 
 ---
 
@@ -499,7 +512,7 @@ Bila instansi Anda mengaktifkan login Google, tombol **Masuk dengan Google** jug
 
 > **Konfirmasi email.** Konfirmasi lewat surel hanya diminta bila server dipasangi layanan pengirim email. Pada instalasi tanpa server surat, akun hasil pendaftaran langsung bisa dipakai. Jika Anda mendapat pesan "harus mengonfirmasi email" padahal tidak pernah menerima suratnya, minta admin membuka **Konfigurasi → Pengguna → Sunting → Konfirmasi Sekarang**.
 
-Sebagian instansi tidak membuka pendaftaran mandiri dan memilih **mengimpor akun dari CSV** (lihat [Pengguna & impor CSV](#pengguna--impor-csv)). Akun hasil impor menerima **kata sandi sementara** acak dari admin. Saat pertama masuk, Anda diarahkan ke **Pengaturan Akun** dan wajib membuat kata sandi baru sebelum bisa membuka halaman lain.
+Instalasi baru menutup pendaftaran mandiri secara bawaan: tautan **Daftar** tidak tampil, dan admin membuat akun lewat **impor CSV** (lihat [Pengguna & impor CSV](#pengguna--impor-csv)). Akun hasil impor menerima **kata sandi sementara** acak dari admin. Saat pertama masuk, Anda diarahkan ke **Pengaturan Akun** dan wajib membuat kata sandi baru sebelum bisa membuka halaman lain.
 
 ### 1.2 Masuk, lupa kata sandi, keluar
 
@@ -1061,7 +1074,7 @@ Keputusan baru **menggantikan** yang lama (riwayat tetap tersimpan). Sumbernya d
 
 ### 4.15 Kesehatan Mental (SRQ-20)
 
-**Perjalanan Belajar → Kesehatan Mental (SRQ)** (`/kesehatan-mental`) adalah skrining mandiri 20 pertanyaan ya/tidak tentang kondisi Anda selama 30 hari terakhir. Pengisian bersifat **sukarela**, dan hasilnya adalah penapisan, **bukan diagnosis**.
+**Perjalanan Belajar → Kesehatan Mental (SRQ)** (`/kesehatan-mental`) adalah skrining mandiri 20 pertanyaan ya/tidak tentang kondisi Anda selama 30 hari terakhir. Pengisian bersifat **sukarela**, dan hasilnya adalah penapisan, **bukan diagnosis**. Menu ini tampil setelah kaprodi mengaktifkannya untuk prodi Anda.
 
 1. Klik **Isi SRQ-20**, jawab semua pertanyaan, lalu centang persetujuan.
 2. Klik **Kirim Jawaban**. Skor adalah jumlah jawaban "ya". Anda dapat mengisi paling banyak sekali sehari, dan riwayatnya tersimpan.
@@ -1088,6 +1101,7 @@ Dengan persetujuan Anda, **skor dan kategori** terlihat oleh kaprodi prodi Anda 
 
 Beranda dosen, preseptor, kaprodi, dan admin mengikuti pola beranda pembimbing jejak.pro:
 
+- **Langkah Penyiapan** (admin dan kaprodi) — daftar pekerjaan penyiapan yang belum selesai, dihitung dari data sungguhan. Hilang sendiri setelah langkah wajib beres. Lihat [Panduan Penyiapan](#panduan-penyiapan-untuk-kaprodi--admin-prodi).
 - **Ringkasan Hari Ini** — kartu angka yang hanya "menyala" bila ada pekerjaan; kartu bernilai nol menampilkan *✓ Beres*:
   - **Kasus Perlu Diverifikasi** dan **Kegiatan Perlu Divalidasi** — antrean yang sama dengan menu Validasi Kasus Klinis / Validasi Kegiatan, tanpa kasus/kegiatan milik akun Anda sendiri (tidak tampil bagi kaprodi tanpa peran pengajar, yang juga tidak melihat menu Validasi).
   - **Perlu Dinilai** — DOPS/Mini-CEX yang diminta mahasiswa atau masih draf dengan Anda sebagai penilai, ditambah percobaan asesmen (rubrik, CBD, Long Case) yang sudah dikumpulkan dan ditugaskan kepada Anda.
@@ -1203,7 +1217,11 @@ Tiap baris memuat jumlah kegiatan pada periode terpilih (kolom **Kegiatan Period
 
 ### 5.11 Monitoring SRQ
 
-**Coaching Center → Monitoring SRQ** (`/monitoring-srq`) hanya untuk kaprodi yang sudah terhubung ke prodi binaan, dan selalu terkunci ke prodi itu. Halaman ini memakai hasil **terakhir** tiap mahasiswa pada periode terpilih:
+**Coaching Center → Monitoring SRQ** (`/monitoring-srq`) hanya untuk kaprodi yang sudah terhubung ke prodi binaan, dan selalu terkunci ke prodi itu.
+
+**Mengaktifkan SRQ-20.** Menu **Kesehatan Mental (SRQ)** tidak tampil bagi mahasiswa sampai Anda mengaktifkannya untuk prodi Anda. Centang ketiga pernyataan kesiapan (SOP tindak lanjut, tinjauan rumusan dan ambang skor, kontak konselor), lalu klik **Aktifkan SRQ-20**. **Nonaktifkan** menutup pengisian baru, sedangkan riwayat tetap tersimpan dan tetap dapat dibuka pemiliknya.
+
+Halaman ini memakai hasil **terakhir** tiap mahasiswa pada periode terpilih:
 
 - **Ringkasan**: jumlah mahasiswa yang sudah mengisi, jumlah per kategori, dan yang belum ditindaklanjuti.
 - **Perlu Perhatian**: mahasiswa dengan skor 6 atau lebih atau tanda perlu perhatian segera. Yang segera dan belum ditindaklanjuti tampil paling atas.
@@ -1231,13 +1249,17 @@ Periode yang sudah dipakai rotasi klinik, enrolment tutorial, Assessment Event, 
 
 ### 6.2 Program Studi
 
-`/study_programs` — nama, **kode** (huruf kecil, unik; bawaan `pssk` dan `pspd`), **jenjang** (sarjana/profesi). Kode prodi dipakai importer CSV pengguna dan paket migrasi.
+`/study_programs` — nama, **kode** (huruf kecil, unik; bawaan `pssk` dan `pspd`), **jenjang** (sarjana/profesi). Kode prodi dipakai importer CSV pengguna dan paket migrasi. **Kerangka Peta EPA** menentukan kerangka yang dipakai Peta EPA mahasiswa prodi itu dan pilihan EPA saat verifikasi kasus; bila kosong, dipakai kerangka yang paling awal dibuat.
 
 ![Daftar Program Studi](panduan/6-2-program-studi.png)
 
 ### 6.3 Pengguna & impor CSV
 
 `/admin/users` — daftar berpenyaring (nama/email, peran, prodi). **Sunting** mengubah nama, prodi, dan peran (minimal satu peran; peran aktif ikut disesuaikan bila dicabut) — untuk akun kaprodi, prodi di sini adalah **prodi binaan** yang membatasi hak aksesnya dan hanya dapat diubah admin; **Reset Kata Sandi** membuat kata sandi sementara acak (ditampilkan sekali — sampaikan langsung ke pengguna) sekaligus membuka kunci akun, dan pengguna wajib menggantinya saat masuk; **Konfirmasi Sekarang** mengaktifkan akun yang tersangkut konfirmasi email. Status **terkunci** (terlalu banyak salah kata sandi) tampil di halaman sunting.
+
+**Pendaftaran mandiri** diatur di bagian atas halaman ini. Instalasi baru mulai tertutup, instalasi lama tetap terbuka sampai ditutup. Selama tertutup, tautan *Daftar* disembunyikan dan akun Google baru tidak dibuat.
+
+**Status akun** ada di halaman Sunting. **Nonaktifkan Akun** mencegah pengguna masuk dan mengeluarkannya dari daftar pilihan serta hitungan prodi, tanpa menghapus rekam jejaknya; **Aktifkan Kembali** memulihkannya. **Hapus Akun** hanya tersedia untuk akun yang belum punya rekam jejak. Akun yang sedang Anda pakai tidak dapat dinonaktifkan atau dihapus.
 
 ![Daftar Pengguna dengan saringan nama/email, peran, dan prodi](panduan/6-3-pengguna.png)
 
@@ -1250,7 +1272,7 @@ budi@kampus.ac.id,Budi Santoso,dosen+preseptor,
 ~~~
 
 - `peran`: kode dipisah `+` atau `;` (mahasiswa, dosen, preseptor, kaprodi, admin); kosong → mahasiswa.
-- `prodi`: kode atau nama prodi; kosong → tidak diubah.
+- `prodi`: kode atau nama prodi; kosong → tidak diubah. Wajib bagi kaprodi yang bukan admin, karena itulah prodi binaannya; barisnya ditolak bila kosong.
 - Akun baru: kata sandi sementara acak per akun, langsung terkonfirmasi, wajib diganti saat masuk pertama. Daftar email + kata sandi sementara ditampilkan **sekali** di halaman hasil impor (tombol **Unduh CSV**) — simpan sebelum meninggalkan halaman. Akun lama: hanya nama/peran/prodi yang diperbarui, kata sandi tidak disentuh. Setiap baris gagal dilaporkan dengan nomor barisnya.
 
 Berkas CSV boleh disimpan sebagai *CSV UTF-8* maupun *CSV (dipisahkan koma)* bawaan Excel di Windows — nama beraksen seperti *José* atau *Behçet* tetap terbaca. Ketentuan ini berlaku untuk semua impor CSV: pengguna, master data, nilai Assessment Event, CBT & OSCE format Glide, dan relabel prodi.
@@ -1411,7 +1433,11 @@ Ketiganya mendukung **impor CSV** (header alias ID/EN dikenali).
 
 ### 6.14 Rotasi Klinik dan Enrolment Tutorial
 
-Admin membuat **Rotasi Klinik** (`/clinical_rotations/new`: mahasiswa, periode, bagian/departemen, wahana, preseptor, tanggal) dan **Enrolment Tutorial** (`/tutorial_enrollments/new`: mahasiswa, periode, blok/sistem, tutor, tanggal; unik per mahasiswa-periode-blok; tombol aktif/selesai). Nama stase/blok harus **sama persis** (tanpa membedakan huruf besar-kecil) dengan nama blok pada Assessment Event agar event tampil ke mahasiswa.
+Admin membuat **Rotasi Klinik** (`/clinical_rotations/new`: mahasiswa, periode, bagian/departemen, wahana, preseptor, tanggal) dan **Enrolment Tutorial** (`/tutorial_enrollments/new`: mahasiswa, periode, blok/sistem, tutor, tanggal; unik per mahasiswa-periode-blok; tombol aktif/selesai).
+
+**Impor CSV** (`/clinical_rotations/import`, `/tutorial_enrollments/import`) menempatkan banyak mahasiswa sekaligus: unggah → pratinjau per baris → terapkan. Kolomnya `email,periode,bagian,wahana,mulai,selesai,preseptor` untuk rotasi dan `email,periode,blok,kelompok,mulai,selesai,tutor` untuk enrolment. `email` boleh diisi NPM/NIM, periode boleh dipilih di form, dan tanggal ditulis `2026-10-12` atau `12/10/2026`. Baris dengan mahasiswa, periode, dan bagian/blok yang sama memperbarui data lama, jadi berkas yang sama aman diunggah ulang; isian kosong tidak menghapus nilai lama.
+
+ Nama stase/blok harus **sama persis** (tanpa membedakan huruf besar-kecil) dengan nama blok pada Assessment Event agar event tampil ke mahasiswa.
 
 ![Formulir Rotasi Klinik baru](panduan/6-14-rotasi-baru.png)
 
@@ -1660,8 +1686,8 @@ Seluruh data JEJAK Essential dapat dipindahkan ke jejak.pro tanpa ketik ulang. A
 | Notifikasi | `/notifications` |
 | Kasus Klinis / Validasi Kasus / Riwayat Verifikasi | `/clinical_cases`, `/clinical_cases?scope=to_verify`, `/clinical_cases?scope=reviewed` |
 | Logbook Kegiatan / Validasi Kegiatan / Kalender | `/activity_logs`, `/activity_logs?scope=to_verify`, `/kalender` |
-| Rotasi Klinik | `/clinical_rotations` |
-| Enrolment Tutorial | `/tutorial_enrollments` |
+| Rotasi Klinik / Impor CSV | `/clinical_rotations`, `/clinical_rotations/import` |
+| Enrolment Tutorial / Impor CSV | `/tutorial_enrollments`, `/tutorial_enrollments/import` |
 | Refleksi | `/reflection_entries` |
 | Kesehatan Mental (SRQ) / Monitoring SRQ | `/kesehatan-mental`, `/monitoring-srq` |
 | Tugas Akhir | `/final_projects` |
