@@ -1,0 +1,46 @@
+<% content_for :title, "Kesehatan Mental (SRQ)" %>
+<div class="max-w-3xl space-y-5">
+  <div>
+    <h1 class="text-xl font-bold text-gray-900">Kesehatan Mental (SRQ-20)</h1>
+    <p class="text-sm text-gray-500 mt-1">Skrining mandiri 20 pertanyaan tentang kondisi Anda selama 30 hari terakhir. Pengisian bersifat sukarela, dan hasilnya bukan diagnosis.</p>
+  </div>
+
+  <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-5">
+    <p class="text-sm text-gray-700">Skor dan kategori hasil terlihat oleh kaprodi prodi Anda agar dapat ditindaklanjuti. Jawaban per butir hanya terlihat oleh Anda.</p>
+    <div class="mt-4">
+      <% if @filled_today %>
+        <%= link_to "Lihat Hasil Hari Ini", srq_screening_path(@filled_today), class: "inline-block rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5" %>
+      <% else %>
+        <%= link_to "Isi SRQ-20", new_srq_screening_path, class: "inline-block rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl ring-1 ring-gray-200 overflow-x-auto">
+    <div class="px-4 py-3 border-b border-gray-100">
+      <h2 class="text-sm font-semibold text-gray-800">Riwayat Pengisian</h2>
+    </div>
+    <% if @screenings.any? %>
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs text-gray-400 uppercase border-b border-gray-100">
+            <th class="px-4 py-2.5">Tanggal</th>
+            <th class="px-4 py-2.5">Skor</th>
+            <th class="px-4 py-2.5">Kategori</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @screenings.each do |screening| %>
+            <tr class="border-b border-gray-50 last:border-0">
+              <td class="px-4 py-2.5"><%= link_to l(screening.screened_on, format: :long), srq_screening_path(screening), class: "text-indigo-600 hover:underline" %></td>
+              <td class="px-4 py-2.5"><%= screening.total_score %>/<%= SrqScreening::QUESTIONS.size %></td>
+              <td class="px-4 py-2.5"><%= render "srq_screenings/risk_badge", screening: screening %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <p class="px-4 py-6 text-sm text-gray-400">Belum ada pengisian.</p>
+    <% end %>
+  </div>
+</div>

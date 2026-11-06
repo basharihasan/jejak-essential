@@ -50,7 +50,8 @@ class MigrationExporter
   # Sengaja tidak ikut: device_push_tokens (kunci perangkat, tak berguna di
   # server lain), glide_imports (log unggahan CSV lokal — pesan galatnya
   # memuat email mahasiswa, dan rollback-nya tak berlaku di server lain), dan
-  # tabel Active Storage (berkasnya diekspor ke lampiran/).
+  # tabel Active Storage (berkasnya diekspor ke lampiran/), dan srq_screenings
+  # (data kesehatan mental yang disetujui mahasiswa hanya untuk kaprodi prodinya).
 
   # Kolom yang tidak pernah ikut: rahasia autentikasi dan token lembar
   # persetujuan (kredensial yang masih hidup; `token` hanya ada di tabel itu).

@@ -30,9 +30,11 @@
   # Form Builder mengikuti AssessmentFormTemplatePolicy (peran yang
   # disandang, bukan peran aktif): hanya kaprodi & admin.
   is_form_manager = current_user.can_manage_assessment_forms?
+  # Monitoring SRQ mengikuti peran aktif kaprodi; admin biasa tidak melihatnya.
+  is_srq_monitor = is_kaprodi && current_user.can_monitor_srq?
   nav_locals = { is_student: is_student, is_instructor: is_instructor, is_verifier: is_verifier,
                  is_config_manager: is_config_manager, is_prodi_manager: is_prodi_manager,
-                 is_form_manager: is_form_manager,
+                 is_form_manager: is_form_manager, is_srq_monitor: is_srq_monitor,
                  pending_verifications: pending_verifications,
                  pending_activity_verifications: pending_activity_verifications }
 %>

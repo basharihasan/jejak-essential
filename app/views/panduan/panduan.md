@@ -36,6 +36,7 @@ Panduan ini disusun menurut **peran**: bab awal berlaku untuk semua orang, lalu 
   - [4.12 Formulir evaluasi (Assessment Form)](#formulir-evaluasi-assessment-form)
   - [4.13 Peta Kompetensi (Analisis Capaian Pembelajaran)](#peta-kompetensi-analisis-capaian-pembelajaran)
   - [4.14 Peta EPA & Tingkat Entrustment](#peta-epa--tingkat-entrustment)
+  - [4.15 Kesehatan Mental (SRQ-20)](#kesehatan-mental-srq-20)
 - [Bab 5 — Panduan Pembimbing (Dosen, Preseptor, Kaprodi)](#bab-5--panduan-pembimbing-dosen-preseptor-kaprodi)
   - [5.1 Beranda pembimbing](#beranda-pembimbing)
   - [5.2 Validasi Kasus Klinis](#validasi-kasus-klinis)
@@ -47,6 +48,7 @@ Panduan ini disusun menurut **peran**: bab awal berlaku untuk semua orang, lalu 
   - [5.8 Dashboard Analitik](#dashboard-analitik)
   - [5.9 Daftar Mahasiswa](#daftar-mahasiswa)
   - [5.10 Khusus kaprodi](#khusus-kaprodi)
+  - [5.11 Monitoring SRQ](#monitoring-srq)
 - [Bab 6 — Panduan Admin (Konfigurasi)](#bab-6--panduan-admin-konfigurasi)
   - [6.1 Tahun/Periode Akademik](#tahunperiode-akademik)
   - [6.2 Program Studi](#program-studi)
@@ -191,10 +193,10 @@ Sidebar hanya memuat enam grup, dan **menyempit mengikuti peran aktif** — buka
 | Grup | Menu | Tampil untuk |
 |---|---|---|
 | **Ikhtisar** | Beranda, Longitudinal Portfolio (mahasiswa), Profil Saya, Notifikasi | semua |
-| **Perjalanan Belajar** | Logbook ▾ (Kasus Klinis, Logbook Kegiatan), Rotasi Klinik, Enrolment Tutorial, Refleksi, Tugas Akhir | semua |
+| **Perjalanan Belajar** | Logbook ▾ (Kasus Klinis, Logbook Kegiatan), Rotasi Klinik, Enrolment Tutorial, Refleksi, Tugas Akhir, Kesehatan Mental (SRQ)* | semua (*hanya mahasiswa) |
 | **Asesmen** | Asesmen & Evaluasi ▾ (Evaluasi Akademik, Workplace Assessment, Rubric-based Assessment, Jurnal Umpan Balik*, Assessment Form Builder†) | semua (*Jurnal hanya mahasiswa; †Form Builder hanya kaprodi & admin) |
 | **Kompetensi & Prestasi** | Peta Kompetensi, Peta EPA & Entrustment | semua |
-| **Coaching Center** | Validasi Kasus Klinis & Validasi Kegiatan (hanya akun yang boleh memverifikasi — dosen / preseptor / admin), Dashboard Analitik, Daftar Mahasiswa, serta Relabel Prodi Mahasiswa, Jadwal DOPS & Mini-CEX, Learning Unit & Matrix, dan Ekspor Data (CSV) (kaprodi) | peran aktif dosen / preseptor / kaprodi / admin |
+| **Coaching Center** | Validasi Kasus Klinis & Validasi Kegiatan (hanya akun yang boleh memverifikasi — dosen / preseptor / admin), Dashboard Analitik, Daftar Mahasiswa, serta Relabel Prodi Mahasiswa, Jadwal DOPS & Mini-CEX, Learning Unit & Matrix, Monitoring SRQ, dan Ekspor Data (CSV) (kaprodi) | peran aktif dosen / preseptor / kaprodi / admin |
 | **Konfigurasi** | 19 menu pengelolaan (lihat [Bab 6](#bab-6--panduan-admin-konfigurasi)) | akun yang **memiliki** peran admin, apa pun peran aktifnya |
 
 Lencana angka di **Validasi Kasus Klinis** dan **Validasi Kegiatan** menunjukkan jumlah butir yang menunggu verifikasi oleh Anda — kasus/kegiatan milik akun Anda sendiri tidak dihitung.
@@ -652,6 +654,23 @@ Isinya:
 
 Keputusan baru **menggantikan** yang lama (riwayat tetap tersimpan). Sumbernya dua: otomatis saat pembimbing memverifikasi kasus dan memilih ranah EPA (level entrustment kasus dipetakan ke 1–5), atau manual oleh pembimbing yang berelasi dengan Anda. Bila verifikasi kasus dibatalkan, level yang lahir dari kasus itu dicabut dan keputusan sebelumnya dipulihkan.
 
+### 4.15 Kesehatan Mental (SRQ-20)
+
+**Perjalanan Belajar → Kesehatan Mental (SRQ)** (`/kesehatan-mental`) adalah skrining mandiri 20 pertanyaan ya/tidak tentang kondisi Anda selama 30 hari terakhir. Pengisian bersifat **sukarela**, dan hasilnya adalah penapisan, **bukan diagnosis**.
+
+1. Klik **Isi SRQ-20**, jawab semua pertanyaan, lalu centang persetujuan.
+2. Klik **Kirim Jawaban**. Skor adalah jumlah jawaban "ya". Anda dapat mengisi paling banyak sekali sehari, dan riwayatnya tersimpan.
+
+| Kategori | Arti |
+|---|---|
+| **Di Bawah Ambang** | Skor kurang dari 6 |
+| **Perlu Tindak Lanjut** | Skor 6 atau lebih |
+| **Perlu Perhatian Segera** | Jawaban "ya" pada pertanyaan tentang pikiran mengakhiri hidup, berapa pun skornya |
+
+Bila Anda membutuhkan bantuan, hubungi konselor fakultas atau **119 ekstensi 8** (Healing119, layanan konseling kesehatan jiwa Kemenkes). Bila merasa tidak aman saat ini, segera ke IGD terdekat.
+
+Dengan persetujuan Anda, **skor dan kategori** terlihat oleh kaprodi prodi Anda untuk tindak lanjut, termasuk tanda perlu perhatian segera. Jawaban per butir hanya terlihat oleh Anda. Pengguna lain, termasuk dosen dan admin, tidak melihat hasil Anda. Data ini tersimpan terenkripsi dan tidak ikut ekspor data.
+
 ---
 
 ## Bab 5 — Panduan Pembimbing (Dosen, Preseptor, Kaprodi)
@@ -772,6 +791,18 @@ Tiap baris memuat jumlah kegiatan pada periode terpilih (kolom **Kegiatan Period
 - Kaprodi **tidak** memverifikasi kasus/kegiatan, tidak menilai DOPS/Mini-CEX, dan tidak memutuskan tingkat EPA, sehingga menu Validasi tidak ditawarkan. Lembar Penguji tetap terbuka bila admin menunjuk Anda sebagai penguji suatu percobaan; percobaan tanpa penguji hanya dapat Anda ambil untuk mahasiswa prodi binaan.
 
 ![Dashboard Analitik kaprodi: bagian Program Studi dengan radar DOPS & Mini-CEX kohort, tabel mahasiswa prodi, dan tautan Ekspor CSV](panduan/5-10-analitik-kaprodi.png)
+
+### 5.11 Monitoring SRQ
+
+**Coaching Center → Monitoring SRQ** (`/monitoring-srq`) hanya untuk kaprodi yang sudah terhubung ke prodi binaan, dan selalu terkunci ke prodi itu. Halaman ini memakai hasil **terakhir** tiap mahasiswa pada periode terpilih:
+
+- **Ringkasan**: jumlah mahasiswa yang sudah mengisi, jumlah per kategori, dan yang belum ditindaklanjuti.
+- **Perlu Perhatian**: mahasiswa dengan skor 6 atau lebih atau tanda perlu perhatian segera. Yang segera dan belum ditindaklanjuti tampil paling atas.
+- **Per Angkatan**: partisipasi dan jumlah yang perlu perhatian.
+
+Tulis catatan lalu klik **Tandai Ditindaklanjuti** setelah Anda menghubungi atau merujuk mahasiswa. Catatan tersimpan terenkripsi. Hasil baru yang perlu perhatian memicu notifikasi bertuliskan umum tanpa nama, jadi buka halaman ini untuk melihat rinciannya.
+
+Kaprodi tidak melihat jawaban per butir. SRQ-20 adalah penapisan, bukan diagnosis, sehingga hasilnya tidak boleh memengaruhi penilaian akademik.
 
 ---
 
@@ -1069,8 +1100,9 @@ Prinsip yang diterapkan aplikasi:
 4. **Persetujuan pasien** dikumpulkan lewat lembar QR tanpa login yang tidak menampilkan isi kasus.
 5. **Kode pasien** pada Logbook Kegiatan adalah kode acak — bukan nama, bukan No. RM.
 6. **Anonimitas formulir evaluasi**: pada templat anonim, subjek yang dinilai tidak melihat identitas pengisi.
-7. **Data yang keluar aplikasi** (ekspor CSV Portfolio, [Ekspor Data (CSV)](#ekspor-data-csv), feed iCal, paket migrasi) **tidak memuat identitas pasien**; setiap unduhan Ekspor Data tercatat di Riwayat Ekspor; paket migrasi hanya membawanya bila admin server secara eksplisit memintanya.
-8. **Lampiran** (bukti kasus dan kegiatan, dokumen asesmen, foto profil) hanya dapat diunduh setelah masuk, oleh akun yang berhak membuka kasus, kegiatan, atau asesmennya. Tautan yang tersalin tidak berlaku bagi orang lain.
+7. **Kesehatan mental mahasiswa** (SRQ-20): jawaban dan catatan tindak lanjut terenkripsi, pengisian mensyaratkan persetujuan, kaprodi hanya melihat skor dan kategori, serta datanya tidak ikut Ekspor Data maupun paket migrasi.
+8. **Data yang keluar aplikasi** (ekspor CSV Portfolio, [Ekspor Data (CSV)](#ekspor-data-csv), feed iCal, paket migrasi) **tidak memuat identitas pasien**; setiap unduhan Ekspor Data tercatat di Riwayat Ekspor; paket migrasi hanya membawanya bila admin server secara eksplisit memintanya.
+9. **Lampiran** (bukti kasus dan kegiatan, dokumen asesmen, foto profil) hanya dapat diunduh setelah masuk, oleh akun yang berhak membuka kasus, kegiatan, atau asesmennya. Tautan yang tersalin tidak berlaku bagi orang lain.
 
 Kewajiban pengguna: jangan menulis nama atau nomor identitas pasien pada kolom bebas (keluhan, anamnesis, catatan, judul kegiatan, refleksi) — kolom itu **tidak** terenkripsi dan tidak disamarkan.
 
@@ -1090,6 +1122,7 @@ Kewajiban pengguna: jangan menulis nama atau nomor identitas pasien pada kolom b
 | Nilai asesmen keluar | mahasiswa |
 | Tingkat entrustment diperbarui | mahasiswa |
 | Skor ujian tugas akhir | mahasiswa |
+| Hasil SRQ perlu ditinjau (tanpa nama) | kaprodi prodi mahasiswa |
 
 Semua notifikasi muncul di lonceng topbar dan halaman **Notifikasi**. **Web Push** ke perangkat (peramban desktop/Android; iPhone lewat aplikasi di Layar Utama) aktif bila server dipasangi kunci VAPID — tombol **Aktifkan Notifikasi Push** di halaman Notifikasi. Notifikasi push dapat dimatikan dari halaman yang sama.
 
@@ -1209,6 +1242,7 @@ Seluruh data JEJAK Essential dapat dipindahkan ke jejak.pro tanpa ketik ulang. A
 | Rotasi Klinik | `/clinical_rotations` |
 | Enrolment Tutorial | `/tutorial_enrollments` |
 | Refleksi | `/reflection_entries` |
+| Kesehatan Mental (SRQ) / Monitoring SRQ | `/kesehatan-mental`, `/monitoring-srq` |
 | Tugas Akhir | `/final_projects` |
 | Evaluasi Akademik | `/nilai-ujian` |
 | Workplace Assessment (DOPS/Mini-CEX) | `/asesmen`, `/dops_evaluations/new`, `/mini_cex_evaluations/new` |
@@ -1252,6 +1286,7 @@ Seluruh data JEJAK Essential dapat dipindahkan ke jejak.pro tanpa ketik ulang. A
 | **Percobaan (attempt)** | Satu kali keikutsertaan mahasiswa pada sebuah event; nilai tertinggi menjadi wakil. |
 | **Learning Unit** | Blok/modul yang nilainya disusun dari beberapa event lewat Assessment Matrix berbobot. |
 | **Kohort** | Seluruh mahasiswa (gabungan sarjana + profesi) dengan nilai pada tipe asesmen & periode yang sama. |
+| **SRQ-20** | Self Reporting Questionnaire: skrining mandiri 20 pertanyaan ya/tidak dari WHO; skor 6 atau lebih menandakan perlu tindak lanjut. |
 | **Privacy Mode** | Penyamaran identitas pasien di layar untuk semua pembaca selain pembimbing kasus. |
 | **Rotasi Klinik / Stase** | Penempatan mahasiswa profesi di satu bagian & wahana pada rentang tanggal. |
 | **Enrolment Tutorial** | Penempatan mahasiswa sarjana pada blok/sistem dengan dosen tutor. |

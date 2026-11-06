@@ -14,6 +14,7 @@ Seluruh baris **tingkat Dasar (🟢)** pada `DAFTAR_FITUR_JEJAK.md` di repo utam
 - **Pemetaan Capaian** — Peta Kompetensi per periode, Peta EPA & Tingkat Entrustment (1–5, ber-supersede), Assessment Matrix per Learning Unit, kurva persentil kohort (gabungan PSSK+PSPD), portofolio longitudinal.
 - **Kurikulum & Rotasi** — periode akademik, program studi (pssk/pspd), rotasi klinik, enrolment tutorial, blueprint & kerangka kompetensi.
 - **Dashboard Analitik & Notifikasi** — `/analitik` per peran; notifikasi in-app + Web Push (VAPID).
+- **Kesehatan Mental (SRQ-20)** — skrining mandiri sukarela oleh mahasiswa dengan persetujuan; Monitoring SRQ untuk kaprodi prodi binaan (skor, kategori, dan catatan tindak lanjut, tanpa jawaban per butir).
 
 Rencana lengkap & status tiap fase (0–26, semua ✅) ada di [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md).
 
@@ -129,6 +130,7 @@ Keterbatasan yang perlu diketahui sebelum deploy sungguhan (bukan sekadar demo):
 - **Data mahasiswa**: pencarian pengguna hanya untuk pengajar/kaprodi/admin; pengajar hanya menemukan mahasiswa, dan kaprodi non-admin hanya bisa membuka mahasiswa prodi binaannya (`User#can_view_student?`).
 - **Content Security Policy** aktif (`config/initializers/content_security_policy.rb`): skrip hanya dari aset sendiri atau inline ber-nonce — tanpa CDN pihak ketiga dan tanpa atribut `onclick`/`onchange`; gunakan Stimulus untuk perilaku baru.
 - **Lampiran** hanya bisa diunduh lewat `AttachmentsController`, yang memeriksa izin membuka kasus, kegiatan, atau asesmennya. Rute bawaan Active Storage dimatikan (`config.active_storage.draw_routes = false`) karena tautannya terbuka tanpa login dan tidak kedaluwarsa.
+- **Data SRQ-20**: hanya jawaban dan catatan tindak lanjut yang disimpan, keduanya terenkripsi; skor dan kategori dihitung dari jawaban. Admin yang bukan kaprodi tidak punya akses, dan datanya tidak ikut Ekspor Data maupun paket migrasi.
 - **Unggahan** divalidasi jenis (dibaca dari isi berkas) dan ukurannya (`AttachmentValidation`): bukti 10 MB × maks. 10 berkas, dokumen asesmen 20 MB, foto profil 5 MB.
 - **Peramban** minimal Safari/iOS 16.4, Chrome 111, Firefox 128 (dukungan Tailwind v4); di bawahnya tampil halaman 406 berbahasa Indonesia.
 

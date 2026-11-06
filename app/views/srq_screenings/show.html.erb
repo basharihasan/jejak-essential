@@ -1,0 +1,44 @@
+<% content_for :title, "Hasil SRQ-20" %>
+<div class="max-w-3xl space-y-5">
+  <div>
+    <%= link_to "← Kesehatan Mental", srq_screenings_path, class: "text-sm text-indigo-600 hover:text-indigo-800" %>
+    <h1 class="mt-2 text-xl font-bold text-gray-900">Hasil SRQ-20</h1>
+    <p class="text-sm text-gray-500 mt-1"><%= l(@screening.screened_on, format: :long) %></p>
+  </div>
+
+  <% if @screening.urgent? %>
+    <div class="rounded-2xl bg-rose-50 border border-rose-200 p-5" role="alert">
+      <p class="text-sm font-bold text-rose-900">Anda tidak sendirian, dan bantuan tersedia sekarang.</p>
+      <p class="mt-2 text-sm text-rose-900">Anda menyampaikan pernah terpikir untuk mengakhiri hidup. Mohon bicarakan hal ini hari ini juga dengan orang yang Anda percaya atau tenaga profesional.</p>
+      <ul class="mt-3 text-sm text-rose-900 list-disc pl-5 space-y-1">
+        <li>Telepon <strong>119 ekstensi 8</strong> (Healing119, layanan konseling kesehatan jiwa Kemenkes).</li>
+        <li>Bila Anda merasa tidak aman saat ini, segera ke IGD terdekat atau minta seseorang menemani Anda.</li>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-5">
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+      <p class="text-3xl font-bold text-gray-900"><%= @screening.total_score %><span class="text-base font-medium text-gray-400">/<%= SrqScreening::QUESTIONS.size %></span></p>
+      <%= render "srq_screenings/risk_badge", screening: @screening %>
+    </div>
+    <% if @screening.needs_follow_up? %>
+      <p class="mt-3 text-sm text-gray-700">Hasil ini menunjukkan Anda mungkin sedang mengalami beban emosional yang perlu mendapat perhatian. Ini bukan diagnosis. Kaprodi prodi Anda dapat melihat hasil ini untuk membantu tindak lanjut, dan Anda juga dapat langsung menghubungi konselor fakultas atau 119 ekstensi 8.</p>
+    <% else %>
+      <p class="mt-3 text-sm text-gray-700">Skor Anda di bawah ambang <%= SrqScreening::CUTOFF %>. Ini bukan diagnosis. Bila Anda merasa perlu berbicara dengan seseorang, konselor fakultas atau 119 ekstensi 8 tetap dapat Anda hubungi.</p>
+    <% end %>
+    <p class="mt-3 text-xs text-gray-400">Kaprodi melihat skor dan kategori, bukan jawaban per butir.</p>
+  </div>
+
+  <details class="bg-white rounded-2xl ring-1 ring-gray-200 p-5">
+    <summary class="text-sm font-semibold text-gray-800 cursor-pointer">Jawaban Saya</summary>
+    <ol class="mt-3 space-y-1.5 text-sm text-gray-700">
+      <% SrqScreening::QUESTIONS.each_with_index do |question, index| %>
+        <li class="flex items-start justify-between gap-4">
+          <span><%= index + 1 %>. <%= question %></span>
+          <span class="font-semibold shrink-0"><%= @screening.answers[index] ? "Ya" : "Tidak" %></span>
+        </li>
+      <% end %>
+    </ol>
+  </details>
+</div>

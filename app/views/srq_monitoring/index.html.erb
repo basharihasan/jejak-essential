@@ -1,0 +1,110 @@
+<% content_for :title, "Monitoring SRQ" %>
+<% summary = @monitor.summary %>
+<div class="flex items-center justify-between flex-wrap gap-3">
+  <div>
+    <h1 class="text-xl font-bold text-gray-900">Monitoring SRQ</h1>
+    <p class="text-sm text-gray-400 mt-1"><%= current_user.study_program.name %>. Hasil terakhir tiap mahasiswa pada periode terpilih.</p>
+  </div>
+  <% if @academic_periods.any? %>
+    <%= form_with url: srq_monitoring_path, method: :get, data: { controller: "auto-submit" } do %>
+      <select name="academic_period_id" aria-label="Periode akademik" data-action="change->auto-submit#submit"
+              class="rounded-xl border-0 py-2 px-3.5 text-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500">
+        <% @academic_periods.each do |period| %>
+          <option value="<%= period.id %>" <%= "selected" if @selected_period == period %>><%= period.name %></option>
+        <% end %>
+      </select>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 text-xs text-slate-600">
+  Data kesehatan bersifat rahasia dan diberikan mahasiswa dengan persetujuan untuk tindak lanjut. SRQ-20 adalah penapisan, bukan diagnosis, dan tidak boleh memengaruhi penilaian akademik.
+</div>
+
+<div class="mt-4 grid grid-cols-2 lg:grid-cols-5 gap-3">
+  <% [ [ "Sudah Mengisi", "#{summary.screened}/#{summary.students}", "text-gray-900" ],
+       [ "Di Bawah Ambang", summary.below_cutoff, "text-emerald-700" ],
+       [ "Perlu Tindak Lanjut", summary.follow_up, "text-amber-700" ],
+       [ "Perlu Perhatian Segera", summary.urgent, "text-rose-700" ],
+       [ "Belum Ditindaklanjuti", summary.pending, "text-gray-900" ] ].each do |label, value, tone| %>
+    <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-4">
+      <p class="text-xs text-gray-500"><%= label %></p>
+      <p class="mt-1 text-2xl font-bold <%= tone %>"><%= value %></p>
+    </div>
+  <% end %>
+</div>
+
+<div class="mt-6">
+  <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Perlu Perhatian</h2>
+  <% if @monitor.attention_rows.any? %>
+    <div class="bg-white rounded-2xl ring-1 ring-gray-200 overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="text-left text-xs text-gray-400 uppercase border-b border-gray-100">
+            <th class="px-4 py-2.5">Mahasiswa</th>
+            <th class="px-4 py-2.5">Angkatan</th>
+            <th class="px-4 py-2.5">Tanggal</th>
+            <th class="px-4 py-2.5">Skor</th>
+            <th class="px-4 py-2.5">Kategori</th>
+            <th class="px-4 py-2.5">Tindak Lanjut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @monitor.attention_rows.each do |screening| %>
+            <tr class="border-b border-gray-50 last:border-0 align-top" data-testid="srq-row-<%= screening.id %>">
+              <td class="px-4 py-2.5">
+                <p class="font-medium text-gray-800"><%= screening.user.full_name %></p>
+                <p class="text-xs text-gray-400"><%= screening.user.identifier_number %></p>
+              </td>
+              <td class="px-4 py-2.5"><%= screening.user.cohort_year || "—" %></td>
+              <td class="px-4 py-2.5 whitespace-nowrap"><%= l(screening.screened_on, format: :long) %></td>
+              <td class="px-4 py-2.5"><%= screening.total_score %>/<%= SrqScreening::QUESTIONS.size %></td>
+              <td class="px-4 py-2.5"><%= render "srq_screenings/risk_badge", screening: screening %></td>
+              <td class="px-4 py-2.5 min-w-64">
+                <% if screening.followed_up? %>
+                  <p class="text-xs font-semibold text-emerald-700">Sudah oleh <%= screening.followed_up_by&.full_name || "kaprodi" %>, <%= l(screening.followed_up_at.to_date, format: :long) %></p>
+                  <p class="mt-1 text-xs text-gray-600 whitespace-pre-line"><%= screening.follow_up_note %></p>
+                <% else %>
+                  <%= form_with url: srq_monitoring_follow_up_path(screening), method: :patch, class: "space-y-2" do %>
+                    <%= hidden_field_tag :academic_period_id, @selected_period&.id, id: "period_#{screening.id}" %>
+                    <%= text_area_tag :follow_up_note, nil, id: "follow_up_note_#{screening.id}", rows: 2, required: true, placeholder: "Catatan tindak lanjut", aria: { label: "Catatan tindak lanjut" },
+                          class: "block w-full rounded-lg border-0 py-1.5 px-2.5 text-xs text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500" %>
+                    <%= submit_tag "Tandai Ditindaklanjuti", class: "rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold px-3 py-1.5 cursor-pointer" %>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-white rounded-2xl ring-1 ring-gray-200 px-4 py-6 text-sm text-gray-400">Tidak ada hasil yang perlu ditindaklanjuti pada periode ini.</div>
+  <% end %>
+</div>
+
+<div class="mt-6">
+  <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Per Angkatan</h2>
+  <div class="bg-white rounded-2xl ring-1 ring-gray-200 overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead>
+        <tr class="text-left text-xs text-gray-400 uppercase border-b border-gray-100">
+          <th class="px-4 py-2.5">Angkatan</th>
+          <th class="px-4 py-2.5">Mahasiswa</th>
+          <th class="px-4 py-2.5">Sudah Mengisi</th>
+          <th class="px-4 py-2.5">Perlu Perhatian</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @monitor.cohort_rows.each do |row| %>
+          <tr class="border-b border-gray-50 last:border-0">
+            <td class="px-4 py-2.5"><%= row.cohort_year || "Belum diisi" %></td>
+            <td class="px-4 py-2.5"><%= row.students %></td>
+            <td class="px-4 py-2.5"><%= row.screened %></td>
+            <td class="px-4 py-2.5"><%= row.needs_follow_up %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

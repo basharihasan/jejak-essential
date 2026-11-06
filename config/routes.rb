@@ -160,6 +160,11 @@ Rails.application.routes.draw do
 
   resources :reflection_entries
 
+  # Skrining mandiri SRQ-20 (mahasiswa) dan pemantauannya (kaprodi).
+  resources :srq_screenings, only: %i[index new create show], path: "kesehatan-mental"
+  get   "monitoring-srq",     to: "srq_monitoring#index",  as: :srq_monitoring
+  patch "monitoring-srq/:id", to: "srq_monitoring#update", as: :srq_monitoring_follow_up
+
   resources :dops_evaluations, except: %i[index] do
     member { patch :submit }
   end
