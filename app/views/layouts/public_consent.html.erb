@@ -10,6 +10,18 @@
     <link href="/vendor/fonts/inter/inter.css" rel="stylesheet">
     <%= stylesheet_link_tag :tailwind, "data-turbo-track": "reload" %>
     <style>* { font-family: 'Inter', system-ui, -apple-system, sans-serif; }</style>
+    <%# Tailwind v4 tidak berlaku di peramban sebelum Chrome 111 / Safari 16.4,
+        padahal lembar ini sengaja dibuka di sana. Gaya cadangan menjaga lembar
+        tetap terbaca dan tidak menyentuh peramban modern. %>
+    <style>
+      @supports not (color: oklch(0 0 0)) {
+        body { margin: 0; background: #f8fafc; color: #1e293b; line-height: 1.5; }
+        main { display: block; max-width: 32rem; margin: 0 auto; padding: 2rem 1rem; }
+        label { display: block; margin-bottom: .5rem; }
+        input[type="text"], select { display: block; width: 100%; box-sizing: border-box; margin-bottom: 1rem; padding: .6rem; border: 1px solid #cbd5e1; border-radius: .5rem; font-size: 1rem; }
+        input[type="submit"] { display: block; width: 100%; padding: .75rem; border: 0; border-radius: .5rem; background: #4f46e5; color: #fff; font-size: 1rem; }
+      }
+    </style>
   </head>
   <body class="min-h-full bg-slate-50 antialiased">
     <main class="mx-auto max-w-lg px-4 py-8">

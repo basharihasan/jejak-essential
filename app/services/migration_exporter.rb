@@ -52,9 +52,15 @@ class MigrationExporter
   # memuat email mahasiswa, dan rollback-nya tak berlaku di server lain), dan
   # tabel Active Storage (berkasnya diekspor ke lampiran/).
 
-  # Kolom yang tidak pernah ikut: rahasia autentikasi.
-  SECRET_COLUMNS = %w[encrypted_password reset_password_token confirmation_token calendar_feed_token].freeze
+  # Kolom yang tidak pernah ikut: rahasia autentikasi dan token lembar
+  # persetujuan (kredensial yang masih hidup; `token` hanya ada di tabel itu).
+  SECRET_COLUMNS = %w[encrypted_password reset_password_token confirmation_token unlock_token calendar_feed_token token].freeze
   PATIENT_IDENTITY_COLUMNS = ClinicalCase::SENSITIVE_PATIENT_FIELDS.map(&:to_s).freeze
+  # Tabel berisi identitas pasien: kosong kecuali diminta eksplisit.
+  IDENTITY_COLUMNS_BY_TABLE = {
+    "clinical_cases" => [ "ClinicalCase", PATIENT_IDENTITY_COLUMNS ],
+    "patient_consents" => [ "PatientConsent", %w[signer_name] ]
+  }.freeze
   # Rekaman yang lampirannya bisa memuat data pasien.
   PATIENT_RECORD_TYPES = %w[ClinicalCase PatientConsent].freeze
 
@@ -129,13 +135,14 @@ class MigrationExporter
 
   def scrub(table, row)
     row = row.except(*SECRET_COLUMNS)
-    return row unless table == "clinical_cases"
+    model, columns = IDENTITY_COLUMNS_BY_TABLE[table]
+    return row unless model
 
     # Kolom terenkripsi dibaca lewat model supaya isinya terbawa sebagai teks
     # biasa; tanpa itu paket hanya berisi sandi yang tak bisa dibuka di server
     # lain (kunci enkripsinya berbeda).
-    record = ClinicalCase.find_by(id: row["id"]) if @include_patient_identity
-    PATIENT_IDENTITY_COLUMNS.each { |column| row[column] = record&.public_send(column) }
+    record = model.constantize.find_by(id: row["id"]) if @include_patient_identity
+    columns.each { |column| row[column] = record&.public_send(column) }
     row
   end
 

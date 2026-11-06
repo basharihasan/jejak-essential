@@ -42,7 +42,7 @@
     <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-5">
       <p class="text-sm font-semibold text-gray-800">Pengumpulan</p>
       <% if @instance.document.attached? %>
-        <p class="text-xs text-gray-600 mt-1">📎 <%= link_to @instance.document.filename, rails_blob_path(@instance.document, disposition: "attachment"), class: "text-indigo-600 hover:underline" %> · dikumpulkan <%= l(@instance.submitted_at, format: :short) if @instance.submitted_at %></p>
+        <p class="text-xs text-gray-600 mt-1">📎 <%= link_to @instance.document.filename, stored_attachment_path(@instance.document.attachment), class: "text-indigo-600 hover:underline" %> · dikumpulkan <%= l(@instance.submitted_at, format: :short) if @instance.submitted_at %></p>
       <% end %>
       <% if @instance.self_evaluation.present? %>
         <div class="mt-2 bg-gray-50 rounded-xl p-3"><p class="text-[10px] font-bold uppercase text-gray-500">Evaluasi diri</p><p class="text-sm text-gray-700 mt-1 whitespace-pre-line"><%= @instance.self_evaluation %></p></div>

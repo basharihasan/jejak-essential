@@ -3,6 +3,10 @@
 # Lembar persetujuan yang dibuka pasien dari QR — tanpa login, hanya bertoken.
 # Tidak pernah menampilkan isi kasus; hanya butir persetujuan + identitas
 # institusi mahasiswa yang mencatat.
+#
+# Terbuka untuk peramban apa pun: yang memindai QR adalah pasien, sering dengan
+# ponsel lama yang ditolak allow_browser. Tampilannya punya gaya cadangan di
+# layout public_consent.
 class Public::PatientConsentsController < ApplicationController
   layout "public_consent"
 
@@ -13,6 +17,12 @@ class Public::PatientConsentsController < ApplicationController
   def update
     if @consent.revoked?
       redirect_to public_patient_consent_path(@consent.token), alert: "Lembar persetujuan ini sudah dicabut."
+      return
+    end
+    # Jawaban pasien tidak boleh ditimpa pemegang tautan; mengubah jawaban
+    # dilakukan dengan menerbitkan ulang lembar dari halaman kasus.
+    if @consent.signed?
+      redirect_to public_patient_consent_path(@consent.token), alert: "Lembar ini sudah dijawab. Minta mahasiswa menerbitkan ulang bila ingin mengubah jawaban."
       return
     end
 
@@ -29,6 +39,10 @@ class Public::PatientConsentsController < ApplicationController
   end
 
   private
+
+  def open_to_any_browser?
+    true
+  end
 
   def set_consent
     @consent = PatientConsent.includes(clinical_case: { user: :study_program }).find_by!(token: params[:token])

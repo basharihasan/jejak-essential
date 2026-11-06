@@ -253,7 +253,7 @@ Halaman **Ikhtisar → Notifikasi** (`/notifications`) memuat semua pemberitahua
 | **Mahasiswa** | Mencatat perjalanan belajar | Mencatat kegiatan & kasus, mengajukan verifikasi, meminta DOPS/Mini-CEX/CBD/Long Case dari kasus, mendaftar & mengumpulkan asesmen rubrik, menulis refleksi, mendaftarkan tugas akhir, melihat nilai, capaian, dan peta EPA miliknya sendiri. |
 | **Dosen** | Pembimbing akademik, tutor, penguji | Memverifikasi kasus (yang menandainya atau tanpa tanda pembimbing) & kegiatan mahasiswa mana pun, menilai DOPS/Mini-CEX, menilai di Lembar Penguji, memberi skor tugas akhir, memutuskan tingkat EPA bagi mahasiswa yang berelasi, Dashboard Analitik bagian *Mahasiswa Bimbingan*. |
 | **Preseptor** | Pembimbing klinis di wahana | Setara dosen untuk verifikasi & penilaian; menjadi penilai bawaan DOPS/Mini-CEX yang diminta dari kasus pada rotasinya; Dashboard Analitik bagian *Mahasiswa di Wahana Anda*. |
-| **Kaprodi** | Pemantau program studi | Membuka halaman mahasiswa **prodi binaannya** (hanya melihat — tidak memverifikasi kasus/kegiatan, tidak menilai DOPS/Mini-CEX, tidak memutuskan EPA), Dashboard Analitik bagian *Program Studi*, Relabel Prodi Mahasiswa, Jadwal DOPS & Mini-CEX, Learning Unit & Matrix, **Ekspor Data (CSV)** — semuanya terkunci ke prodi binaan yang ditetapkan admin — serta **Assessment Form Builder** (kelola penuh) dan Lembar Penguji bila ditunjuk sebagai penguji. |
+| **Kaprodi** | Pemantau program studi | Membuka halaman mahasiswa **prodi binaannya** (hanya melihat — tidak memverifikasi kasus/kegiatan, tidak menilai DOPS/Mini-CEX, tidak memutuskan EPA), Dashboard Analitik bagian *Program Studi*, Relabel Prodi Mahasiswa, Jadwal DOPS & Mini-CEX, Learning Unit & Matrix, **Ekspor Data (CSV)** — semuanya terkunci ke prodi binaan yang ditetapkan admin — serta **Assessment Form Builder** (kelola penuh) dan Lembar Penguji untuk mahasiswa prodi binaannya atau bila ditunjuk sebagai penguji. |
 | **Admin** | Pengelola instalasi | Semua hal di atas ditambah seluruh grup **Konfigurasi**: pengguna, periode, prodi, event asesmen, kurikulum, master data, taksonomi, istilah, dan tata kelola data. |
 
 Aturan yang berlaku lintas peran:
@@ -338,13 +338,13 @@ Domain yang ditandai admin sebagai *kegiatan klinis* membuat kegiatan itu dihitu
 - Sakelar **Daftar \| Kalender** mengganti tampilan ke **kalender bulanan** (`/kalender`, navigasi ‹ › antar bulan). Kegiatan yang sudah diverifikasi diberi penanda warna berbeda.
 - **Feed Kalender (iCal)** di bawah kalender: salin alamatnya ke Google Calendar/Outlook/Apple Calendar agar kegiatan Anda muncul di kalender pribadi. Alamat itu adalah kredensial — jika bocor, klik **Perbarui Tautan** dan tautan lama langsung tidak berlaku.
 - Tombol **Buat Kode Pasien** pada halaman kegiatan klinis (hanya untuk pemilik kegiatan) membuat kode acak non-identifikasi (mis. `P-7K2M9QXA`) untuk menandai beberapa kegiatan dengan pasien yang sama tanpa menyimpan data pribadi.
-- Kegiatan Anda dapat dihapus dari halaman kegiatannya. Refleksi yang menautkan kegiatan itu tetap tersimpan; hanya tautannya yang dilepas.
+- Kegiatan Anda dapat dihapus dari halaman kegiatannya **selama belum diverifikasi**. Refleksi yang menautkan kegiatan itu tetap tersimpan; hanya tautannya yang dilepas.
 
 ![Kalender Kegiatan bulanan dengan penanda verifikasi dan kotak Feed Kalender (iCal)](panduan/4-2-kalender.png)
 
 #### Verifikasi kegiatan
 
-Kegiatan tersimpan dengan status *belum diverifikasi*. Pembimbing membukanya lewat **Validasi Kegiatan** dan menekan **Verifikasi**; Anda menerima notifikasi, kegiatan berpenanda ✓ di daftar dan kalender. Kegiatan lama (dicatat sebelum taksonomi ada) tetap tampil sebagai Klinis/Non-Klinis; saat disunting Anda diminta memilih domain.
+Kegiatan tersimpan dengan status *belum diverifikasi*. Pembimbing membukanya lewat **Validasi Kegiatan** dan menekan **Verifikasi**; Anda menerima notifikasi, kegiatan berpenanda ✓ di daftar dan kalender. Bila isi, waktu, bukti, atau kompetensi kegiatan terverifikasi diubah, statusnya kembali *belum diverifikasi* dan kegiatan masuk antrean lagi. Kolom refleksi boleh diubah tanpa verifikasi ulang. Kegiatan lama (dicatat sebelum taksonomi ada) tetap tampil sebagai Klinis/Non-Klinis; saat disunting Anda diminta memilih domain.
 
 ![Halaman kegiatan berstatus Terverifikasi: label hijau, nama preseptor yang memverifikasi, dan tanggal verifikasi](panduan/4-2-kegiatan-terverifikasi.png)
 
@@ -465,7 +465,7 @@ Selama **Contextual Privacy Mode** menyala (bawaan), identitas pasien tampil **t
 
 #### Persetujuan pasien lewat QR
 
-Pada kasus yang sudah tersimpan, klik **Terbitkan QR Persetujuan**. Pasien memindai QR (atau membuka tautannya) di ponselnya **tanpa login**, mencentang tiga butir — data kasus dipakai untuk pendidikan, foto klinis boleh disertakan, kasus boleh dipublikasikan setelah dianonimkan — lalu menulis nama dan relasi (pasien sendiri / wali). Jawaban tampil butir per butir di halaman kasus. Bila ada lampiran tetapi foto tidak disetujui, halaman memberi peringatan. **Terbitkan ulang** membatalkan lembar lama; **Cabut** menarik persetujuan.
+Pada kasus yang sudah tersimpan, klik **Terbitkan QR Persetujuan**. Pasien memindai QR (atau membuka tautannya) di ponselnya **tanpa login**, mencentang tiga butir — data kasus dipakai untuk pendidikan, foto klinis boleh disertakan, kasus boleh dipublikasikan setelah dianonimkan — lalu menulis nama dan relasi (pasien sendiri / wali). Jawaban tampil butir per butir di halaman kasus; nama yang ditulis pasien disimpan terenkripsi dan ikut tersamar oleh Privacy Mode. Lembar hanya dapat dijawab sekali. Bila ada lampiran tetapi foto tidak disetujui, halaman memberi peringatan. **Terbitkan ulang** membatalkan lembar lama, termasuk bila pasien ingin mengubah jawabannya; **Cabut** menarik persetujuan.
 
 ![Panel Persetujuan Pasien di halaman kasus: QR, tautan persetujuan, dan status Menunggu jawaban pasien](panduan/4-3-qr-persetujuan.png)
 
@@ -718,7 +718,7 @@ Hanya penilai asal atau admin yang dapat menyunting/menghapus evaluasi.
 
 ### 5.5 Lembar Penguji (rubrik, CBD, Long Case)
 
-**Asesmen & Evaluasi → Rubric-based Assessment** bagi pembimbing membuka **Lembar Penguji** (`/examiner_evaluations`): antrean percobaan yang **ditugaskan kepada Anda** (belum dinilai di atas) dan percobaan **belum bertugas** yang sudah dikumpulkan — siapa pun pembimbing boleh mengambilnya, kecuali percobaan milik akun sendiri. Nilai ujian **hasil impor** (CBT, OSCE, dsb.) tidak dapat diubah dari Lembar Penguji — halaman itu hanya menampilkannya, dan tombol simpan diganti keterangan *hanya dapat disimpan oleh penguji yang ditugaskan atau admin*.
+**Asesmen & Evaluasi → Rubric-based Assessment** bagi pembimbing membuka **Lembar Penguji** (`/examiner_evaluations`): antrean percobaan yang **ditugaskan kepada Anda** (belum dinilai di atas) dan percobaan **belum bertugas** yang sudah dikumpulkan — siapa pun pembimbing boleh mengambilnya, kecuali percobaan milik akun sendiri. Kaprodi hanya dapat membuka dan mengambil percobaan mahasiswa prodi binaannya, kecuali bila ditunjuk sebagai penguji. Nilai ujian **hasil impor** (CBT, OSCE, dsb.) tidak dapat diubah dari Lembar Penguji — halaman itu hanya menampilkannya, dan tombol simpan diganti keterangan *hanya dapat disimpan oleh penguji yang ditugaskan atau admin*.
 
 ![Lembar Penguji: percobaan yang ditugaskan kepada Anda dan yang belum bertugas penguji](panduan/5-5-lembar-penguji.png)
 
@@ -769,7 +769,7 @@ Tiap baris memuat jumlah kegiatan pada periode terpilih (kolom **Kegiatan Period
 - **Coaching Center → Jadwal DOPS & Mini-CEX** (`/admin/evaluation_schedules`): hanya jadwal mahasiswa prodi Anda yang tampil; mahasiswa dan rotasi prodi lain ditolak saat menyimpan.
 - **Coaching Center → Learning Unit & Matrix** (`/admin/learning_units`): hanya unit prodi Anda; prodi unit baru otomatis dikunci ke prodi Anda, dan komponen Assessment Matrix dipilih dari event prodi Anda atau event lintas prodi. Lihat [Bab 6](#bab-6--panduan-admin-konfigurasi).
 - **Coaching Center → Ekspor Data (CSV)** (`/admin/exports`): unduh data mahasiswa prodi Anda — data mahasiswa, rekap capaian, logbook, kasus (tanpa draf dan tanpa identitas pasien), rotasi, tutorial, tugas akhir, DOPS/Mini-CEX, nilai event asesmen, keputusan EPA, jadwal, dan jawaban Assessment Form. Pilihan prodi terkunci ke prodi Anda; dataset Pengguna & Peran dan Master Data khusus admin. Lihat [Ekspor Data (CSV)](#ekspor-data-csv).
-- Kaprodi **tidak** memverifikasi kasus/kegiatan, tidak menilai DOPS/Mini-CEX, dan tidak memutuskan tingkat EPA, sehingga menu Validasi tidak ditawarkan. Lembar Penguji tetap terbuka bila admin menunjuk Anda sebagai penguji suatu percobaan.
+- Kaprodi **tidak** memverifikasi kasus/kegiatan, tidak menilai DOPS/Mini-CEX, dan tidak memutuskan tingkat EPA, sehingga menu Validasi tidak ditawarkan. Lembar Penguji tetap terbuka bila admin menunjuk Anda sebagai penguji suatu percobaan; percobaan tanpa penguji hanya dapat Anda ambil untuk mahasiswa prodi binaan.
 
 ![Dashboard Analitik kaprodi: bagian Program Studi dengan radar DOPS & Mini-CEX kohort, tabel mahasiswa prodi, dan tautan Ekspor CSV](panduan/5-10-analitik-kaprodi.png)
 
@@ -1063,13 +1063,14 @@ Dari **Dashboard Analitik** bagian *Program Studi*, tautan **Ekspor CSV** membuk
 
 Prinsip yang diterapkan aplikasi:
 
-1. **Enkripsi di basis data** untuk nama, No. RM, tanggal lahir, telepon, dan alamat pasien. Kunci enkripsi disimpan di server, terpisah dari data.
+1. **Enkripsi di basis data** untuk nama, No. RM, tanggal lahir, telepon, dan alamat pasien, serta nama penanda tangan lembar persetujuan. Kunci enkripsi disimpan di server, terpisah dari data.
 2. **Contextual Privacy Mode** menyamarkan identitas di layar untuk semua pembaca kecuali pembimbing kasus (preseptor rotasi pada tanggal kasus dan dosen verifier kasus itu). Usia, jenis kelamin, pekerjaan, dan konteks klinis bukan data sensitif dan tampil terbuka.
 3. **Break Glass** membuka identitas hanya untuk akun peminta, 30 menit, dengan alasan tertulis, dan **selalu tercatat**. Gunakan hanya untuk kebutuhan pelayanan/pembelajaran yang nyata.
 4. **Persetujuan pasien** dikumpulkan lewat lembar QR tanpa login yang tidak menampilkan isi kasus.
 5. **Kode pasien** pada Logbook Kegiatan adalah kode acak — bukan nama, bukan No. RM.
 6. **Anonimitas formulir evaluasi**: pada templat anonim, subjek yang dinilai tidak melihat identitas pengisi.
 7. **Data yang keluar aplikasi** (ekspor CSV Portfolio, [Ekspor Data (CSV)](#ekspor-data-csv), feed iCal, paket migrasi) **tidak memuat identitas pasien**; setiap unduhan Ekspor Data tercatat di Riwayat Ekspor; paket migrasi hanya membawanya bila admin server secara eksplisit memintanya.
+8. **Lampiran** (bukti kasus dan kegiatan, dokumen asesmen, foto profil) hanya dapat diunduh setelah masuk, oleh akun yang berhak membuka kasus, kegiatan, atau asesmennya. Tautan yang tersalin tidak berlaku bagi orang lain.
 
 Kewajiban pengguna: jangan menulis nama atau nomor identitas pasien pada kolom bebas (keluhan, anamnesis, catatan, judul kegiatan, refleksi) — kolom itu **tidak** terenkripsi dan tidak disamarkan.
 

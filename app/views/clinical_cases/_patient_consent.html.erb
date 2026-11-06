@@ -9,7 +9,7 @@
       <% elsif consent.revoked? %>
         <p class="text-[11px] text-rose-600 mt-0.5">Dicabut pada <%= l(consent.revoked_at, format: :short) %>.</p>
       <% elsif consent.signed? %>
-        <p class="text-[11px] text-emerald-700 mt-0.5">Dijawab oleh <%= consent.signer_name %> (<%= PatientConsent::RELATIONS[consent.signer_relation] %>) pada <%= l(consent.signed_at, format: :short) %>.</p>
+        <p class="text-[11px] text-emerald-700 mt-0.5">Dijawab oleh <%= identity_visible ? consent.signer_name : consent.masked_signer_name %> (<%= PatientConsent::RELATIONS[consent.signer_relation] %>) pada <%= l(consent.signed_at, format: :short) %>.</p>
       <% else %>
         <p class="text-[11px] text-amber-700 mt-0.5">Menunggu jawaban pasien.</p>
       <% end %>

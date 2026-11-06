@@ -16,7 +16,15 @@ class PatientConsent < ApplicationRecord
 
   has_secure_token :token, length: 32
 
+  # Nama penanda tangan adalah nama pasien atau walinya — diperlakukan sama
+  # dengan identitas pasien di ClinicalCase: terenkripsi dan tersamar.
+  encrypts :signer_name
+
   validates :signer_relation, inclusion: { in: RELATIONS.keys }, allow_blank: true
+
+  def masked_signer_name
+    ClinicalCase.mask_name(signer_name)
+  end
 
   def signed?
     signed_at.present? && revoked_at.nil?

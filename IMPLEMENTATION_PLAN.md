@@ -261,6 +261,18 @@ Diminta pengguna: evaluasi mendalam situs demo Render, lalu "perbaiki semuanya s
 
 Verifikasi: 531 test hijau (31 baru), Brakeman/RuboCop bersih; crawl HTTP ulang 5 akun di **mode production lokal** (Solid Queue dalam Puma, Solid Cache untuk Rack::Attack — permintaan login ke-11 → 429) nol 500; headless Chrome 5 akun × 259 halaman nol pelanggaran CSP/galat JS, grafik tetap tampil, navigasi Turbo 12 klik tanpa muat ulang, ganti peran, pratinjau tema, impor CSV → CSV kata sandi sementara. **Jebakan uji browser** (lagi): setelah login `password123`, dialog kebocoran kata sandi Chrome menelan klik native Selenium di halaman berikutnya — klik lewat JS atau matikan `PasswordLeakDetection`.
 
+### ✅ Perbaikan Keamanan & Integritas Tahap 1 (6 November 2026)
+
+Hasil pemeriksaan terhadap KAK dan uji perilaku:
+
+- Rute bawaan Active Storage dimatikan; unduhan lewat `AttachmentsController` yang memeriksa izin rekaman.
+- `PatientConsent#signer_name` terenkripsi dan tersamar seperti identitas pasien; data lama dienkripsi lewat migrasi `EncryptPatientConsentSignerNames`.
+- Paket migrasi tidak lagi membawa nama penanda tangan (kecuali diminta), token lembar persetujuan, dan `unlock_token`.
+- Lembar persetujuan yang sudah dijawab tidak bisa ditimpa, dan terbuka di peramban lama (dengan gaya cadangan).
+- Lembar Penguji mengikuti cakupan prodi kaprodi (`AssessmentInstancePolicy`); definisi ganda `User#can_view_student?` dibersihkan, dan kaprodi tanpa prodi tidak lagi membuka mahasiswa tanpa prodi.
+- Notifikasi DOPS/Mini-CEX terkirim lewat jalur mana pun saat status menjadi `submitted`.
+- Kegiatan terverifikasi kembali ke antrean bila isinya berubah, dan tidak bisa dihapus pemiliknya.
+
 ## Model Data (ringkas, akan detail per fase saat digarap)
 
 | Tabel | Fase | Status |

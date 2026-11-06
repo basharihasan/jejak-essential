@@ -128,6 +128,7 @@ Keterbatasan yang perlu diketahui sebelum deploy sungguhan (bukan sekadar demo):
 - **Login**: akun terkunci 15 menit setelah 10 kali salah kata sandi (Devise `:lockable`; reset kata sandi oleh admin juga membuka kunci). Rack::Attack membatasi percobaan login per email dan per IP, pendaftaran, reset kata sandi, serta halaman publik bertoken (`config/initializers/rack_attack.rb`). Sesi tanpa "Ingat saya" berakhir setelah 2 jam tidak aktif.
 - **Data mahasiswa**: pencarian pengguna hanya untuk pengajar/kaprodi/admin; pengajar hanya menemukan mahasiswa, dan kaprodi non-admin hanya bisa membuka mahasiswa prodi binaannya (`User#can_view_student?`).
 - **Content Security Policy** aktif (`config/initializers/content_security_policy.rb`): skrip hanya dari aset sendiri atau inline ber-nonce — tanpa CDN pihak ketiga dan tanpa atribut `onclick`/`onchange`; gunakan Stimulus untuk perilaku baru.
+- **Lampiran** hanya bisa diunduh lewat `AttachmentsController`, yang memeriksa izin membuka kasus, kegiatan, atau asesmennya. Rute bawaan Active Storage dimatikan (`config.active_storage.draw_routes = false`) karena tautannya terbuka tanpa login dan tidak kedaluwarsa.
 - **Unggahan** divalidasi jenis (dibaca dari isi berkas) dan ukurannya (`AttachmentValidation`): bukti 10 MB × maks. 10 berkas, dokumen asesmen 20 MB, foto profil 5 MB.
 - **Peramban** minimal Safari/iOS 16.4, Chrome 111, Firefox 128 (dukungan Tailwind v4); di bawahnya tampil halaman 406 berbahasa Indonesia.
 

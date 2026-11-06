@@ -25,6 +25,18 @@ class ActivityLog < ApplicationRecord
   has_many_attached :evidence_files
   validates_attachments :evidence_files, content_types: IMAGE_TYPES + DOCUMENT_TYPES, max_size: 10.megabytes, max_count: 10
 
+  # Isi yang disahkan verifier. Refleksi, semester, dan kode pasien bukan bagian
+  # dari yang diperiksa, jadi boleh berubah tanpa membatalkan verifikasi.
+  # Waktu mulai/selesai dibandingkan terpisah (#schedule_changed?).
+  VERIFIED_CONTENT_ATTRIBUTES = %w[
+    title description academic_activity_domain_id academic_activity_subdomain_id academic_activity_template_id
+    activity_date location delivery_mode participant_count clinical_rotation_id evidence_url document_url
+  ].freeze
+
+  # Dinyalakan ActivityLogsController saat bukti atau tag kompetensi berubah —
+  # keduanya asosiasi, jadi tidak terlihat di perubahan kolom.
+  attribute :verified_evidence_changed, :boolean, default: false
+
   # Dinyalakan ActivityLogsController: isian yang wajib di form (domain,
   # waktu mulai, metode) tidak dipaksakan pada jalur lain — fixture, demo,
   # dan kegiatan lama yang belum pernah disunting.
@@ -32,6 +44,7 @@ class ActivityLog < ApplicationRecord
 
   before_validation :complete_taxonomy
   before_validation :derive_from_taxonomy_and_time
+  before_update :clear_verification_when_content_changes
 
   validates :title, :activity_date, presence: true
   validates :category, inclusion: { in: CATEGORIES.keys }
@@ -119,6 +132,26 @@ class ActivityLog < ApplicationRecord
   end
 
   private
+
+  # Verifikasi mengesahkan isi saat itu; isi yang berubah harus diperiksa lagi,
+  # jadi kegiatan kembali ke antrean Validasi Kegiatan.
+  def clear_verification_when_content_changes
+    return unless verified?
+    return unless verified_evidence_changed || (changes_to_save.keys & VERIFIED_CONTENT_ATTRIBUTES).any? || schedule_changed?
+
+    self.verified_at = nil
+    self.verified_by = nil
+  end
+
+  # Dibandingkan per menit karena form hanya mengirim jam:menit. Kegiatan lama
+  # tanpa waktu mulai mendapat jam isian awal saat disunting — bukan perubahan
+  # isi; perubahan tanggalnya tetap terbaca lewat activity_date.
+  def schedule_changed?
+    started_before = started_at_in_database
+    return true if started_before && started_at.to_i / 60 != started_before.to_i / 60
+
+    ended_at_in_database.to_i / 60 != ended_at.to_i / 60
+  end
 
   # Isian tingkat bawah cukup untuk menurunkan tingkat di atasnya.
   def complete_taxonomy

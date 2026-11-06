@@ -256,9 +256,13 @@ class ClinicalCase < ApplicationRecord
   # Samaran identitas ala JEJAK: inisial nama + "***", No. RM disembunyikan
   # kecuali dua digit terakhir.
   def masked_patient_name
-    return nil if patient_name.blank?
+    self.class.mask_name(patient_name)
+  end
 
-    initials = patient_name.split.map { |w| w[0] }.join.upcase
+  def self.mask_name(name)
+    return nil if name.blank?
+
+    initials = name.split.map { |w| w[0] }.join.upcase
     "#{initials[0, 3]}***"
   end
 

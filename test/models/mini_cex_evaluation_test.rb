@@ -1,5 +1,17 @@
 require "test_helper"
 
+class MiniCexSubmissionNotificationTest < ActiveSupport::TestCase
+  test "permintaan yang dikirim lewat form sunting memberi tahu mahasiswa sekali" do
+    evaluation = MiniCexEvaluation.create!(student: users(:siti), evaluator: users(:budi), clinical_rotation: clinical_rotations(:ongoing_rotation_siti),
+                                           evaluated_at: Date.current, case_description: "Demam", status: "requested", scores: {})
+
+    assert_difference -> { users(:siti).notifications.count }, 1 do
+      evaluation.update!(status: "submitted", global_rating: MiniCexEvaluation::GLOBAL_RATING_OPTIONS.keys.first,
+                         scores: { "komunikasi" => 6, "profesionalisme" => 7 })
+    end
+  end
+end
+
 class MiniCexEvaluationTest < ActiveSupport::TestCase
   test "komunikasi dan profesionalisme wajib diisi, tidak boleh N/A" do
     mini_cex = MiniCexEvaluation.new(

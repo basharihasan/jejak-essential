@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 # Lembar penguji: antrean percobaan yang ditugaskan kepada saya (atau belum
-# bertugas & sudah dikumpulkan — dosen/preseptor/kaprodi/admin boleh
-# mengambil), lalu isi nilai + umpan balik "pertahankan / tingkatkan".
+# bertugas & sudah dikumpulkan — dosen/preseptor/admin boleh mengambil, kaprodi
+# hanya untuk mahasiswa prodi binaannya), lalu isi nilai + umpan balik
+# "pertahankan / tingkatkan".
 #
 # Bila event memakai rubrik (Assessment Form Builder), penguji mengisi rubrik
 # itu DI SINI: jawabannya tersimpan sebagai AssessmentFormSubmission yang
@@ -20,10 +21,8 @@ class ExaminerEvaluationsController < ApplicationController
     # Nilai CBT/OSCE hasil impor tidak diambil dari sini, dan penguji
     # multi-peran tidak mengambil percobaannya sendiri. Disaring di SQL (bukan
     # .reject) supaya antrean tetap bisa dipaginasi.
-    @unassigned = AssessmentInstance.where(examiner_id: nil, status: "submitted").where.not(student_id: current_user.id)
-                                    .where.not(assessment_event_id: AssessmentEvent.importable.select(:id))
-                                    .includes(:student, :assessment_event).order(:submitted_at)
-                                    .page(params[:unassigned_page]).per(50)
+    @unassigned = unassigned_instances.includes(:student, :assessment_event).order(:submitted_at)
+                                      .page(params[:unassigned_page]).per(50)
   end
 
   def show
@@ -54,6 +53,18 @@ class ExaminerEvaluationsController < ApplicationController
 
   def set_instance
     @instance = AssessmentInstance.includes(:student, :assessment_event, :clinical_case).find(params[:id])
+    authorize @instance, :show?
+  end
+
+  # Percobaan yang boleh diambil akun ini: kaprodi terikat ke prodi binaannya,
+  # sama dengan AssessmentInstancePolicy#show? dan Dashboard Analitik.
+  def unassigned_instances
+    scope = AssessmentInstance.where(examiner_id: nil, status: "submitted").where.not(student_id: current_user.id)
+                              .where.not(assessment_event_id: AssessmentEvent.importable.select(:id))
+    return scope unless current_user.study_program_bound?
+    return scope.none if current_user.study_program_id.nil?
+
+    scope.where(student_id: User.where(study_program_id: current_user.study_program_id).select(:id))
   end
 
   # Penguji yang ditugaskan atau admin; percobaan belum bertugas hanya boleh

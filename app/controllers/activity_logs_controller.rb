@@ -67,11 +67,15 @@ class ActivityLogsController < ApplicationController
   def update
     authorize @activity_log
     @activity_log.require_form_fields = true
+    was_verified = @activity_log.verified?
+    competency_ids_before = @activity_log.competency_item_ids.sort
     @activity_log.assign_attributes(activity_log_params)
+    @activity_log.verified_evidence_changed = new_evidence_files.any? || @activity_log.competency_item_ids.sort != competency_ids_before
     # Dilampirkan sebelum save supaya validasi tipe/ukuran ikut menolak berkas.
     @activity_log.evidence_files.attach(new_evidence_files) if new_evidence_files.any?
     if @activity_log.save
-      redirect_to @activity_log, notice: "Kegiatan berhasil diperbarui."
+      notice = was_verified && !@activity_log.verified? ? "Kegiatan diperbarui. Isinya berubah, jadi perlu diverifikasi ulang." : "Kegiatan berhasil diperbarui."
+      redirect_to @activity_log, notice: notice
     else
       load_form_collections
       render :edit, status: :unprocessable_entity
