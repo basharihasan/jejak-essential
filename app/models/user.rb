@@ -38,6 +38,9 @@ class User < ApplicationRecord
   has_many :examined_assessment_instances, class_name: "AssessmentInstance", foreign_key: :examiner_id, inverse_of: :examiner, dependent: :nullify
   has_many :entrustment_decisions, foreign_key: :student_id, inverse_of: :student, dependent: :destroy
   has_many :data_export_logs, dependent: :destroy
+  has_many :srq_screenings, dependent: :destroy
+  has_many :followed_up_srq_screenings, class_name: "SrqScreening", foreign_key: :followed_up_by_id,
+                                        inverse_of: :followed_up_by, dependent: :nullify
 
   # Peran yang boleh menilai/memverifikasi mahasiswa (DOPS, Mini-CEX, Kasus
   # Klinis) — dosen, preseptor (pembimbing klinis di wahana), dan admin.
@@ -55,6 +58,12 @@ class User < ApplicationRecord
   # kaprodi yang memantau tanpa menilai.
   def can_view_students?
     instructor? || has_role?("kaprodi")
+  end
+
+  # Monitoring SRQ: data kesehatan mental, jadi hanya kaprodi yang terhubung ke
+  # prodi. Admin tidak otomatis ikut, berbeda dari fitur lain.
+  def can_monitor_srq?
+    has_role?("kaprodi") && study_program_id.present?
   end
 
   # Assessment Form Builder (/assessment_form_templates) — membuat, menyunting,

@@ -1,0 +1,43 @@
+<% content_for :title, "Isi SRQ-20" %>
+<div class="max-w-3xl space-y-5">
+  <div>
+    <%= link_to "← Kesehatan Mental", srq_screenings_path, class: "text-sm text-indigo-600 hover:text-indigo-800" %>
+    <h1 class="mt-2 text-xl font-bold text-gray-900">Isi SRQ-20</h1>
+    <p class="text-sm text-gray-500 mt-1">Jawab sesuai yang Anda alami selama <strong>30 hari terakhir</strong>. Tidak ada jawaban benar atau salah.</p>
+  </div>
+
+  <% if @screening.errors.any? %>
+    <div class="rounded-xl bg-rose-50 border border-rose-200 text-rose-800 px-4 py-3 text-sm">
+      <%= @screening.errors.map(&:message).to_sentence.upcase_first %>.
+    </div>
+  <% end %>
+
+  <%= form_with url: srq_screenings_path, method: :post, class: "space-y-4" do %>
+    <div class="bg-white rounded-2xl ring-1 ring-gray-200 divide-y divide-gray-100">
+      <% SrqScreening::QUESTIONS.each.with_index(1) do |question, number| %>
+        <% answer = @submitted_answers[number.to_s] %>
+        <fieldset class="px-4 py-3 sm:flex sm:items-center sm:justify-between sm:gap-4">
+          <legend class="sr-only">Pertanyaan <%= number %></legend>
+          <p class="text-sm text-gray-800"><span class="text-gray-400 mr-1"><%= number %>.</span> <%= question %></p>
+          <div class="mt-2 sm:mt-0 flex items-center gap-4 shrink-0">
+            <label class="inline-flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
+              <%= radio_button_tag "srq_answers[#{number}]", "ya", answer == "ya", id: "srq_answers_#{number}_ya", class: "text-indigo-600 border-gray-300" %> Ya
+            </label>
+            <label class="inline-flex items-center gap-1.5 text-sm text-gray-700 cursor-pointer">
+              <%= radio_button_tag "srq_answers[#{number}]", "tidak", answer == "tidak", id: "srq_answers_#{number}_tidak", class: "text-indigo-600 border-gray-300" %> Tidak
+            </label>
+          </div>
+        </fieldset>
+      <% end %>
+    </div>
+
+    <div class="bg-white rounded-2xl ring-1 ring-gray-200 p-4 space-y-3">
+      <p class="text-sm font-semibold text-gray-800">Persetujuan</p>
+      <label class="flex items-start gap-3 text-sm text-gray-700 cursor-pointer">
+        <%= check_box_tag :consent, "1", params[:consent] == "1", class: "mt-0.5 rounded border-gray-300 text-indigo-600" %>
+        <span>Saya mengisi secara sukarela dan menyetujui skor serta kategori hasil saya terlihat oleh kaprodi prodi saya untuk tindak lanjut, termasuk tanda bila saya perlu perhatian segera. Jawaban per butir tidak diperlihatkan kepada kaprodi.</span>
+      </label>
+      <%= submit_tag "Kirim Jawaban", class: "w-full sm:w-auto rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-5 py-2.5 cursor-pointer" %>
+    </div>
+  <% end %>
+</div>

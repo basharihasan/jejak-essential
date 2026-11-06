@@ -218,6 +218,15 @@ namespace :demo do
       r.content = "Refleksi demo: belajar pentingnya komunikasi empatik dengan pasien."
     end
 
+    # Satu hasil di bawah ambang dan satu yang perlu tindak lanjut, supaya
+    # Monitoring SRQ kaprodi demo langsung berisi.
+    { mahasiswa1 => [ 0, 2 ], mahasiswa2 => [ 2, 8, 2, 8, 9, 10, 11, 14 ] }.each do |student, yes_items|
+      next if student.srq_screenings.exists?
+
+      answers = Array.new(SrqScreening::QUESTIONS.size) { |index| yes_items.include?(index) }
+      student.srq_screenings.create!(screened_on: Date.current, answers: answers, consented_at: Time.current)
+    end
+
     # Sandi kustom tidak dicetak supaya tidak tertinggal di log build Render.
     shown_password = ENV["DEMO_PASSWORD"].present? ? "sesuai DEMO_PASSWORD" : demo_password
     puts "Data demo siap. Akun (password: #{shown_password}):"

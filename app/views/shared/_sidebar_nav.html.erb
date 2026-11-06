@@ -9,6 +9,7 @@
   is_config_manager     = local_assigns[:is_config_manager] || false
   is_prodi_manager      = local_assigns[:is_prodi_manager] || false
   is_form_manager       = local_assigns[:is_form_manager] || false
+  is_srq_monitor        = local_assigns[:is_srq_monitor] || false
   pending_verifications = local_assigns[:pending_verifications] || 0
   pending_activity_verifications = local_assigns[:pending_activity_verifications] || 0
 
@@ -71,6 +72,11 @@
 
   <%= render "shared/nav_item", label: term("nav.final_projects"), path: final_projects_path,
       active: active_class.call("/final_projects") %>
+
+  <% if is_student %>
+    <%= render "shared/nav_item", label: term("nav.srq_self_report"), path: srq_screenings_path,
+        active: active_class.call("/kesehatan-mental") %>
+  <% end %>
 </div>
 
 <%# ── 3. ASESMEN ── %>
@@ -134,6 +140,10 @@
         active: active_class.call("/analitik") %>
     <%= render "shared/nav_item", label: term("nav.student_directory"), path: search_path,
         active: active_class.call("/cari") %>
+    <% if is_srq_monitor %>
+      <%= render "shared/nav_item", label: term("nav.srq_monitoring"), path: srq_monitoring_path,
+          active: active_class.call("/monitoring-srq") %>
+    <% end %>
     <%# Kaprodi yang bukan admin tidak melihat grup Konfigurasi, jadi menu
         pengelolaan prodi yang terbuka untuknya ditawarkan di sini; yang juga
         admin sudah melihatnya di Konfigurasi. %>

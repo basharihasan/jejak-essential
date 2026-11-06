@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_06_010001) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_020001) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -766,6 +766,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_010001) do
     t.index "lower((name)::text)", name: "idx_skill_definitions_lower_name", unique: true
   end
 
+  create_table "srq_screenings", force: :cascade do |t|
+    t.text "answers", null: false
+    t.datetime "consented_at", null: false
+    t.datetime "created_at", null: false
+    t.text "follow_up_note"
+    t.datetime "followed_up_at"
+    t.bigint "followed_up_by_id"
+    t.date "screened_on", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["followed_up_by_id"], name: "index_srq_screenings_on_followed_up_by_id"
+    t.index ["user_id", "screened_on"], name: "index_srq_screenings_on_user_id_and_screened_on", unique: true
+  end
+
   create_table "study_programs", force: :cascade do |t|
     t.string "code"
     t.datetime "created_at", null: false
@@ -961,6 +975,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_010001) do
   add_foreign_key "reflection_entries", "activity_logs"
   add_foreign_key "reflection_entries", "clinical_cases"
   add_foreign_key "reflection_entries", "users"
+  add_foreign_key "srq_screenings", "users"
+  add_foreign_key "srq_screenings", "users", column: "followed_up_by_id"
   add_foreign_key "terminology_overrides", "users", column: "updated_by_id"
   add_foreign_key "tutorial_enrollments", "academic_periods"
   add_foreign_key "tutorial_enrollments", "users"

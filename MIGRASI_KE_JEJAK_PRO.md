@@ -173,6 +173,7 @@ Semua data berikut tetap tersimpan di `data/*.json`, jadi tidak ada yang hilang.
 - Isi rubrik penilaian per pertanyaan: yang pindah adalah nilainya per kompetensi, bukan lembar jawabannya.
 - DOPS/Mini-CEX, keputusan entrustment, tugas akhir, jadwal evaluasi, blueprint, dan learning unit. Modul jejak.pro untuk ini lebih kaya, dan susunannya perlu diputuskan institusi.
 - Notifikasi lama, sesi, token perangkat, dan kata sandi.
+- Hasil SRQ-20, karena persetujuan mahasiswa hanya mencakup kaprodi prodinya.
 - Lampiran (`lampiran/`): diindeks di `lampiran.csv` dan dipasang manual bila diperlukan.
 
 ## Setelah impor
