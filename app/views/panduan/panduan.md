@@ -4,11 +4,28 @@ JEJAK Essential adalah aplikasi pencatatan perjalanan belajar klinis yang berdir
 
 Panduan ini disusun menurut **peran**: bab awal berlaku untuk semua orang, lalu bab khusus mahasiswa, bab khusus pembimbing (dosen, preseptor, kaprodi), dan bab khusus admin. Bagian akhir memuat catatan privasi data pasien, notifikasi, pertanyaan yang sering diajukan, dan daftar alamat halaman.
 
+Kaprodi dan admin prodi yang baru menerima aplikasi dapat mulai dari [Panduan Penyiapan](#panduan-penyiapan-untuk-kaprodi--admin-prodi).
+
 > **Cara membaca panduan ini.** Nama menu ditulis **tebal** persis seperti di sidebar (mis. **Logbook → Kasus Klinis**). Alamat halaman ditulis dengan huruf mesin, mis. `/clinical_cases`. Bila admin instansi Anda mengganti label menu lewat **Taksonomi Istilah**, nama yang Anda lihat bisa berbeda dari yang tertulis di sini — alamat halamannya tetap sama.
 
 ## Daftar Isi
 
 <!-- TOC:START -->
+- [Panduan Penyiapan untuk Kaprodi & Admin Prodi](#panduan-penyiapan-untuk-kaprodi--admin-prodi)
+  - [Alur penyiapan](#alur-penyiapan)
+  - [Siapa mengerjakan apa](#siapa-mengerjakan-apa)
+  - [Yang perlu disiapkan dulu](#yang-perlu-disiapkan-dulu)
+  - [Tahap 0 — Pasang aplikasi dan buat admin pertama](#tahap-0--pasang-aplikasi-dan-buat-admin-pertama)
+  - [Tahap 1 — Masuk dan periksa isi bawaan](#tahap-1--masuk-dan-periksa-isi-bawaan)
+  - [Tahap 2 — Periode akademik dan program studi](#tahap-2--periode-akademik-dan-program-studi)
+  - [Tahap 3 — Buat akun pengguna](#tahap-3--buat-akun-pengguna)
+  - [Tahap 4 — Kurikulum: kompetensi, target, dan master data](#tahap-4--kurikulum-kompetensi-target-dan-master-data)
+  - [Tahap 5 — Tempatkan mahasiswa](#tahap-5--tempatkan-mahasiswa)
+  - [Tahap 6 — Siapkan asesmen](#tahap-6--siapkan-asesmen)
+  - [Tahap 7 — Uji coba satu putaran](#tahap-7--uji-coba-satu-putaran)
+  - [Tahap 8 — Luncurkan ke dosen dan mahasiswa](#tahap-8--luncurkan-ke-dosen-dan-mahasiswa)
+  - [Tahap 9 — Kerja rutin setelah berjalan](#tahap-9--kerja-rutin-setelah-berjalan)
+  - [Bila ada kendala](#bila-ada-kendala)
 - [Bab 1 — Memulai](#bab-1--memulai)
   - [1.1 Mendaftar akun](#mendaftar-akun)
   - [1.2 Masuk, lupa kata sandi, keluar](#masuk-lupa-kata-sandi-keluar)
@@ -75,6 +92,394 @@ Panduan ini disusun menurut **peran**: bab awal berlaku untuk semua orang, lalu 
 - [Lampiran A — Daftar Alamat Halaman](#lampiran-a--daftar-alamat-halaman)
 - [Lampiran B — Glosarium](#lampiran-b--glosarium)
 <!-- TOC:END -->
+
+---
+
+## Panduan Penyiapan untuk Kaprodi & Admin Prodi
+
+> **Untuk siapa.** Kaprodi dan admin prodi yang baru menerima aplikasi ini. Mahasiswa, dosen, dan preseptor dapat langsung ke [Bab 1](#bab-1--memulai).
+
+Bagian ini memandu Anda dari aplikasi kosong sampai mahasiswa dan dosen siap memakainya. Seluruh urutannya sudah dijalankan pada instalasi baru, dan semua screenshot berasal dari percobaan itu dengan nama dan data fiktif. Rincian tiap menu ada di [Bab 5](#bab-5--panduan-pembimbing-dosen-preseptor-kaprodi) dan [Bab 6](#bab-6--panduan-admin-konfigurasi).
+
+### Alur penyiapan
+
+<svg class="dg" viewBox="0 0 760 318" role="img" aria-label="Alur penyiapan sepuluh tahap, dari pemasangan aplikasi sampai kerja rutin">
+  <defs><marker id="ar-mulai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-arrowhead"/></marker></defs>
+  <rect x="10" y="10" width="170" height="66" rx="10" class="dg-box-gray"/>
+  <text x="95" y="32" class="dg-t dg-b" text-anchor="middle">Tahap 0 · IT</text>
+  <text x="95" y="49" class="dg-ts" text-anchor="middle">Pasang aplikasi,</text>
+  <text x="95" y="63" class="dg-ts" text-anchor="middle">buat admin pertama</text>
+  <rect x="200" y="10" width="170" height="66" rx="10" class="dg-box"/>
+  <text x="285" y="32" class="dg-t dg-b" text-anchor="middle">Tahap 1 · Admin</text>
+  <text x="285" y="49" class="dg-ts" text-anchor="middle">Masuk, periksa</text>
+  <text x="285" y="63" class="dg-ts" text-anchor="middle">isi bawaan</text>
+  <rect x="390" y="10" width="170" height="66" rx="10" class="dg-box"/>
+  <text x="475" y="32" class="dg-t dg-b" text-anchor="middle">Tahap 2 · Admin</text>
+  <text x="475" y="49" class="dg-ts" text-anchor="middle">Periode akademik</text>
+  <text x="475" y="63" class="dg-ts" text-anchor="middle">dan program studi</text>
+  <rect x="580" y="10" width="170" height="66" rx="10" class="dg-box"/>
+  <text x="665" y="32" class="dg-t dg-b" text-anchor="middle">Tahap 3 · Admin</text>
+  <text x="665" y="49" class="dg-ts" text-anchor="middle">Akun, prodi kaprodi,</text>
+  <text x="665" y="63" class="dg-ts" text-anchor="middle">NPM dan angkatan</text>
+  <rect x="580" y="110" width="170" height="66" rx="10" class="dg-box-amber"/>
+  <text x="665" y="132" class="dg-t dg-b" text-anchor="middle">Tahap 4 · Bersama</text>
+  <text x="665" y="149" class="dg-ts" text-anchor="middle">Kompetensi, target kasus,</text>
+  <text x="665" y="163" class="dg-ts" text-anchor="middle">master data</text>
+  <rect x="390" y="110" width="170" height="66" rx="10" class="dg-box"/>
+  <text x="475" y="132" class="dg-t dg-b" text-anchor="middle">Tahap 5 · Admin</text>
+  <text x="475" y="149" class="dg-ts" text-anchor="middle">Rotasi klinik dan</text>
+  <text x="475" y="163" class="dg-ts" text-anchor="middle">enrolment tutorial</text>
+  <rect x="200" y="110" width="170" height="66" rx="10" class="dg-box-amber"/>
+  <text x="285" y="132" class="dg-t dg-b" text-anchor="middle">Tahap 6 · Bersama</text>
+  <text x="285" y="149" class="dg-ts" text-anchor="middle">Event, nilai,</text>
+  <text x="285" y="163" class="dg-ts" text-anchor="middle">Learning Unit, jadwal</text>
+  <rect x="10" y="110" width="170" height="66" rx="10" class="dg-box-amber"/>
+  <text x="95" y="132" class="dg-t dg-b" text-anchor="middle">Tahap 7 · Bersama</text>
+  <text x="95" y="149" class="dg-ts" text-anchor="middle">Uji coba satu putaran</text>
+  <text x="95" y="163" class="dg-ts" text-anchor="middle">dengan orang sungguhan</text>
+  <rect x="10" y="210" width="170" height="66" rx="10" class="dg-box-green"/>
+  <text x="95" y="232" class="dg-t dg-b" text-anchor="middle">Tahap 8 · Kaprodi</text>
+  <text x="95" y="249" class="dg-ts" text-anchor="middle">Luncurkan: dosen dulu,</text>
+  <text x="95" y="263" class="dg-ts" text-anchor="middle">lalu mahasiswa</text>
+  <rect x="200" y="210" width="170" height="66" rx="10" class="dg-box-green"/>
+  <text x="285" y="232" class="dg-t dg-b" text-anchor="middle">Tahap 9 · Rutin</text>
+  <text x="285" y="249" class="dg-ts" text-anchor="middle">Pantau, nilai,</text>
+  <text x="285" y="263" class="dg-ts" text-anchor="middle">periode berikutnya</text>
+  <line x1="180" y1="43" x2="198" y2="43" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="370" y1="43" x2="388" y2="43" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="560" y1="43" x2="578" y2="43" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="665" y1="76" x2="665" y2="108" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="580" y1="143" x2="562" y2="143" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="390" y1="143" x2="372" y2="143" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="200" y1="143" x2="182" y2="143" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="95" y1="176" x2="95" y2="208" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <line x1="180" y1="243" x2="198" y2="243" class="dg-arrow" marker-end="url(#ar-mulai)"/>
+  <rect x="400" y="218" width="14" height="14" rx="3" class="dg-box-gray"/><text x="420" y="229" class="dg-lbl">Pengelola server (IT)</text>
+  <rect x="580" y="218" width="14" height="14" rx="3" class="dg-box"/><text x="600" y="229" class="dg-lbl">Admin</text>
+  <rect x="400" y="244" width="14" height="14" rx="3" class="dg-box-green"/><text x="420" y="255" class="dg-lbl">Kaprodi</text>
+  <rect x="580" y="244" width="14" height="14" rx="3" class="dg-box-amber"/><text x="600" y="255" class="dg-lbl">Kaprodi + admin</text>
+  <text x="380" y="304" class="dg-lbl" text-anchor="middle">Kerjakan berurutan: rotasi memerlukan periode dan akun, event memerlukan periode, dan nilai hanya masuk ke akun yang sudah ada.</text>
+</svg>
+
+### Siapa mengerjakan apa
+
+| Pekerjaan | Pengelola server (IT) | Admin | Kaprodi |
+|---|---|---|---|
+| Memasang aplikasi, akun admin pertama, pencadangan | Ya | | |
+| Periode, pengguna, rotasi, enrolment | | Ya | Menyediakan data |
+| Kerangka kompetensi, target kasus, master data | | Memasukkan | Menetapkan isi |
+| Event asesmen dan impor nilai | | Ya | Menetapkan jadwal |
+| Learning Unit, Jadwal DOPS & Mini-CEX, Relabel Prodi | | Semua prodi | Prodi sendiri |
+| Assessment Form Builder | | Ya | Ya |
+| Dashboard Analitik, Ekspor Data | | Semua prodi | Prodi sendiri |
+| Monitoring SRQ | | Tidak ada akses | Prodi sendiri |
+
+Tiga hal yang sering keliru dipahami:
+
+- **Peran Admin berlaku untuk seluruh instalasi.** Belum ada admin khusus satu prodi, jadi setiap admin dapat membuka data semua prodi.
+- **Bila satu orang merangkap kaprodi dan admin,** beri peran `kaprodi+admin` dan isi prodinya. Menu **Monitoring SRQ** baru tampil saat **Peran Aktif** di topbar diganti ke Kaprodi.
+- **Kaprodi memantau, tidak memverifikasi.** Tanpa peran dosen, kaprodi tidak dapat membuka rincian kasus, dan menu **Rotasi Klinik** serta **Kasus Klinis**-nya memang kosong. Pantau lewat **Dashboard Analitik**, **Daftar Mahasiswa**, dan **Ekspor Data**. Kaprodi yang juga membimbing diberi peran `dosen+kaprodi`.
+
+### Yang perlu disiapkan dulu
+
+Siapkan bahan ini sebelum membuka aplikasi supaya penyiapan tidak terhenti di tengah.
+
+| Bahan | Disiapkan oleh | Dipakai di |
+|---|---|---|
+| Alamat aplikasi, HTTPS, jadwal pencadangan | IT | Tahap 0 |
+| Kalender akademik: nama dan tanggal tiap periode | Kaprodi | Tahap 2 |
+| Daftar pengguna: email aktif, nama, peran, prodi | Admin | Tahap 3 |
+| NPM dan angkatan seluruh mahasiswa | Admin | Tahap 3 |
+| Cara menyampaikan kata sandi sementara secara pribadi, dan satu kontak bantuan | Admin | Tahap 3 dan 8 |
+| Kerangka kompetensi atau EPA, beserta target skornya | Kaprodi | Tahap 4 |
+| Target jumlah kasus FKTP dan FKRTL | Kaprodi | Tahap 4 |
+| Penempatan tiap mahasiswa. Profesi: stase, wahana, preseptor, tanggal. Sarjana: blok, kelompok, tutor | Kaprodi | Tahap 5 |
+| Daftar ujian dan bobot nilai tiap blok atau stase | Kaprodi | Tahap 6 |
+| Aturan data pasien: kapan meminta persetujuan pasien, dan larangan menulis identitas di kolom bebas | Kaprodi | Tahap 8 |
+| SRQ-20: tinjauan rumusan butir oleh ahli konten, kesepakatan ambang skor, SOP untuk hasil "Perlu Perhatian Segera", dan nomor konselor | Kaprodi | Sebelum Tahap 8 |
+
+### Tahap 0 — Pasang aplikasi dan buat admin pertama
+
+*Dikerjakan pengelola server.*
+
+1. Pasang aplikasi mengikuti `NAS_DEPLOY.md` di repositori, termasuk `bin/rails db:seed` satu kali.
+2. Buat akun admin pertama. Pendaftaran lewat halaman **Daftar** selalu menghasilkan akun Mahasiswa, jadi admin pertama hanya dapat dibuat dari server:
+
+~~~
+docker compose exec \
+  -e ADMIN_EMAIL=admin@kampus.ac.id \
+  -e ADMIN_PASSWORD='kata-sandi-kuat' \
+  -e ADMIN_NAME='Nama Admin' \
+  web bin/rails users:create_admin
+~~~
+
+{:start="3"}
+3. Cadangkan secara rutin: basis data, volume unggahan `jejak_lite_storage`, dan berkas `.env`. Tanpa kunci enkripsi di `.env`, identitas pasien tidak dapat dibaca lagi.
+4. Tentukan layanan tambahan. Compose bawaan tidak meneruskan pengaturannya ke aplikasi, jadi tambahkan variabelnya ke bagian `environment` layanan `web` bila diperlukan:
+
+| Layanan | Variabel | Bila tidak diisi |
+|---|---|---|
+| Email | `SMTP_*` | Tautan *Lupa kata sandi* disembunyikan, dan admin yang me-reset kata sandi |
+| Login Google | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Tombol **Masuk dengan Google** tidak tampil |
+| Notifikasi push | `VAPID_*` | Notifikasi hanya muncul di dalam aplikasi |
+
+> **Dua perintah yang tidak boleh dijalankan di server sungguhan.** `bin/rails demo:seed` membuat akun contoh dengan kata sandi yang diketahui publik, termasuk akun Admin. `bin/rails db:seed` yang dijalankan lagi setelah periode dibuat menambahkan event *OSCE Akhir Blok Kardiovaskular* dan Learning Unit *Blok Sistem Kardiovaskular* contoh.
+
+**Selesai bila:** halaman Masuk terbuka dari komputer kampus, dan admin dapat masuk.
+
+### Tahap 1 — Masuk dan periksa isi bawaan
+
+*Dikerjakan admin.*
+
+1. Masuk dengan akun admin. Beranda menampilkan *Semua beres*: itu hanya berarti belum ada antrean, bukan penyiapan sudah selesai.
+2. Bila kata sandi Anda dibuat orang lain, ganti lewat **Pengaturan Akun**. Akun admin pertama tidak dipaksa menggantinya.
+
+![Beranda admin pada instalasi baru: semua angka nol dan pesan Semua beres](panduan/mulai-01-beranda-admin.png)
+
+Instalasi baru sudah berisi data contoh. Cocokkan dengan daftar ini:
+
+| Sudah terisi sebagai contoh | Masih kosong |
+|---|---|
+| 2 program studi (Sarjana Kedokteran, Profesi Dokter) | Periode akademik |
+| 1 kerangka kompetensi dengan 7 ranah | Pengguna selain admin |
+| 11 domain kegiatan | Rotasi dan enrolment |
+| 42 diagnosis, 25 keterampilan, 44 obat | Target kasus |
+| 3 formulir evaluasi, 1 blueprint | Event asesmen dan Learning Unit |
+
+### Tahap 2 — Periode akademik dan program studi
+
+*Dikerjakan admin.*
+
+1. Buka **Konfigurasi → Tahun/Periode Akademik**, klik **+ Periode Baru**, isi nama (mis. `2026/2027 Ganjil`) dan tanggalnya, lalu **Simpan**.
+2. Hindari periode yang tumpang tindih. Semester pada logbook hanya terisi otomatis bila tepat satu periode mencakup tanggal kegiatan.
+3. Buka **Konfigurasi → Program Studi**. Sunting nama bila perlu, dan catat kodenya (`pssk`, `pspd`) karena dipakai di berkas CSV.
+
+![Formulir Periode Baru dengan nama dan tanggal terisi](panduan/mulai-02-periode.png)
+
+**Selesai bila:** periode berjalan tampil di daftar dan tanggal hari ini berada di dalamnya.
+
+### Tahap 3 — Buat akun pengguna
+
+*Dikerjakan admin.*
+
+**Langkah 1: siapkan berkas pengguna.** Satu baris per orang, dapat disimpan dari Excel sebagai CSV:
+
+~~~
+email,nama,peran,prodi
+kaprodi.pspd@kampus.ac.id,"dr. Hendra Wijaya, Sp.PD",kaprodi,pspd
+ari.nugroho@kampus.ac.id,"dr. Ari Nugroho, Sp.B",dosen+preseptor,pspd
+annisa.putri@kampus.ac.id,Annisa Putri,mahasiswa,pspd
+~~~
+
+- **Peran:** `mahasiswa`, `dosen`, `preseptor`, `kaprodi`, atau `admin`. Gabungkan dengan `+`.
+- **Isi prodi pada baris kaprodi.** Contoh di halaman impor mengosongkannya, padahal prodi itulah batas akses kaprodi.
+- Beri tanda kutip pada nama yang memuat koma, seperti contoh di atas.
+
+**Langkah 2: impor.** Buka **Konfigurasi → Pengguna → Impor CSV**, pilih berkas, lalu klik **Impor**.
+
+**Langkah 3: unduh kata sandi sementara saat itu juga.** Klik **Unduh CSV** pada kotak *Kata sandi sementara akun baru*. Daftar ini hanya tampil sekali. Bila terlewat, buka **Pengguna → Sunting → Reset Kata Sandi** untuk tiap akun.
+
+![Hasil impor: 11 akun baru dan tabel kata sandi sementara dengan tombol Unduh CSV](panduan/mulai-03-impor-hasil.png)
+
+**Langkah 4: pastikan kaprodi punya prodi.** Kaprodi tanpa prodi akan ditolak dari halaman pengelolaan:
+
+![Pesan galat di beranda: Akun kaprodi Anda belum terhubung ke Program Studi](panduan/mulai-04-kaprodi-belum-terhubung.png)
+
+Perbaiki lewat **Pengguna → Sunting**: pilih **Program Studi**, lalu **Simpan**. Di halaman yang sama Anda juga dapat mengubah peran dan me-reset kata sandi.
+
+![Halaman sunting pengguna: nama, program studi, peran, dan Reset Kata Sandi](panduan/mulai-05-sunting-pengguna.png)
+
+**Langkah 5: isi NPM dan angkatan secara massal.** Berkas impor tidak memuat kolom ini. Mahasiswa dapat mengisinya sendiri di profil, tetapi lebih rapi diisi admin lewat **Konfigurasi → Relabel Prodi Mahasiswa**:
+
+1. Siapkan CSV berkolom `email,npm,angkatan`, satu berkas per prodi.
+2. Pilih **Prodi tujuan** yang sama dengan prodi mahasiswa itu sekarang, lalu klik **Pratinjau**.
+3. Periksa kolom *Catatan*, lalu klik **Terapkan ke N akun** dan setujui konfirmasinya.
+
+![Pratinjau relabel: empat mahasiswa berstatus siap dengan NPM dan angkatan baru](panduan/mulai-06-relabel-pratinjau.png)
+
+**Selesai bila:** semua orang ada di **Pengguna** dengan peran dan prodi yang benar. Kata sandi sementara baru dibagikan di Tahap 7 dan 8.
+
+> **Halaman Daftar selalu terbuka.** Siapa pun yang tahu alamat aplikasi dapat membuat akun Mahasiswa dan memilih prodi sendiri di profilnya. Periksa **Pengguna** secara berkala. Akun tidak dapat dihapus dari aplikasi, jadi kosongkan **Program Studi** pada akun yang tidak dikenal supaya tidak ikut terhitung di prodi Anda.
+
+### Tahap 4 — Kurikulum: kompetensi, target, dan master data
+
+*Kaprodi menetapkan isinya, admin memasukkannya. Kaprodi tidak punya akses ke menu-menu ini.*
+
+1. **Kerangka kompetensi** (**Konfigurasi → Kerangka Kompetensi**). Sesuaikan langsung kerangka contoh yang sudah ada: tambah atau hapus ranah dan sub-kompetensi, lalu isi target skor per periode lewat **Set Target**.
+2. **Target kasus** (**Konfigurasi → Target Kasus Logbook**). Buat satu target FKTP dan satu FKRTL per prodi. Kasus berlatar Pelayanan Primer dihitung FKTP, sisanya FKRTL. Tanpa target, kartu pemenuhan target tidak tampil bagi mahasiswa.
+3. **Domain kegiatan** (**Konfigurasi → Domain Kegiatan Akademik**). Nonaktifkan yang tidak dipakai supaya form mahasiswa ringkas.
+4. **Master data** (**Konfigurasi → Master Diagnosis, Keterampilan, Obat**). Tambahkan yang kurang, satu per satu atau lewat CSV. Kode ICD-10 dan level SKDI pada kasus terisi otomatis dari sini.
+5. **Blueprint dan formulir contoh.** Pakai, sesuaikan, atau hapus. Rinciannya ada di [Blueprint Asesmen](#blueprint-asesmen) dan [Assessment Form Builder](#assessment-form-builder-templat-formulir).
+
+> **Peta EPA memakai kerangka yang paling awal dibuat.** Bila Anda membuat kerangka baru, Peta EPA dan pilihan EPA saat verifikasi kasus tetap memakai kerangka contoh. Karena itu sunting kerangka contoh, atau hapus sebelum membuat yang baru. Menghapusnya juga mengosongkan pemetaan pada Blueprint contoh.
+
+![Kerangka kompetensi: tujuh ranah dengan sub-kompetensi dan pengisian target per periode](panduan/mulai-07-kerangka.png)
+
+![Daftar target kasus: FKTP 20 dan FKRTL 30 untuk Profesi Dokter](panduan/mulai-08-target.png)
+
+**Selesai bila:** kerangka sudah sesuai kurikulum Anda, dan target tiap prodi terisi.
+
+### Tahap 5 — Tempatkan mahasiswa
+
+*Dikerjakan admin, dengan data dari kaprodi atau koordinator.*
+
+Penempatan menautkan mahasiswa ke preseptor atau tutornya. Tanpa penempatan, preseptor dan tutor belum melihat mahasiswanya di Beranda dan Dashboard Analitik, dan mahasiswa tidak melihat rotasi atau bloknya.
+
+**Profesi Dokter: Rotasi Klinik.** Buka **Rotasi Klinik → + Tambah Rotasi**. Ketik sebagian nama untuk memilih mahasiswa dan preseptor, lalu isi periode, bagian, wahana, dan tanggal.
+
+![Formulir Tambah Rotasi yang sudah terisi](panduan/mulai-09-rotasi-form.png)
+
+**Sarjana Kedokteran: Enrolment Tutorial.** Buka **Enrolment Tutorial → + Tambah Enrolment**, lalu isi mahasiswa, tutor, periode, blok, kelompok, dan tanggal.
+
+![Formulir Tambah Enrolment yang sudah terisi](panduan/mulai-10-tutorial-form.png)
+
+> **Rotasi dan enrolment diisi satu per satu.** Belum ada impor CSV untuk keduanya, jadi sediakan waktu khusus: satu baris per mahasiswa per stase. Mulailah dari kelompok yang akan ikut uji coba di Tahap 7.
+
+> **Tulis nama stase dan blok secara seragam.** Nama blok pada event asesmen harus sama dengan nama stase atau blok di sini. Bila berbeda, event rubrik tidak tampil bagi mahasiswa.
+
+![Daftar rotasi: empat mahasiswa dengan stase, preseptor, dan status Sedang Berlangsung](panduan/mulai-11-rotasi-daftar.png)
+
+**Selesai bila:** setiap mahasiswa aktif punya penempatan pada periode berjalan.
+
+### Tahap 6 — Siapkan asesmen
+
+*Admin membuat event dan mengimpor nilai. Kaprodi menyusun Learning Unit.*
+
+**Buat event** (admin). Buka **Konfigurasi → Assessment Events → + Event Baru**, isi nama, tipe, periode, prodi, blok, tanggal, dan nilai maksimum.
+
+- Ubah **Status** ke **Terbit** saat event siap. Event berstatus Draf belum tampil bagi mahasiswa.
+- Tipe menentukan cara nilai masuk: ujian tulis dan praktik lewat impor CSV, rubrik lewat Lembar Penguji, CBD dan Long Case dari kasus mahasiswa. Lihat [Assessment Events](#assessment-events-dan-impor-nilai).
+
+![Formulir event baru: CBT Blok Kardiovaskular berstatus Terbit](panduan/mulai-12-event-form.png)
+
+**Impor nilai** (admin), setelah ujian:
+
+1. Buka event itu, lalu klik **Impor CSV** di halaman event.
+2. Unggah CSV berkolom email dan nilai, lalu klik **Lanjut ke pemetaan kolom**.
+3. Periksa pemetaan kolomnya, lalu klik **Jalankan impor**. Email yang tidak dikenal dilaporkan, bukan dibuatkan akun.
+
+![Langkah pemetaan kolom: email dan skor total sudah terpetakan otomatis](panduan/mulai-13-impor-pemetaan.png)
+
+> **Ada dua pintu impor.** Gunakan **Impor CSV** di halaman event untuk berkas biasa. Menu **Konfigurasi → Impor CSV CBT & OSCE** khusus untuk berkas berformat ekspor Glide.
+
+**Susun Learning Unit** (kaprodi). Buka **Coaching Center → Learning Unit & Matrix → + Learning Unit**. Pada halaman unit, tambahkan event beserta bobotnya sampai total 100%. Nilai unit tiap mahasiswa terhitung otomatis.
+
+![Assessment Matrix: event OSCE berbobot 100 persen dan rekap nilai per mahasiswa](panduan/mulai-14-learning-unit.png)
+
+**Jadwalkan DOPS dan Mini-CEX** (kaprodi atau admin). Buka **Jadwal DOPS & Mini-CEX → + Jadwal Baru**. Mahasiswa dan penilai langsung mendapat notifikasi, dan jadwalnya masuk agenda.
+
+![Formulir jadwal: DOPS jahit luka dengan mahasiswa dan penilai terpilih](panduan/mulai-15-jadwal.png)
+
+**Selesai bila:** event semester berjalan terdaftar, dan bobot Learning Unit mencapai 100%.
+
+### Tahap 7 — Uji coba satu putaran
+
+*Kaprodi memimpin, dengan satu dosen atau preseptor dan satu mahasiswa.*
+
+Jangan langsung membuka untuk semua orang. Jalankan satu putaran penuh dengan kegiatan nyata, karena kasus dan kegiatan yang sudah diverifikasi tidak dapat dihapus, dan akun tidak dapat dihapus dari aplikasi.
+
+<svg class="dg" viewBox="0 0 760 330" role="img" aria-label="Alur kerja harian antara mahasiswa, dosen atau preseptor, admin, dan kaprodi">
+  <defs><marker id="ar-rutin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-arrowhead"/></marker></defs>
+  <rect x="10" y="10" width="740" height="72" rx="8" class="dg-frame"/><text x="22" y="50" class="dg-t dg-b">Mahasiswa</text>
+  <rect x="10" y="90" width="740" height="72" rx="8" class="dg-frame"/><text x="22" y="124" class="dg-t dg-b">Dosen /</text><text x="22" y="139" class="dg-t dg-b">Preseptor</text>
+  <rect x="10" y="170" width="740" height="72" rx="8" class="dg-frame"/><text x="22" y="210" class="dg-t dg-b">Admin</text>
+  <rect x="10" y="250" width="740" height="72" rx="8" class="dg-frame"/><text x="22" y="290" class="dg-t dg-b">Kaprodi</text>
+  <rect x="105" y="22" width="130" height="48" rx="8" class="dg-box"/><text x="170" y="42" class="dg-t" text-anchor="middle">Catat kegiatan</text><text x="170" y="58" class="dg-t" text-anchor="middle">dan kasus</text>
+  <rect x="270" y="22" width="130" height="48" rx="8" class="dg-box"/><text x="335" y="42" class="dg-t" text-anchor="middle">Kirim untuk</text><text x="335" y="58" class="dg-t" text-anchor="middle">verifikasi</text>
+  <rect x="590" y="22" width="150" height="48" rx="8" class="dg-box-green"/><text x="665" y="42" class="dg-t" text-anchor="middle">Terima notifikasi,</text><text x="665" y="58" class="dg-t" text-anchor="middle">lihat nilai dan target</text>
+  <rect x="270" y="102" width="130" height="48" rx="8" class="dg-box-amber"/><text x="335" y="122" class="dg-t" text-anchor="middle">Verifikasi atau</text><text x="335" y="138" class="dg-t" text-anchor="middle">minta revisi</text>
+  <rect x="430" y="102" width="130" height="48" rx="8" class="dg-box-amber"/><text x="495" y="122" class="dg-t" text-anchor="middle">Nilai DOPS</text><text x="495" y="138" class="dg-t" text-anchor="middle">dan Mini-CEX</text>
+  <rect x="430" y="182" width="130" height="48" rx="8" class="dg-box-gray"/><text x="495" y="202" class="dg-t" text-anchor="middle">Impor nilai</text><text x="495" y="218" class="dg-t" text-anchor="middle">ujian</text>
+  <rect x="590" y="262" width="150" height="48" rx="8" class="dg-box"/><text x="665" y="282" class="dg-t" text-anchor="middle">Pantau Analitik</text><text x="665" y="298" class="dg-t" text-anchor="middle">dan Monitoring SRQ</text>
+  <rect x="400" y="262" width="160" height="48" rx="8" class="dg-box-green"/><text x="480" y="282" class="dg-t" text-anchor="middle">Tindak lanjuti mahasiswa,</text><text x="480" y="298" class="dg-t" text-anchor="middle">ekspor laporan</text>
+  <line x1="235" y1="46" x2="268" y2="46" class="dg-arrow" marker-end="url(#ar-rutin)"/>
+  <line x1="335" y1="70" x2="335" y2="100" class="dg-arrow" marker-end="url(#ar-rutin)"/>
+  <line x1="400" y1="126" x2="428" y2="126" class="dg-arrow" marker-end="url(#ar-rutin)"/>
+  <path d="M560,126 L625,126 L625,72" class="dg-arrow" marker-end="url(#ar-rutin)"/>
+  <path d="M560,206 L625,206 L625,126" class="dg-arrow"/>
+  <line x1="700" y1="70" x2="700" y2="260" class="dg-arrow dg-dash" marker-end="url(#ar-rutin)"/>
+  <text x="706" y="170" class="dg-lbl">data</text>
+  <line x1="590" y1="286" x2="562" y2="286" class="dg-arrow" marker-end="url(#ar-rutin)"/>
+</svg>
+
+| Urutan | Siapa | Lakukan | Yang harus terlihat |
+|---|---|---|---|
+| 1 | Dosen dan mahasiswa | Masuk dengan kata sandi sementara dan buat kata sandi baru | Diarahkan ke **Pengaturan Akun** sebelum dapat membuka halaman lain |
+| 2 | Mahasiswa | Lengkapi profil, lalu periksa **Beranda** | Rotasi atau blok tampil, profil 100% |
+| 3 | Mahasiswa | **Logbook Kegiatan → + Catat Kegiatan** | Kegiatan berstatus belum diverifikasi |
+| 4 | Mahasiswa | **Kasus Klinis → + Kasus Baru**, tandai pembimbing, simpan, lalu **Kirim untuk Verifikasi** | Status *Menunggu Verifikasi*, identitas pasien tersamar |
+| 5 | Dosen | **Validasi Kasus Klinis**, pilih tingkat entrustment, lalu **Setujui / Verifikasi** | Kasus keluar dari antrean, identitas pasien terbuka bagi pembimbing |
+| 6 | Dosen | **Validasi Kegiatan**, verifikasi kegiatannya | Lencana antrean berkurang |
+| 7 | Dosen | **Workplace Assessment → + DOPS**, isi rubriknya, lalu **Kirim Evaluasi** | Evaluasi berstatus Terkirim |
+| 8 | Mahasiswa | Buka **Notifikasi** dan **Kasus Klinis** | Ada notifikasi verifikasi dan DOPS, target kasus bertambah |
+| 9 | Kaprodi | Buka **Dashboard Analitik** | Rata-rata DOPS dan kasus terverifikasi mahasiswa itu tampil |
+
+![Langkah pertama wizard kasus: data pasien, identitas tersamar, keluhan utama, dan pilihan pembimbing](panduan/mulai-16-kasus-langkah1.png)
+
+![Antrean Perlu Diverifikasi milik dosen berisi satu kasus](panduan/mulai-17-antrean-verifikasi.png)
+
+![Halaman verifikasi: identitas pasien terbuka bagi pembimbing, tingkat entrustment, serta tombol Setujui, Minta Revisi, dan Tolak](panduan/mulai-18-form-verifikasi.png)
+
+![Halaman Kasus Klinis mahasiswa: target FKRTL 1 dari 30 dan satu kasus terverifikasi](panduan/mulai-19-kasus-target.png)
+
+![Dashboard Analitik kaprodi: ringkasan prodi, radar kohort, dan tabel mahasiswa](panduan/mulai-20-analitik-kaprodi.png)
+
+**Selesai bila:** kesembilan langkah berjalan, dan pembimbing serta mahasiswa uji coba tidak lagi perlu dibantu. Catat apa yang membingungkan mereka untuk bahan sosialisasi.
+
+### Tahap 8 — Luncurkan ke dosen dan mahasiswa
+
+*Kaprodi memimpin, admin menyiapkan kata sandi.*
+
+Luncurkan ke **dosen dan preseptor lebih dulu**, supaya antrean verifikasi sudah ada yang menjaga saat mahasiswa mulai mencatat. Sampaikan kata sandi sementara satu per satu, jangan di grup.
+
+Pesan untuk dosen dan preseptor:
+
+> Yth. Bapak/Ibu, logbook prodi kini memakai JEJAK di **[alamat aplikasi]**. Masuk dengan email **[email]** dan kata sandi sementara **[kata sandi]**, lalu buat kata sandi baru. Tugas Bapak/Ibu: (1) lengkapi profil, (2) periksa **Validasi Kasus Klinis** dan **Validasi Kegiatan** minimal [frekuensi], (3) isi DOPS dan Mini-CEX lewat **Workplace Assessment**. Panduan: menu **Panduan Penggunaan**, Bab 5. Bantuan: **[kontak]**.
+
+Pesan untuk mahasiswa:
+
+> Mulai **[tanggal]**, logbook dicatat di JEJAK: **[alamat aplikasi]**. Masuk dengan email **[email]** dan kata sandi sementara **[kata sandi]**, lalu buat kata sandi baru. Lakukan hari ini: (1) lengkapi profil, (2) periksa rotasi atau blok Anda di Beranda, (3) catat kegiatan dan kasus maksimal [batas waktu] setelah kejadian. Jangan menulis nama atau nomor identitas pasien di kolom bebas; hanya kolom Identitas Pasien yang terlindungi. Panduan: menu **Panduan Penggunaan**, Bab 4. Bantuan: **[kontak]**.
+
+Sebelum mengirim pesan mahasiswa, pastikan hal berikut sudah beres, karena menu **Kesehatan Mental (SRQ)** langsung tampil bagi semua mahasiswa dan tidak ada sakelar untuk mematikannya:
+
+- SOP untuk hasil "Perlu Perhatian Segera" sudah berjalan di prodi.
+- Rumusan 20 butir sudah ditinjau ahli konten, dan ambang skor sudah disepakati.
+- Nomor kontak konselor fakultas sudah disiapkan.
+
+**Selesai bila:** semua dosen dan mahasiswa sudah pernah masuk. Periksa kolom *Login Terakhir* pada dataset Data Mahasiswa di **Ekspor Data**. Untuk dosen, admin memakai dataset Pengguna & Peran.
+
+### Tahap 9 — Kerja rutin setelah berjalan
+
+| Kapan | Kaprodi | Admin |
+|---|---|---|
+| Setiap minggu | Periksa **Mahasiswa Perlu Perhatian** di Beranda, **Dashboard Analitik**, dan **Monitoring SRQ**, lalu catat tindak lanjutnya | Reset kata sandi dan buka akun terkunci bila diminta |
+| Setiap selesai ujian | Periksa nilai unit di **Learning Unit & Matrix** | Impor nilai ke event terkait |
+| Setiap bulan | **Ekspor Data** untuk rapat evaluasi prodi | Periksa akun tak dikenal, **Riwayat Ekspor**, dan audit **Data Governance** |
+| Setiap semester | Tetapkan target kasus dan bobot baru | Buat periode, rotasi, enrolment, event, dan target baru; akun baru lewat impor; pindah prodi lewat **Relabel Prodi** |
+| Saat aplikasi dimutakhirkan | Coba satu alur singkat sesudahnya | Minta IT mencadangkan data sebelum `docker compose pull` |
+
+Kaprodi memantau satu mahasiswa lewat **Daftar Mahasiswa**: cari nama, lalu buka Dasbor Mahasiswa (hanya-baca). Dari sana tersedia Evaluasi Akademik, Peta Kompetensi, dan Peta EPA mahasiswa itu.
+
+![Beranda kaprodi: ringkasan hari ini, Perlu Tindakan Anda, dan menu Monitoring SRQ serta Ekspor Data di sidebar](panduan/mulai-21-beranda-kaprodi.png)
+
+![Monitoring SRQ: jumlah yang sudah mengisi, kategori hasil, dan rekap per angkatan](panduan/mulai-22-monitoring-srq.png)
+
+![Ekspor Data versi kaprodi: prodi terkunci, filter periode dan tanggal, serta kartu dataset](panduan/mulai-23-ekspor-kaprodi.png)
+
+### Bila ada kendala
+
+| Gejala | Penyebab | Yang dilakukan |
+|---|---|---|
+| Kaprodi melihat *Akun kaprodi Anda belum terhubung ke Program Studi* | Prodi pada akunnya kosong | Admin: **Pengguna → Sunting → Program Studi** |
+| Menu **Rotasi Klinik** atau **Kasus Klinis** kaprodi kosong | Wajar: menu itu hanya memuat data akunnya sendiri | Pantau lewat **Dashboard Analitik**, **Daftar Mahasiswa**, atau **Ekspor Data** |
+| Menu **Konfigurasi** tidak tampil | Akun tidak berperan Admin | Admin lain menambahkan perannya lewat **Pengguna → Sunting** |
+| Lupa kata sandi, atau akun terkunci setelah 10 kali salah | Tanpa email, tautan *Lupa kata sandi* tidak tersedia | Admin: **Pengguna → Sunting → Reset Kata Sandi**. Akun terkunci juga terbuka sendiri setelah 15 menit |
+| Kata sandi sementara hasil impor hilang | Daftarnya hanya tampil sekali | Admin: **Reset Kata Sandi** per akun |
+| Mahasiswa tidak melihat event rubrik | Status belum Terbit, prodi berbeda, atau nama blok tidak sama | Periksa event, profil mahasiswa, dan nama stase atau blok |
+| Hasil impor melaporkan email tak dikenal | Email di berkas nilai berbeda dengan email akun | Samakan emailnya, lalu impor ulang |
+| Kartu target kasus tidak tampil | Belum ada target untuk prodi itu | Admin: **Target Kasus Logbook → + Tambah Target** |
+| Pembimbing tidak melihat mahasiswanya | Belum ada penempatan yang menunjuknya | Admin: isi preseptor pada rotasi atau tutor pada enrolment |
+| Kerangka baru tidak muncul di Peta EPA | Peta EPA memakai kerangka paling awal | Pindahkan isinya ke kerangka awal, atau hapus kerangka awal bila belum ada keputusan EPA |
 
 ---
 
@@ -814,7 +1219,7 @@ Kaprodi tidak melihat jawaban per butir. SRQ-20 adalah penapisan, bukan diagnosi
 
 ## Bab 6 — Panduan Admin (Konfigurasi)
 
-Urutan penyiapan instalasi baru yang disarankan: **Tahun/Periode Akademik → Program Studi → Pengguna → Kerangka Kompetensi → Target Kasus & Domain Kegiatan → Rotasi/Enrolment → Assessment Events**. Sisanya bisa menyusul.
+Urutan penyiapan instalasi baru yang disarankan: **Tahun/Periode Akademik → Program Studi → Pengguna → Kerangka Kompetensi → Target Kasus & Domain Kegiatan → Rotasi/Enrolment → Assessment Events**. Sisanya bisa menyusul. Langkah lengkapnya, termasuk pembagian tugas dan uji coba, ada di [Panduan Penyiapan](#panduan-penyiapan-untuk-kaprodi--admin-prodi).
 
 ### 6.1 Tahun/Periode Akademik
 

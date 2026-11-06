@@ -49,6 +49,20 @@ class PanduanControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "panduan penyiapan memuat tahap 0 sampai 9 berurutan dan tertaut dari daftar isi" do
+    sign_in users(:budi)
+    get panduan_path
+
+    doc = Nokogiri::HTML5(response.body)
+    section_id = "panduan-penyiapan-untuk-kaprodi--admin-prodi"
+    assert doc.at_css(".markdown-body h2##{section_id}")
+    assert doc.at_css(".markdown-body a[href='##{section_id}']")
+
+    stages = doc.css(".markdown-body h3").filter_map { |h3| h3.text[/\ATahap (\d+)/, 1] }
+    assert_equal (0..9).map(&:to_s), stages
+    assert_operator doc.css(".markdown-body img[src*='mulai-']").size, :>=, 20
+  end
+
   test "setiap tautan anchor di panduan mengarah ke id yang ada" do
     sign_in users(:budi)
     get panduan_path

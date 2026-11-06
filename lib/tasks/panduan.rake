@@ -7,9 +7,13 @@
 #
 #   bin/rails panduan:pdf
 #   CHROME_PATH="/path/ke/chrome" bin/rails panduan:pdf   # bila tidak terdeteksi
+#
+# panduan:pdf_penyiapan mencetak bagian "Panduan Penyiapan" saja menjadi buku
+# tipis untuk dibagikan ke kaprodi & admin prodi (panduan_penyiapan.pdf).
 namespace :panduan do
-  desc "Bangkitkan app/views/panduan/panduan.pdf dari panduan.md"
-  task pdf: :environment do
+  # Mencetak satu naskah markdown menjadi PDF bersampul. `cover` mengisi teks
+  # sampul; gaya, logo, dan mesin cetaknya sama untuk semua PDF.
+  print_pdf = lambda do |markdown, file:, cover:|
     require "kramdown"
     require "tmpdir"
 
@@ -25,7 +29,13 @@ namespace :panduan do
     # dengan URL file:// absolut ke berkas aslinya di proyek.
     file_url = ->(path) { "file:///#{path.to_s.tr('\\', '/').delete_prefix('/')}" }
 
-    body = Kramdown::Document.new(File.read(dir.join("panduan.md")), input: "kramdown").to_html
+    body = Kramdown::Document.new(markdown, input: "kramdown").to_html
+    # Bagian yang dicetak terpisah menunjuk bab yang tidak ikut tercetak —
+    # tautannya dijadikan teks biasa supaya tidak mati.
+    ids = body.scan(/\bid="([^"]+)"/).flatten
+    body = body.gsub(%r{<a href="#([^"]+)">(.*?)</a>}m) do
+      ids.include?(Regexp.last_match(1)) ? Regexp.last_match(0) : Regexp.last_match(2)
+    end
     # Screenshot ditulis `panduan/nama.png` (relatif ke aset, lihat PanduanController).
     images = Rails.root.join("app/assets/images")
     body = body.gsub(%r{<img src="(panduan/[^"]+)"}) { %(<img src="#{file_url.(images.join(Regexp.last_match(1)))}") }
@@ -46,7 +56,7 @@ namespace :panduan do
       <html lang="id">
       <head>
         <meta charset="utf-8">
-        <title>Panduan Penggunaan JEJAK Essential</title>
+        <title>#{cover[:document_title]}</title>
         <style>
           @font-face { font-family: Inter; src: url("#{inter}") format("woff2"); font-weight: 100 900; font-style: normal; }
           #{style}
@@ -108,11 +118,10 @@ namespace :panduan do
           </header>
           <div class="cover-main">
             <p class="cover-eyebrow">Buku Panduan</p>
-            <h1 class="cover-title">Panduan<br>Penggunaan</h1>
-            <p class="cover-tagline">JEJAK Essential — Ekosistem Pendidikan<br>Klinis Longitudinal</p>
-            <p class="cover-lead">Logbook kegiatan dan kasus klinis, asesmen (DOPS, Mini-CEX, ujian tulis &amp; praktik, rubrik penguji),
-              peta kompetensi &amp; EPA, serta dashboard analitik — dalam satu aplikasi.</p>
-            <ul class="cover-roles"><li>Mahasiswa</li><li>Dosen</li><li>Preseptor</li><li>Kaprodi</li><li>Admin</li></ul>
+            <h1 class="cover-title">#{cover[:title]}</h1>
+            <p class="cover-tagline">#{cover[:tagline]}</p>
+            <p class="cover-lead">#{cover[:lead]}</p>
+            <ul class="cover-roles">#{cover[:roles].map { |role| "<li>#{role}</li>" }.join}</ul>
           </div>
           <footer>
             <p class="cover-support">Dikembangkan dengan dukungan</p>
@@ -120,7 +129,7 @@ namespace :panduan do
               <span class="cover-logo"><img src="#{file_url.(branding.join('aipki-logo.png'))}" alt="Asosiasi Institusi Pendidikan Kedokteran Indonesia (AIPKI)"></span>
               <span class="cover-logo cover-logo--dikti"><img src="#{file_url.(branding.join('Primary_Horizontal-Logo.png'))}" alt="Diktisaintek Berdampak"></span>
             </div>
-            <p class="cover-meta"><span>Diperbarui <strong>#{updated}</strong></span><span>Versi PDF dari halaman Panduan Penggunaan (/panduan)</span></p>
+            <p class="cover-meta"><span>Diperbarui <strong>#{updated}</strong></span><span>#{cover[:source]}</span></p>
           </footer>
         </section>
         <div class="markdown-body">
@@ -133,11 +142,49 @@ namespace :panduan do
     Dir.mktmpdir do |tmp|
       source = File.join(tmp, "panduan.html")
       File.write(source, html)
-      output = dir.join("panduan.pdf").to_s
+      output = dir.join(file).to_s
       ok = system(chrome, "--headless=new", "--disable-gpu", "--no-pdf-header-footer", "--user-data-dir=#{tmp}/profile",
                   "--print-to-pdf=#{output}", "file:///#{source.tr('\\', '/')}", exception: false)
       abort "Gagal mencetak PDF." unless ok && File.exist?(output)
       puts "Tertulis #{output} (#{(File.size(output) / 1024.0).round} KB)"
     end
+  end
+
+  desc "Bangkitkan app/views/panduan/panduan.pdf dari panduan.md"
+  task pdf: :environment do
+    print_pdf.call(
+      File.read(Rails.root.join("app/views/panduan/panduan.md")),
+      file: "panduan.pdf",
+      cover: {
+        document_title: "Panduan Penggunaan JEJAK Essential",
+        title: "Panduan<br>Penggunaan",
+        tagline: "JEJAK Essential — Ekosistem Pendidikan<br>Klinis Longitudinal",
+        lead: "Logbook kegiatan dan kasus klinis, asesmen (DOPS, Mini-CEX, ujian tulis &amp; praktik, rubrik penguji), " \
+              "peta kompetensi &amp; EPA, serta dashboard analitik — dalam satu aplikasi.",
+        roles: %w[Mahasiswa Dosen Preseptor Kaprodi Admin],
+        source: "Versi PDF dari halaman Panduan Penggunaan (/panduan)"
+      }
+    )
+  end
+
+  desc "Bangkitkan app/views/panduan/panduan_penyiapan.pdf dari bagian Panduan Penyiapan di panduan.md"
+  task pdf_penyiapan: :environment do
+    markdown = File.read(Rails.root.join("app/views/panduan/panduan.md"))
+    section = markdown[/^## Panduan Penyiapan.*?(?=^---\s+## Bab 1\b)/m]
+    abort "Bagian Panduan Penyiapan tidak ditemukan di panduan.md." unless section
+
+    print_pdf.call(
+      section,
+      file: "panduan_penyiapan.pdf",
+      cover: {
+        document_title: "Panduan Penyiapan JEJAK Essential untuk Kaprodi & Admin Prodi",
+        title: "Panduan<br>Penyiapan",
+        tagline: "Untuk Kaprodi &amp; Admin Prodi —<br>dari aplikasi baru sampai siap dipakai",
+        lead: "Langkah demi langkah menyiapkan JEJAK Essential bagi mahasiswa dan dosen: pembagian tugas, " \
+              "bahan yang perlu disiapkan, uji coba, peluncuran, dan kerja rutin.",
+        roles: [ "Kaprodi", "Admin Prodi", "Pengelola Server" ],
+        source: "Bagian dari Panduan Penggunaan (/panduan)"
+      }
+    )
   end
 end
