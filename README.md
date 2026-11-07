@@ -1,4 +1,4 @@
-# Jejak Lite
+# Jejak Essential
 
 Aplikasi pencatatan perjalanan belajar klinis yang berdiri sendiri — logbook kegiatan, kasus klinis, rotasi, asesmen (DOPS/Mini-CEX/Progress Test/CBT/OSCE), kurikulum (blueprint & peta kompetensi), dan dashboard analitik untuk dosen/preseptor/Kaprodi. Aplikasi Rails 8 single-tenant yang bisa di-hosting sendiri.
 
