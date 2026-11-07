@@ -24,7 +24,10 @@ permissions:
   packages: write
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository }}
+  # Ditulis tetap, tidak mengikuti github.repository: nama repo boleh berganti,
+  # tetapi docker-compose dan server yang sudah berjalan menarik image dengan
+  # nama ini. Kalau mengikuti nama repo, server diam-diam berhenti dapat pembaruan.
+  IMAGE_NAME: ghcr.io/basharihasan/jejak-lite
   PACKAGE_NAME: jejak-lite
 
 jobs:
