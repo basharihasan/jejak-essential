@@ -27,11 +27,13 @@ export default class extends Controller {
 
   // Penanda langkah bisa diklik untuk lompat langsung — aman karena wizard
   // ini tidak memvalidasi per langkah; validasi tetap di server saat simpan.
+  // Sengaja tidak menggulir: penanda yang diklik pasti sudah terlihat, dan
+  // guliran hanya menggesernya dari bawah kursor sehingga klik berikutnya
+  // mendarat di elemen lain.
   goTo({ params: { index } }) {
     if (index === undefined || index === this.currentValue) return
     this.currentValue = Math.max(0, Math.min(index, this.stepTargets.length - 1))
     this.render()
-    this.element.scrollIntoView({ behavior: "smooth", block: "start" })
   }
 
   render() {

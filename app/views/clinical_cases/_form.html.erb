@@ -12,7 +12,7 @@
   end
   initial_step = error_messages.map { |m| m[:step] }.min || 0
 %>
-<div data-controller="wizard" data-wizard-current-value="<%= initial_step %>" class="bg-white rounded-2xl ring-1 ring-gray-200 p-6">
+<div data-controller="wizard" data-wizard-current-value="<%= initial_step %>" class="bg-white rounded-2xl ring-1 ring-gray-200 p-6 scroll-mt-20">
   <div class="flex items-center justify-between mb-4">
     <p data-wizard-target="label" class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Langkah <%= initial_step + 1 %> dari <%= wizard_steps.size %></p>
     <%# Tiap penanda = tombol lompat langsung ke langkahnya. Area klik dibuat
