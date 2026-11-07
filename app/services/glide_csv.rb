@@ -3,7 +3,7 @@
 require "csv"
 
 # Utilitas bersama importer CSV berformat ekspor Glide (CbtGlideImporter,
-# OsceGlideImporter). Header dinormalisasi seperti di jejak.pro — huruf kecil,
+# OsceGlideImporter). Header dinormalisasi — huruf kecil,
 # hanya a-z0-9 — sehingga "emailYangDiuji", "Email yang diuji", dan
 # "email_yang_diuji" dibaca sama.
 module GlideCsv
@@ -82,7 +82,7 @@ module GlideCsv
       AcademicPeriod.current.first || AcademicPeriod.ordered.first
   end
 
-  # Hanya akun berperan mahasiswa — padanan StudentProfile jejak.pro — supaya
+  # Hanya akun berperan mahasiswa, supaya
   # email dosen yang nyasar ke kolom mahasiswa tidak menjadi peserta ujian.
   def students_by_email(emails)
     User.joins(:roles).where(roles: { code: "mahasiswa" }, email: emails.compact_blank.uniq)

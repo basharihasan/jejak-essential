@@ -88,7 +88,6 @@ Kaprodi dan admin prodi yang baru menerima aplikasi dapat mulai dari [Panduan Pe
 - [Bab 8 — Notifikasi](#bab-8--notifikasi)
 - [Bab 9 — Bagaimana Data Mengalir ke Capaian](#bab-9--bagaimana-data-mengalir-ke-capaian)
 - [Bab 10 — Pertanyaan yang Sering Diajukan](#bab-10--pertanyaan-yang-sering-diajukan)
-- [Bab 11 — Pindah ke jejak.pro](#bab-11--pindah-ke-jejakpro)
 - [Lampiran A — Daftar Alamat Halaman](#lampiran-a--daftar-alamat-halaman)
 - [Lampiran B — Glosarium](#lampiran-b--glosarium)
 <!-- TOC:END -->
@@ -521,7 +520,6 @@ Instalasi baru menutup pendaftaran mandiri secara bawaan: tautan **Daftar** tida
 - **Akun terkunci**: setelah 10 kali salah kata sandi, akun terkunci 15 menit lalu terbuka sendiri; admin juga bisa membukanya lewat **Reset Kata Sandi**. Percobaan masuk yang terlalu cepat dari satu perangkat dibatasi sementara (pesan "Terlalu banyak percobaan").
 - **Sesi**: tanpa centang **Ingat saya**, sesi berakhir setelah 2 jam tidak aktif. Kata sandi `password123` tidak dapat dipakai karena tercantum publik.
 - **Ganti kata sandi / email**: menu akun (pojok kanan atas) → **Pengaturan Saya** → tautan **Pengaturan Akun**, atau langsung ke `/users/edit`. Ubah **Email** dan/atau isi **Kata Sandi Baru** + **Ulangi Kata Sandi Baru** (kosongkan bila tidak ingin mengganti), lalu isi **Kata Sandi Saat Ini** — wajib untuk menyimpan perubahan apa pun di halaman itu. Pada instalasi yang mengirim email, email baru berlaku setelah tautan konfirmasi yang dikirim ke alamat baru dibuka.
-- **Informasi jejak.pro**: kartu **Tumbuh bersama JEJAK** di bagian bawah **Pengaturan Akun** merangkum fitur jejak.pro sesuai peran aktif Anda. Kartu ini tertutup secara bawaan dan tidak tampil selama Anda wajib membuat kata sandi baru.
 - **Keluar**: menu akun → **Keluar**.
 
 ![Halaman Masuk dengan isian email, kata sandi, dan centang Ingat saya](panduan/1-2-masuk.png)
@@ -690,7 +688,7 @@ Aturan yang berlaku lintas peran:
 
 ### 4.1 Beranda mahasiswa
 
-Beranda (`/dashboard`) mengikuti pola beranda jejak.pro, dari atas ke bawah:
+Beranda (`/dashboard`) tersusun dari atas ke bawah:
 
 - **Sapaan** dengan peran aktif, prodi, angkatan, dan jam WIB, lalu kartu **Sponsor Pengembangan** (AIPKI).
 - **Agenda Mendatang** (7 hari ke depan; tampil bila ada isinya): rotasi klinik dan blok tutorial yang akan dimulai/berakhir, jadwal DOPS/Mini-CEX, ujian dan batas pengumpulan asesmen rubrik, tenggat milestone tugas akhir, serta kegiatan terjadwal di Kalender. Lima terdekat ditampilkan, sisanya diringkas "+N agenda lainnya".
@@ -1100,7 +1098,7 @@ Dengan persetujuan Anda, **skor dan kategori** terlihat oleh kaprodi prodi Anda 
 
 ### 5.1 Beranda pembimbing
 
-Beranda dosen, preseptor, kaprodi, dan admin mengikuti pola beranda pembimbing jejak.pro:
+Beranda dosen, preseptor, kaprodi, dan admin tersusun sebagai berikut:
 
 - **Langkah Penyiapan** (admin dan kaprodi) — daftar pekerjaan penyiapan yang belum selesai, dihitung dari data sungguhan. Hilang sendiri setelah langkah wajib beres. Lihat [Panduan Penyiapan](#panduan-penyiapan-untuk-kaprodi--admin-prodi).
 - **Ringkasan Hari Ini** — kartu angka yang hanya "menyala" bila ada pekerjaan; kartu bernilai nol menampilkan *✓ Beres*:
@@ -1250,7 +1248,7 @@ Periode yang sudah dipakai rotasi klinik, enrolment tutorial, Assessment Event, 
 
 ### 6.2 Program Studi
 
-`/study_programs` — nama, **kode** (huruf kecil, unik; bawaan `pssk` dan `pspd`), **jenjang** (sarjana/profesi). Kode prodi dipakai importer CSV pengguna dan paket migrasi. **Kerangka Peta EPA** menentukan kerangka yang dipakai Peta EPA mahasiswa prodi itu dan pilihan EPA saat verifikasi kasus; bila kosong, dipakai kerangka yang paling awal dibuat.
+`/study_programs` — nama, **kode** (huruf kecil, unik; bawaan `pssk` dan `pspd`), **jenjang** (sarjana/profesi). Kode prodi dipakai importer CSV pengguna. **Kerangka Peta EPA** menentukan kerangka yang dipakai Peta EPA mahasiswa prodi itu dan pilihan EPA saat verifikasi kasus; bila kosong, dipakai kerangka yang paling awal dibuat.
 
 ![Daftar Program Studi](panduan/6-2-program-studi.png)
 
@@ -1342,7 +1340,7 @@ Templat CSV dari tombol **Unduh templat** memuat kolom `email,nama_mahasiswa,npm
 
 #### Impor CSV CBT & OSCE (format Glide)
 
-**Konfigurasi → Impor CSV CBT & OSCE** (`/admin/glide_syncs`, padanan `/admin/glide_syncs/csv_import` jejak.pro) menerima **berkas .csv** hasil ekspor tabel Glide — tanpa koneksi API Glide. Berkas yang sama juga diterima jejak.pro, jadi data dapat dipindahkan bolak-balik. Tombol **+ Upload CSV** membuka formulir: pilih tipe data, unggah berkas (hingga 50 MB, pemisah koma/titik koma), lalu **Mulai Impor**. Tiap tipe punya tombol **Unduh templat CSV** berisi header persis ekspor Glide.
+**Konfigurasi → Impor CSV CBT & OSCE** (`/admin/glide_syncs`) menerima **berkas .csv** hasil ekspor tabel Glide — tanpa koneksi API Glide. Tombol **+ Upload CSV** membuka formulir: pilih tipe data, unggah berkas (hingga 50 MB, pemisah koma/titik koma), lalu **Mulai Impor**. Tiap tipe punya tombol **Unduh templat CSV** berisi header persis ekspor Glide.
 
 ![Upload CSV Manual CBT & OSCE: pilihan tipe data, berkas, prodi & periode event baru, dan referensi kolom](panduan/6-5-impor-glide.png)
 
@@ -1354,7 +1352,7 @@ Templat CSV dari tombol **Unduh templat** memuat kolom `email,nama_mahasiswa,npm
 Cara data masuk:
 
 - **CBT** — satu `exam_code` = satu Assessment Event (dibuat otomatis bila belum ada; tipe *Progress Test* bila `exam_type` = progress_test, selain itu CBT Sumatif/Formatif). Periode akademik = periode yang memuat tanggal ujian. Setiap kolom selain kolom identitas & keterangan (`Nama Peserta`, `Sesi`, `Jumlah Benar`, …, serta kolom yang seluruh isinya teks) menjadi **dimensi** yang dikelompokkan ke kategori tinjauan — menurut prefiksnya (`[AK] Komunikasi efektif` → Area Kompetensi, nama dimensi "Komunikasi efektif"), atau ditebak dari namanya; kolom `[KAT]` dipilah ke Siklus Kehidupan, Setting Klinis, Aspek, Proses Klinis, Patomekanisme, dan sisanya **Kategori Soal**. Kolom yang bernilai **0 untuk semua peserta** dianggap kelompok tanpa soal di ujian itu dan tidak dijadikan dimensi (daftarnya tampil di ringkasan impor), supaya radar dan Peta Kompetensi tidak terisi nol palsu. Dimensi yang namanya sama persis dengan ranah kompetensi (mis. "Komunikasi efektif") langsung dipetakan. Opsi khusus CBT: **Judul ujian** dan **Tanggal ujian** menimpa isi berkas; berkas tanpa `exam_code` (termasuk ekspor per sesi) memakai kode dari judul (atau nama berkas) + tanggal — isi Judul ujian agar nama event rapi.
-- **OSCE** — bawaan: **satu event per hari ujian** ("OSCE 20 Oktober 2025", tanggal entri dalam WIB), seperti rekap Sesi OSCE jejak.pro; atau pilih **Event tujuan** bila seluruh berkas adalah satu ujian. Delapan dimensi klinis dibuat sebagai dimensi event (maks 3). Nilai tiap mahasiswa = rata-rata nilai checklist station-nya; nilai per dimensi = rata-rata station yang menilainya. Halaman event mendapat tab **Station OSCE** berisi rincian per station, rata-rata dimensi, dan sebaran global rating.
+- **OSCE** — bawaan: **satu event per hari ujian** ("OSCE 20 Oktober 2025", tanggal entri dalam WIB); atau pilih **Event tujuan** bila seluruh berkas adalah satu ujian. Delapan dimensi klinis dibuat sebagai dimensi event (maks 3). Nilai tiap mahasiswa = rata-rata nilai checklist station-nya; nilai per dimensi = rata-rata station yang menilainya. Halaman event mendapat tab **Station OSCE** berisi rincian per station, rata-rata dimensi, dan sebaran global rating.
 - Opsi bersama: **Program studi** dan **Periode akademik** untuk event yang baru dibuat.
 
 Aturan pengaman:
@@ -1368,7 +1366,7 @@ Aturan pengaman:
 
 #### Kelola Ujian CBT
 
-**Konfigurasi → Kelola Ujian CBT** (`/admin/cbt_exams`) mendaftar seluruh event CBT & Progress Test beserta kode ujian, tipe, jumlah peserta, tanggal, dan progres pemetaan dimensi. Klik **judul** atau **tanggal** untuk menyunting di tempat; mengoreksi tanggal ikut memindahkan tanggal nilai hasil impor sehingga grafik tren tetap benar. **Kelola Pemetaan** membuka tab Dimensi event untuk memetakan dimensi ke ranah kompetensi. Berbeda dari jejak.pro, ujian yang sudah bernilai **tidak dapat dihapus** dari sini — batalkan lewat rollback impor, atau ubah status event menjadi Ditutup.
+**Konfigurasi → Kelola Ujian CBT** (`/admin/cbt_exams`) mendaftar seluruh event CBT & Progress Test beserta kode ujian, tipe, jumlah peserta, tanggal, dan progres pemetaan dimensi. Klik **judul** atau **tanggal** untuk menyunting di tempat; mengoreksi tanggal ikut memindahkan tanggal nilai hasil impor sehingga grafik tren tetap benar. **Kelola Pemetaan** membuka tab Dimensi event untuk memetakan dimensi ke ranah kompetensi. Ujian yang sudah bernilai **tidak dapat dihapus** dari sini — batalkan lewat rollback impor, atau ubah status event menjadi Ditutup.
 
 ![Kelola Ujian CBT](panduan/6-5-kelola-ujian-cbt.png)
 
@@ -1538,8 +1536,8 @@ Prinsip yang diterapkan aplikasi:
 4. **Persetujuan pasien** dikumpulkan lewat lembar QR tanpa login yang tidak menampilkan isi kasus.
 5. **Kode pasien** pada Logbook Kegiatan adalah kode acak — bukan nama, bukan No. RM.
 6. **Anonimitas formulir evaluasi**: pada templat anonim, subjek yang dinilai tidak melihat identitas pengisi.
-7. **Kesehatan mental mahasiswa** (SRQ-20): jawaban dan catatan tindak lanjut terenkripsi, pengisian mensyaratkan persetujuan, kaprodi hanya melihat skor dan kategori, serta datanya tidak ikut Ekspor Data maupun paket migrasi.
-8. **Data yang keluar aplikasi** (ekspor CSV Portfolio, [Ekspor Data (CSV)](#ekspor-data-csv), feed iCal, paket migrasi) **tidak memuat identitas pasien**; setiap unduhan Ekspor Data tercatat di Riwayat Ekspor; paket migrasi hanya membawanya bila admin server secara eksplisit memintanya.
+7. **Kesehatan mental mahasiswa** (SRQ-20): jawaban dan catatan tindak lanjut terenkripsi, pengisian mensyaratkan persetujuan, kaprodi hanya melihat skor dan kategori, serta datanya tidak ikut Ekspor Data.
+8. **Data yang keluar aplikasi** (ekspor CSV Portfolio, [Ekspor Data (CSV)](#ekspor-data-csv), feed iCal) **tidak memuat identitas pasien**; setiap unduhan Ekspor Data tercatat di Riwayat Ekspor.
 9. **Lampiran** (bukti kasus dan kegiatan, dokumen asesmen, foto profil) hanya dapat diunduh setelah masuk, oleh akun yang berhak membuka kasus, kegiatan, atau asesmennya. Tautan yang tersalin tidak berlaku bagi orang lain.
 
 Kewajiban pengguna: jangan menulis nama atau nomor identitas pasien pada kolom bebas (keluhan, anamnesis, catatan, judul kegiatan, refleksi) — kolom itu **tidak** terenkripsi dan tidak disamarkan.
@@ -1667,12 +1665,6 @@ Disengaja — prodi itu membatasi data yang boleh Anda lihat dan ubah. Minta adm
 
 **Admin: periode, rotasi, event, atau butir kompetensi menolak dihapus.**
 Data itu sudah dipakai — oleh rotasi/event/milestone (periode), penilaian DOPS/Mini-CEX (rotasi), nilai mahasiswa (event), atau keputusan EPA mahasiswa (butir kompetensi). Pesan penolakan menyebut pemakaiannya. Data yang sudah dipakai sebaiknya dibiarkan; untuk event, ubah statusnya menjadi **Ditutup**.
-
----
-
-## Bab 11 — Pindah ke jejak.pro
-
-Seluruh data JEJAK Essential dapat dipindahkan ke jejak.pro tanpa ketik ulang. Admin server menjalankan `bin/rails migration:check` (memeriksa kesiapan data) lalu `bin/rails migration:export` untuk membuat paket berisi salinan lengkap tabel, berkas CSV berformat kontrak jejak.pro, dan lampiran; identitas pasien hanya ikut bila diminta secara eksplisit. Paket itu kemudian diimpor di jejak.pro dengan uji coba terlebih dahulu. Rincian teknis ada pada dokumen `MIGRASI_KE_JEJAK_PRO.md` di paket instalasi.
 
 ---
 

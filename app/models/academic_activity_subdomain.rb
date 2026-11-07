@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Tingkat 2 taksonomi — "Subdomain / Kategori" di form Logbook Kegiatan
-# (jejak.pro: AcademicActivitySubdomain), mis. Tutorial, Jaga UGD, Kompetisi.
+# (mis. Tutorial, Jaga UGD, Kompetisi).
 class AcademicActivitySubdomain < ApplicationRecord
   include TaxonomyNode
 

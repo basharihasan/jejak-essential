@@ -2,9 +2,7 @@
 
 # Learning Unit — blok/modul pembelajaran satu prodi (opsional terikat satu
 # periode). Nilai akhirnya disusun dari beberapa Assessment Event lewat
-# Assessment Matrix (AssessmentMapping) dengan bobot. Padanan ringan
-# "Assessment Matrix per Learning Unit" jejak.pro; tanpa Curriculum Blueprint
-# (Fase/Unit) yang sengaja tidak dibawa ke tier Dasar.
+# Assessment Matrix (AssessmentMapping) dengan bobot.
 class LearningUnit < ApplicationRecord
   belongs_to :study_program
   belongs_to :academic_period, optional: true

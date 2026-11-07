@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Tingkat entrustment EPA 1–5 (skala jejak.pro) per mahasiswa × ranah
+# Tingkat entrustment EPA 1–5 per mahasiswa × ranah
 # kompetensi. Setiap keputusan baru MENGGANTIKAN (supersede) yang lama —
 # riwayat tetap tersimpan untuk audit. EPA = ranah tingkat atas kerangka
 # kompetensi (CompetencyFramework#domains); jejak-lite sengaja tanpa

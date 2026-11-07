@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Beranda — mengikuti pola beranda jejak.pro, dipersempit ke fitur yang ADA di
-# JEJAK Essential (tanpa EWS/Tutor Note, refleksi ber-review, P-Max, hibah).
+# Beranda — isinya mengikuti peran aktif:
 #
 #   - Semua peran: sapaan + Agenda Mendatang (7 hari).
 #   - Mahasiswa: peringatan kasus draft / diminta perbaikan, pengingat
@@ -19,8 +18,7 @@ class DashboardController < ApplicationController
   FACULTY_ROLE_CODES = %w[dosen preseptor kaprodi admin].freeze
 
   # Pengingat pencatatan kasus: mahasiswa yang sedang berotasi klinik dan
-  # tidak mencatat kasus baru dalam N hari kalender terakhir (meniru
-  # DashboardController#load_case_logging_reminder jejak.pro).
+  # tidak mencatat kasus baru dalam N hari kalender terakhir.
   CASE_LOGGING_GAP_DAYS = 2
 
   AGENDA_HORIZON_DAYS = 7
@@ -28,7 +26,7 @@ class DashboardController < ApplicationController
   # panel bisa menulis "+N agenda lainnya" alih-alih memotong diam-diam.
   AGENDA_LIMIT = 8
 
-  # Pengganti EWS jejak.pro untuk "Mahasiswa Perlu Perhatian": sinyal yang
+  # Panel "Mahasiswa Perlu Perhatian": sinyal yang
   # memang tercatat di Essential — rekomendasi remediasi saat verifikasi
   # kasus dan rata-rata DOPS/Mini-CEX di bawah harapan (< 4 pada skala 1-9,
   # sama dengan pita merah score_band_classes) — dalam jendela 30 hari.
@@ -202,8 +200,8 @@ class DashboardController < ApplicationController
     @show_schedule_tile = current_user.has_role?("preseptor") || @scheduled_evaluations.any?
   end
 
-  # Mahasiswa bimbingan menurut peran pengajar terhadapnya — padanan modul
-  # Preseptor/Tutor/Pembimbing Karya Akhir jejak.pro.
+  # Mahasiswa bimbingan menurut peran pengajar terhadapnya (preseptor, tutor,
+  # pembimbing tugas akhir).
   def load_mentees
     @preceptor_rotations = ClinicalRotation.for_preceptor(current_user).ongoing.includes(:user).order(:end_date).to_a
     @tutor_enrollments = TutorialEnrollment.for_tutor(current_user).active.includes(:user)
@@ -269,7 +267,7 @@ class DashboardController < ApplicationController
   end
 
   # Rekam umpan balik naratif yang pernah ditulis pengajar ini (DOPS, Mini-CEX,
-  # lembar penguji) — padanan "Rekam Umpan Balik Anda" jejak.pro.
+  # lembar penguji) — panel "Rekam Umpan Balik Anda".
   def load_feedback_record
     narratives = current_user.dops_evaluations_as_evaluator.submitted.pluck(:overall_feedback) +
                  current_user.mini_cex_evaluations_as_evaluator.submitted.pluck(:overall_feedback) +

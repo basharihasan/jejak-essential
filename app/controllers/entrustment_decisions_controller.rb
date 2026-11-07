@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Peta EPA & Tingkat Entrustment (/dashboard/entrustment ala jejak.pro):
+# Peta EPA & Tingkat Entrustment (/dashboard/entrustment):
 # mahasiswa melihat levelnya per ranah; pembimbing (tutor/preseptor/dosen/
 # admin yang punya relasi) mengisi/memperbarui dengan justifikasi naratif.
 class EntrustmentDecisionsController < ApplicationController

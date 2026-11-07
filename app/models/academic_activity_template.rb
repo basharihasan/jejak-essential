@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Tingkat 3 taksonomi — "Bentuk Kegiatan" (jejak.pro:
-# AcademicActivityTemplate), mis. Juara-1 Perorangan di bawah Kompetisi.
+# Tingkat 3 taksonomi — "Bentuk Kegiatan", mis. Juara-1 Perorangan di bawah
+# Kompetisi.
 # Opsional: form hanya menampilkannya bila subdomain terpilih punya isian.
 class AcademicActivityTemplate < ApplicationRecord
   include TaxonomyNode

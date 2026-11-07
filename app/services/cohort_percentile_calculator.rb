@@ -3,8 +3,8 @@
 # Kurva persentil kohort — posisi seorang mahasiswa terhadap angkatannya pada
 # satu periode akademik.
 #
-# Kohort = seluruh mahasiswa PSSK + PSPD (gabungan, mengikuti keputusan
-# jejak.pro: pendidikan dokter satu kesinambungan), dihitung per TIPE asesmen
+# Kohort = seluruh mahasiswa PSSK + PSPD (gabungan: pendidikan dokter satu
+# kesinambungan), dihitung per TIPE asesmen
 # supaya tidak mencampur alat ukur yang berbeda — lihat catatan
 # "assessment-type-mix-shifts-per-period": membandingkan rata-rata lintas tipe
 # atau lintas periode selalu menyesatkan.

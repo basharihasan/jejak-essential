@@ -56,7 +56,7 @@ class AnalyticsController < ApplicationController
   # Mahasiswa tanpa data sama sekali diletakkan di AKHIR (rank tinggi),
   # bukan dianggap "paling berisiko" — beda dari sekadar belum ada skor.
   # Yang punya skor rendah (rata-rata DOPS/Mini-CEX) muncul paling atas,
-  # meniru pola sort-by-risiko JEJAK asli tanpa perlu model EWS terpisah.
+  # tanpa perlu model risiko terpisah.
   def risk_rank(snapshot)
     scores = [ snapshot[:avg_dops], snapshot[:avg_mini_cex] ].compact
     return 100 if scores.empty?

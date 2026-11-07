@@ -123,7 +123,7 @@ class ActivityLogsControllerTest < ActionDispatch::IntegrationTest
     assert_match activity_logs(:jaga_igd).activity_type, response.body
   end
 
-  test "form baru meniru jejak.pro: domain aktif, subdomain & bentuk kegiatan bertingkat" do
+  test "form baru: domain aktif, subdomain & bentuk kegiatan bertingkat" do
     get new_activity_log_path
 
     assert_response :success

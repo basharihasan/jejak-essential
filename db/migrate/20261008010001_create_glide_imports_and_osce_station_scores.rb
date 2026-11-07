@@ -1,8 +1,7 @@
 class CreateGlideImportsAndOsceStationScores < ActiveRecord::Migration[8.1]
   disable_ddl_transaction!
 
-  # Unggah CSV hasil CBT & OSCE berformat ekspor Glide — padanan
-  # /admin/glide_syncs/csv_import dan /admin/cbt_exams jejak.pro.
+  # Unggah CSV hasil CBT & OSCE berformat ekspor Glide.
   #
   #   - assessment_events.external_code: kunci event dari berkas (exam_code
   #     CBT, atau "OSCE-GLIDE-2025-10-20" untuk sesi OSCE per hari), supaya

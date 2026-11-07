@@ -3,8 +3,8 @@
 require "csv"
 
 # Relabel prodi mahasiswa secara massal dari CSV (Konfigurasi → Relabel Prodi
-# Mahasiswa) — padanan /management/student_relabel jejak.pro, tanpa mode
-# "Tandai Lulus" karena jejak-lite tidak punya status/persona alumni.
+# Mahasiswa), tanpa mode "Tandai Lulus" karena jejak-lite tidak punya
+# status/persona alumni.
 #
 # Dua aksi, keduanya berujung sama (users.study_program_id diganti):
 #   pindah — pindahkan mahasiswa ke prodi tujuan. Untuk kaprodi, controller

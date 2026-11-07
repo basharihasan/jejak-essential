@@ -3,8 +3,8 @@ import { Controller } from "@hotwired/stimulus"
 // Wizard bertahap murni sisi klien — semua field tetap ada di satu <form>
 // (cuma disembunyikan pakai [hidden], bukan dihapus dari DOM), jadi submit
 // akhir tetap satu POST/PATCH normal berisi semua field, tanpa perubahan di
-// controller. Meniru pola wizard "Langkah X dari Y" JEJAK asli untuk form
-// klinis yang panjang, tanpa perlu library form-wizard tambahan.
+// controller. Pola wizard "Langkah X dari Y" untuk form klinis yang panjang,
+// tanpa perlu library form-wizard tambahan.
 export default class extends Controller {
   static targets = ["step", "dot", "label", "prevButton", "nextButton", "submitButton"]
   static values = { current: { type: Number, default: 0 } }

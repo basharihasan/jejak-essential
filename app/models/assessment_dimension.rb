@@ -9,9 +9,8 @@
 # dipetakan tetap dihitung untuk nilai total, tetapi TIDAK ikut ke peta
 # kompetensi — lebih baik kosong daripada salah atribusi.
 class AssessmentDimension < ApplicationRecord
-  # Kelompok tinjauan untuk radar per kategori — kode dari impor Glide
-  # (CbtExam::DIMENSION_CATEGORY_MAP / CATEGORY_META jejak.pro), ditambah
-  # Tingkat Kemampuan & Kategori Soal dari ekspor hasil ujian per sesi.
+  # Kelompok tinjauan untuk radar per kategori — kode dari impor Glide,
+  # ditambah Tingkat Kemampuan & Kategori Soal dari ekspor hasil ujian per sesi.
   CATEGORY_LABELS = {
     "kompetensi"        => "Area Kompetensi",
     "sistem_organ"      => "Sistem Organ",

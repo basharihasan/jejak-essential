@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Menggantikan competency_mapping JSONB bebas teks — meniru AssessmentDimensionMapping
-# JEJAK asli (relasi FK ke kompetensi sungguhan, bukan label bebas yang bisa typo).
+# Menggantikan competency_mapping JSONB bebas teks: relasi FK ke kompetensi
+# sungguhan, bukan label bebas yang bisa typo.
 class AssessmentBlueprintMapping < ApplicationRecord
   include CappedWeight
 

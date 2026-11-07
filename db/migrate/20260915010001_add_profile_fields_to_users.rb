@@ -1,10 +1,8 @@
 class AddProfileFieldsToUsers < ActiveRecord::Migration[8.1]
   disable_ddl_transaction!
 
-  # Biodata profil — meniru pengelompokan halaman Profil jejak.pro (Biodata
-  # Pribadi / Akademik / Informasi Kepegawaian), dipersempit ke tier Dasar:
-  # tanpa identitas ilmiah (ORCID/Scopus), kredensial preseptor, dan riwayat
-  # pendidikan formal.
+  # Biodata profil, dikelompokkan menjadi Biodata Pribadi / Akademik / Informasi
+  # Kepegawaian.
   def change
     # ── Identitas & kontak (semua peran) ──
     add_column :users, :identifier_number, :string   # NPM/NIM (mahasiswa) atau NIP/NIDN (dosen/tendik)

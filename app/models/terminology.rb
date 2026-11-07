@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Daftar label yang boleh diganti admin lewat Konfigurasi → Taksonomi Istilah
-# (padanan /admin/terminology jejak.pro). Sumbernya berkas locale bawaan,
+# Daftar label yang boleh diganti admin lewat Konfigurasi → Taksonomi Istilah.
+# Sumbernya berkas locale bawaan,
 # bukan daftar ketik tangan — menu baru di chrome.id.yml otomatis ikut bisa
 # diganti tanpa menyentuh berkas ini.
 #

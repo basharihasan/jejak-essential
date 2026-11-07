@@ -3,8 +3,7 @@
   cls = "block w-full rounded-xl border-0 py-2.5 px-3.5 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-500 text-sm"
   lbl = "block text-sm font-semibold text-gray-700 mb-1"
   # Form bercabang atas PERAN (bukan persona): mahasiswa mengisi Akademik,
-  # dosen/preseptor/tendik mengisi Informasi Kepegawaian — meniru percabangan
-  # halaman Profil jejak.pro.
+  # dosen/preseptor/tendik mengisi Informasi Kepegawaian.
   is_student = @user.has_role?("mahasiswa")
 %>
 

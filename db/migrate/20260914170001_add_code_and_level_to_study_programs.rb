@@ -5,7 +5,7 @@ class AddCodeAndLevelToStudyPrograms < ActiveRecord::Migration[8.1]
     add_column :study_programs, :code, :string
     add_column :study_programs, :level, :string
 
-    # Dua baris tetap dari db/seeds.rb diberi kode mengikuti JEJAK (pssk/pspd).
+    # Dua baris tetap dari db/seeds.rb diberi kode (pssk/pspd).
     safety_assured do
       execute <<~SQL
       UPDATE study_programs SET code = 'pssk', level = 'sarjana' WHERE name = 'Sarjana Kedokteran';

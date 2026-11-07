@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Jurnal Umpan Balik Penguji — seluruh umpan balik tertulis (rubrik, CBD/Long
-# Case, DOPS, Mini-CEX) dalam satu linimasa kronologis, ala jejak.pro.
+# Case, DOPS, Mini-CEX) dalam satu linimasa kronologis.
 class Student::FeedbackJournalController < ApplicationController
   before_action :authenticate_user!
 

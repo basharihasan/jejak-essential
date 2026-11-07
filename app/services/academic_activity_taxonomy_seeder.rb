@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-# Taksonomi bawaan Logbook Kegiatan — disalin dari struktur jejak.pro (bukan
-# dari seed jejak.pro: di sana "Tutorial" dkk. adalah SUBDOMAIN langsung di
-# bawah "Belajar Mengajar", sedangkan seed lamanya menaruhnya satu tingkat
-# lebih dalam). Domain buatan institusi di jejak.pro (mis. "share my story")
-# sengaja tidak ikut; admin menambahnya sendiri lewat menu Domain Kegiatan
-# Akademik.
+# Taksonomi bawaan Logbook Kegiatan. "Tutorial" dkk. adalah SUBDOMAIN langsung
+# di bawah "Belajar Mengajar". Domain khusus institusi sengaja tidak ikut;
+# admin menambahnya sendiri lewat menu Domain Kegiatan Akademik.
 #
 # Hanya mengisi basis data yang BELUM punya domain sama sekali. Domain yang
 # dihapus admin tidak dihidupkan lagi oleh deploy berikutnya (db:seed jalan

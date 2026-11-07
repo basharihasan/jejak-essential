@@ -19,8 +19,8 @@ class AssessmentFormSubmission < ApplicationRecord
 
   # Identitas responden disembunyikan kalau template ditandai anonim — dari
   # subjek yang dinilai maupun kaprodi pengelola Form Builder; hanya admin
-  # (akuntabilitas) dan responden sendiri yang melihat, meniru gerbang
-  # reveal_identity JEJAK tanpa membangun UI reveal terpisah.
+  # (akuntabilitas) dan responden sendiri yang melihat, tanpa membangun UI
+  # reveal terpisah.
   def respondent_visible_to?(user)
     return true unless assessment_form_template.anonymous?
 

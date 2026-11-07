@@ -102,7 +102,7 @@ Rails.application.routes.draw do
     end
     resources :logbook_case_targets, except: %i[show]
     # Domain Kegiatan Akademik (taksonomi Logbook Kegiatan & Kalender) dan
-    # Taksonomi Istilah — padanan menu Konfigurasi jejak.pro.
+    # Taksonomi Istilah.
     concern :taxonomy_node do
       member do
         patch :move
@@ -132,8 +132,7 @@ Rails.application.routes.draw do
       end
     end
     # Unggah CSV hasil CBT & OSCE berformat ekspor Glide (berkas .csv, bukan
-    # API Glide) — padanan /admin/glide_syncs/csv_import dan /admin/cbt_exams
-    # jejak.pro. Indeks glide_syncs = riwayat unggahan + rollback.
+    # API Glide). Indeks glide_syncs = riwayat unggahan + rollback.
     resources :glide_syncs, only: %i[index show], constraints: { id: /\d+/ } do
       collection do
         get  :csv_import
@@ -164,7 +163,7 @@ Rails.application.routes.draw do
       end
     end
     # Relabel massal prodi mahasiswa dari CSV (pindah / label ke prodi saya) —
-    # padanan /management/student_relabel jejak.pro. Pratinjau dulu, lalu terapkan.
+    # pratinjau dulu, lalu terapkan.
     resource :student_relabel, only: %i[new create] do
       get :template, on: :collection
     end
@@ -220,7 +219,7 @@ Rails.application.routes.draw do
     get "feedback_journal", to: "feedback_journal#index"
   end
   resources :examiner_evaluations, only: %i[index show update]
-  # Peta EPA & Tingkat Entrustment (jejak.pro: /dashboard/entrustment)
+  # Peta EPA & Tingkat Entrustment
   get  "dashboard/entrustment", to: "entrustment_decisions#index",  as: :entrustment_decisions
   post "dashboard/entrustment", to: "entrustment_decisions#create"
 

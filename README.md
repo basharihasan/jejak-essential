@@ -1,12 +1,10 @@
 # Jejak Lite
 
-Versi ringan dan berdiri sendiri dari fitur "Dasar" JEJAK (lihat `DAFTAR_FITUR_JEJAK.md` di repo utama `PFKV2`) — logbook kegiatan, kasus klinis, rotasi, asesmen (DOPS/Mini-CEX/Progress Test/CBT/OSCE), kurikulum (blueprint & peta kompetensi), dan dashboard analitik untuk dosen/preseptor/Kaprodi. **Bukan fork** — dibangun ulang dari nol sebagai aplikasi Rails 8 yang benar-benar terpisah, single-tenant (tanpa Organization/RLS/IAM enterprise milik JEJAK), supaya bisa di-hosting sendiri lepas dari JEJAK utama.
+Aplikasi pencatatan perjalanan belajar klinis yang berdiri sendiri — logbook kegiatan, kasus klinis, rotasi, asesmen (DOPS/Mini-CEX/Progress Test/CBT/OSCE), kurikulum (blueprint & peta kompetensi), dan dashboard analitik untuk dosen/preseptor/Kaprodi. Aplikasi Rails 8 single-tenant yang bisa di-hosting sendiri.
 
 Rencana lengkap, keputusan arsitektur, dan status tiap fase (0–16, semua ✅) ada di [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md).
 
 ## Fitur
-
-Seluruh baris **tingkat Dasar (🟢)** pada `DAFTAR_FITUR_JEJAK.md` di repo utama `PFKV2` — tidak lebih:
 
 - **Akun & Peran** — multi-peran per akun (mahasiswa/dosen/preseptor/kaprodi/admin) + Ganti Peran; login email/password atau Google; daftar mandiri hanya sebagai mahasiswa (peran pengajar & pengelola diberikan admin); kelola pengguna & impor CSV dengan kata sandi sementara acak yang wajib diganti; bahasa antarmuka ID/EN (menu, topbar, dan halaman autentikasi — isi halaman tetap berbahasa Indonesia); tema terang/gelap/ikuti sistem.
 - **Pencatatan Kasus** — wizard Kasus Klinis 4 langkah, identitas pasien terenkripsi dengan **Privacy Mode** + **Break Glass** beraudit, QR persetujuan pasien (halaman publik tanpa login), master Diagnosis/ICD-10 & Keterampilan, target kasus FKTP/FKRTL, logbook kegiatan + kalender/iCal, verifikasi preseptor.
@@ -98,17 +96,6 @@ Untuk ubah kode tanpa container: Ruby (lihat `.ruby-version`), PostgreSQL lokal,
 
 Di **development/test**, kunci enkripsi pasien diturunkan dari `secret_key_base`. Di **production** (termasuk Compose) wajib `AR_ENCRYPTION_*` di `.env` (disiapkan `setup-env`). Login Google / Web Push opsional lewat env (`GOOGLE_*`, `VAPID_*`).
 
-## Pindah ke jejak.pro
-
-Data jejak-lite bisa dipindahkan utuh ke jejak.pro tanpa ketik ulang:
-
-```bash
-bin/rails migration:check     # periksa kesiapan data (hanya membaca)
-bin/rails migration:export    # buat paket migrasi di tmp/migrasi-jejak-pro-<waktu>/
-```
-
-Paket lalu diimpor di jejak.pro dengan `bin/rails jejak_lite:import` (uji coba dulu, `COMMIT=1` untuk menyimpan). Langkah lengkap, pemetaan data, dan penanganan data pasien ada di [MIGRASI_KE_JEJAK_PRO.md](MIGRASI_KE_JEJAK_PRO.md).
-
 ## Test
 
 ```bash
@@ -140,11 +127,11 @@ Keterbatasan yang perlu diketahui sebelum deploy sungguhan (bukan sekadar demo):
 - **Data mahasiswa**: pencarian pengguna hanya untuk pengajar/kaprodi/admin; pengajar hanya menemukan mahasiswa, dan kaprodi non-admin hanya bisa membuka mahasiswa prodi binaannya (`User#can_view_student?`).
 - **Content Security Policy** aktif (`config/initializers/content_security_policy.rb`): skrip hanya dari aset sendiri atau inline ber-nonce — tanpa CDN pihak ketiga dan tanpa atribut `onclick`/`onchange`; gunakan Stimulus untuk perilaku baru.
 - **Lampiran** hanya bisa diunduh lewat `AttachmentsController`, yang memeriksa izin membuka kasus, kegiatan, atau asesmennya. Rute bawaan Active Storage dimatikan (`config.active_storage.draw_routes = false`) karena tautannya terbuka tanpa login dan tidak kedaluwarsa.
-- **Data SRQ-20**: hanya jawaban dan catatan tindak lanjut yang disimpan, keduanya terenkripsi; skor dan kategori dihitung dari jawaban. Admin yang bukan kaprodi tidak punya akses, dan datanya tidak ikut Ekspor Data maupun paket migrasi.
+- **Data SRQ-20**: hanya jawaban dan catatan tindak lanjut yang disimpan, keduanya terenkripsi; skor dan kategori dihitung dari jawaban. Admin yang bukan kaprodi tidak punya akses, dan datanya tidak ikut Ekspor Data.
 - **Unggahan** divalidasi jenis (dibaca dari isi berkas) dan ukurannya (`AttachmentValidation`): bukti 10 MB × maks. 10 berkas, dokumen asesmen 20 MB, foto profil 5 MB.
 - **Peramban** minimal Safari/iOS 16.4, Chrome 111, Firefox 128 (dukungan Tailwind v4); di bawahnya tampil halaman 406 berbahasa Indonesia.
 
-## Yang Sengaja Tidak Dibawa dari JEJAK
+## Yang Sengaja Tidak Dibangun
 
 Lihat bagian "Yang Sengaja Disederhanakan/Ditunda" di [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) — antara lain Community Feed, portal pasien token publik, hierarki Faculty/University, dan integrasi Glide untuk impor nilai (diganti CSV generik).
 

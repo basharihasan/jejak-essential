@@ -1,8 +1,6 @@
-# Taksonomi Logbook Kegiatan meniru jejak.pro: Domain → Subdomain (kategori)
-# → Bentuk Kegiatan. Nama tabel & kolom sengaja SAMA dengan jejak.pro supaya
-# paket migrasi bisa dicocokkan per nama tanpa kamus terjemahan.
+# Taksonomi Logbook Kegiatan: Domain → Subdomain (kategori) → Bentuk Kegiatan.
 #
-# Kolom `is_clinical` tidak ada di jejak.pro: dipakai jejak-lite untuk
+# Kolom `is_clinical` dipakai untuk
 # menurunkan `activity_logs.category` (klinis/non_klinis) yang masih dibaca
 # Portfolio, feed iCal, dan kode pasien anonim.
 #

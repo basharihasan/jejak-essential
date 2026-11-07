@@ -98,7 +98,7 @@ class CbtGlideImporterTest < ActiveSupport::TestCase
     assert_not AssessmentEvent.where("external_code LIKE 'CBT-CBT-%'").exists?
   end
 
-  test "tanggal dari judul bergaya jejak.pro: (DDMMYY)" do
+  test "tanggal dari judul: (DDMMYY)" do
     csv = "email,exam_code,exam_title,total_score\nsiti@example.com,X-1,Ujian CBT (060626),80\n"
     import(csv)
     assert_equal Date.new(2026, 6, 6), AssessmentEvent.find_by!(external_code: "X-1").exam_date

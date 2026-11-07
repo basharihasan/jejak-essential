@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # Halaman ringkasan DOPS + Mini-CEX — dua instrumen berbeda tapi mahasiswa
-# ingin melihatnya dalam satu tempat, mirip pola JEJAK (Asesmen Tahap
-# Akademik & Profesi).
+# ingin melihatnya dalam satu tempat.
 class AssessmentsController < ApplicationController
   before_action :authenticate_user!
 

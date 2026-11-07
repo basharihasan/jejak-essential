@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Impor "CBT Exam Results" berformat ekspor Glide (data_cbt_exams_glide.csv) —
-# padanan CbtGlideImporter jejak.pro, dipetakan ke model jejak-lite:
+# Impor "CBT Exam Results" berformat ekspor Glide (data_cbt_exams_glide.csv),
+# dipetakan ke model jejak-lite:
 #
 #   exam_code   → AssessmentEvent (external_code); dibuat bila belum ada
 #   exam_title  → nama event
@@ -19,7 +19,7 @@
 # kelompok yang tidak punya soal, jadi kolom yang bernilai 0 untuk SEMUA
 # peserta tidak dijadikan dimensi.
 #
-# Idempoten seperti jejak.pro: mahasiswa yang sudah bernilai pada ujian yang
+# Idempoten: mahasiswa yang sudah bernilai pada ujian yang
 # sama dilewati ("sudah diimpor"), jadi mengunggah ulang berkas yang sama
 # aman. Untuk mengoreksi nilai: rollback unggahan lama, lalu unggah ulang.
 class CbtGlideImporter
@@ -37,8 +37,8 @@ class CbtGlideImporter
   DATE_KEYS = %w[heldat tanggalujian tanggal examdate date].freeze
   MONTHS = %w[januari februari maret april mei juni juli agustus september oktober november desember].freeze
 
-  # Kolom dimensi (dinormalisasi) → kategori tinjauan — DIMENSION_CATEGORY_MAP
-  # CbtExam jejak.pro. Kolom yang tidak dikenal masuk "lainnya".
+  # Kolom dimensi (dinormalisasi) → kategori tinjauan. Kolom yang tidak dikenal
+  # masuk "lainnya".
   CATEGORY_KEYS = {
     "kompetensi" => %w[
       profesionalismeetikdanpengembanganpribadi komunikasiefektif penelusurankritisidanmanajemeninformasi
@@ -86,7 +86,7 @@ class CbtGlideImporter
   PREFIX_CATEGORIES = { "ak" => "kompetensi", "st" => "sistem_organ", "tk" => "tingkat_kemampuan", "ti" => "tingkat_kemampuan" }.freeze
 
   # exam_title / exam_date dari formulir unggah menimpa isi berkas untuk semua
-  # baris (padanan opsi khusus CBT jejak.pro).
+  # baris.
   def initialize(csv_text:, glide_import:, user: nil, exam_title: nil, exam_date: nil, study_program: nil, academic_period: nil)
     @csv_text = GlideCsv.read(csv_text)
     @import = glide_import
@@ -293,7 +293,7 @@ class CbtGlideImporter
     parsed || time_from_title(title)
   end
 
-  # Judul jejak.pro sering memuat tanggal: "... (060626)" = 6 Juni 2026, atau
+  # Judul ujian sering memuat tanggal: "... (060626)" = 6 Juni 2026, atau
   # "... Juni 2026" = 1 Juni 2026.
   def time_from_title(title)
     return nil if title.blank?

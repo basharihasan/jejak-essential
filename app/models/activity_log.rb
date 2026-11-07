@@ -8,7 +8,7 @@ class ActivityLog < ApplicationRecord
   belongs_to :user
   belongs_to :verified_by, class_name: "User", optional: true
 
-  # Taksonomi jejak.pro: Domain → Subdomain (kategori) → Bentuk Kegiatan.
+  # Taksonomi: Domain → Subdomain (kategori) → Bentuk Kegiatan.
   # Kegiatan lama (sebelum 17 Sep 2026) hanya punya `category` + teks bebas
   # `activity_type`; keduanya tetap dibaca lewat *_label di bawah.
   belongs_to :academic_activity_domain, optional: true
@@ -164,7 +164,7 @@ class ActivityLog < ApplicationRecord
   end
 
   # `category` & `activity_date` tetap disimpan karena dibaca Portfolio,
-  # kalender, feed iCal, dan paket migrasi — nilainya kini turunan.
+  # kalender, dan feed iCal — nilainya kini turunan.
   def derive_from_taxonomy_and_time
     self.category = academic_activity_domain.is_clinical? ? "klinis" : "non_klinis" if academic_activity_domain
     self.activity_date = started_at.in_time_zone.to_date if started_at

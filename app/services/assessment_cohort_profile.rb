@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Posisi satu percobaan terhadap kohort ujian yang sama + profil per dimensi
-# (radar "Skor Kamu / Rerata Kohort / P90 Kohort" ala halaman nilai
-# jejak.pro). Kohort = semua mahasiswa yang sudah dinilai pada event ini,
+# (radar "Skor Kamu / Rerata Kohort / P90 Kohort"). Kohort = semua mahasiswa
+# yang sudah dinilai pada event ini,
 # satu nilai wakil (tertinggi) per mahasiswa.
 #
 # Dimensi dikelompokkan per kategori tersimpan (impor Glide: Area Kompetensi,

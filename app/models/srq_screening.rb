@@ -11,7 +11,7 @@
 #     dan kategorinya terlihat oleh kaprodi prodi mahasiswa;
 #   - kaprodi tidak pernah melihat jawaban per butir, dan pengguna lain
 #     (termasuk admin) tidak melihat hasil sama sekali;
-#   - tidak ikut Ekspor Data maupun paket migrasi.
+#   - tidak ikut Ekspor Data.
 class SrqScreening < ApplicationRecord
   # Urutan butir mengikuti SRQ-20 WHO. Rumusan bahasa Indonesia perlu ditinjau
   # ahli konten terhadap versi resmi yang dipakai institusi.
