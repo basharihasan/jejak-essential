@@ -2,8 +2,8 @@
 
 # Satu station OSCE yang diuji seorang mahasiswa — satu baris tabel
 # "Penilaian OSCE" Glide (data_osce_glide.csv). Delapan dimensi klinis
-# dinilai 0–3; nilai checklist = rata-rata dimensi yang terisi ÷ 3 × 100,
-# sama seperti OsceGlideImporter jejak.pro (bobot station = 1).
+# dinilai 0–3; nilai checklist = rata-rata dimensi yang terisi ÷ 3 × 100
+# (bobot station = 1).
 #
 # Nilai OSCE mahasiswa pada event (AssessmentInstance) adalah rangkuman semua
 # station-nya — lihat AssessmentInstance#recalculate_from_osce_stations!.

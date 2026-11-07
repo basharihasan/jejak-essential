@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Konfigurasi → Domain Kegiatan Akademik (jejak.pro:
-# /admin/academic_activity_domains). Satu halaman untuk seluruh pohon
+# Konfigurasi → Domain Kegiatan Akademik. Satu halaman untuk seluruh pohon
 # Domain → Subdomain / Kategori → Bentuk Kegiatan yang dipakai form Logbook
 # Kegiatan dan Kalender.
 class Admin::AcademicActivityDomainsController < Admin::BaseController

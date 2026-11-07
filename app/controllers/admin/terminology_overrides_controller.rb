@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Konfigurasi → Taksonomi Istilah (jejak.pro: /admin/terminology). Admin
+# Konfigurasi → Taksonomi Istilah. Admin
 # mengganti label menu sidebar dan istilah halaman Logbook Kegiatan; isian
 # kosong = kembali ke label bawaan.
 class Admin::TerminologyOverridesController < Admin::BaseController

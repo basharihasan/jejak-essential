@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Berdiri sendiri tanpa FK apa pun — meniru AssessmentBlueprint JEJAK yang
-# juga tidak berasosiasi ke tabel lain (rencana penilaian, bukan data hasil).
+# Berdiri sendiri tanpa FK apa pun (rencana penilaian, bukan data hasil).
 class CreateAssessmentBlueprints < ActiveRecord::Migration[8.1]
   def change
     create_table :assessment_blueprints do |t|

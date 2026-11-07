@@ -10,7 +10,7 @@ class ClinicalCase < ApplicationRecord
   AGE_GROUPS = %w[Anak Dewasa Lansia].freeze
   GENDERS = %w[Laki-laki Perempuan].freeze
 
-  # Skala entrustment 6 level meniru JEJAK asli — diisi verifier saat
+  # Skala entrustment 6 level — diisi verifier saat
   # menyetujui kasus, bukan mahasiswa. Bukan cuma "terverifikasi/tidak" —
   # menandai seberapa mandiri mahasiswa melakukannya.
   ENTRUSTMENT_LEVELS = {
@@ -22,9 +22,8 @@ class ClinicalCase < ApplicationRecord
     "mengajari_junior" => "Mengajari Junior"
   }.freeze
 
-  # Tanda vital sengaja JSONB longgar (bukan kolom per-tanda) — meniru
-  # struktur data JEJAK asli tanpa membangun modul antropometri penuh
-  # (lingkar kepala/LiLA dsb yang JEJAK punya sebagai "tambahan" opsional).
+  # Tanda vital sengaja JSONB longgar (bukan kolom per-tanda), tanpa membangun
+  # modul antropometri penuh.
   VITAL_SIGN_FIELDS = {
     "temperature" => "Suhu (°C)",
     "bp_systolic" => "TD Sistol",
@@ -253,7 +252,7 @@ class ClinicalCase < ApplicationRecord
     age
   end
 
-  # Samaran identitas ala JEJAK: inisial nama + "***", No. RM disembunyikan
+  # Samaran identitas: inisial nama + "***", No. RM disembunyikan
   # kecuali dua digit terakhir.
   def masked_patient_name
     self.class.mask_name(patient_name)

@@ -1,5 +1,5 @@
 # Mini-CEX & DOPS yang diinisiasi mahasiswa dari kasus Logbook Kasus Klinis
-# (Paket Dasar Pilar B, "inisiasi terintegrasi" jejak.pro). Pola aman
+# (Paket Dasar Pilar B). Pola aman
 # strong_migrations sama dengan 20260915050001: indeks concurrent + FK
 # tanpa validasi (kolom baru, semua NULL — tidak ada baris yang perlu dicek).
 class AddClinicalCaseToWorkplaceEvaluations < ActiveRecord::Migration[8.1]

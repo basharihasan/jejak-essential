@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Satu unggahan CSV berformat ekspor Glide (CBT Exam Results / Penilaian
-# OSCE) — padanan ImportRun jejak.pro: ringkasan hasil, alasan baris
+# OSCE): ringkasan hasil, alasan baris
 # dilewati, contoh galat, dan dasar rollback.
 #
 # Rollback hanya membuang apa yang DIBUAT unggahan ini (event, percobaan,

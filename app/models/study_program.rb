@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 # Dua program studi tetap dari db/seeds.rb — Sarjana Kedokteran (pssk) dan
-# Profesi Dokter (pspd) — bukan hierarki Faculty/University seperti JEJAK.
-# Kode & jenjang mengikuti StudyProgram JEJAK supaya instrumen asesmen
-# (Fase 25) bisa dibedakan per jenjang.
+# Profesi Dokter (pspd) — bukan hierarki Faculty/University.
+# Kode & jenjang membuat instrumen asesmen (Fase 25) bisa dibedakan per jenjang.
 class StudyProgram < ApplicationRecord
   LEVELS = { "sarjana" => "Sarjana", "profesi" => "Profesi" }.freeze
 

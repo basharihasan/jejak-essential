@@ -14,8 +14,7 @@ require "csv"
 # parameter yang dikirim — sama dengan Analitik dan Jadwal DOPS & Mini-CEX.
 #
 # Sengaja tidak pernah ikut ekspor:
-#   - identitas pasien terenkripsi (ClinicalCase::SENSITIVE_PATIENT_FIELDS) —
-#     paket migrasi tetap satu-satunya jalur, dan itu pun harus diminta;
+#   - identitas pasien terenkripsi (ClinicalCase::SENSITIVE_PATIENT_FIELDS);
 #   - refleksi pribadi (ReflectionEntry & kolom refleksi Logbook Kegiatan) —
 #     di aplikasi hanya pemiliknya yang membacanya;
 #   - rahasia akun (kata sandi, token) dan kode pasien logbook.

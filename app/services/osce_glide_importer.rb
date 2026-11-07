@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Impor "Penilaian OSCE" berformat ekspor Glide (data_osce_glide.csv) —
-# padanan OsceGlideImporter jejak.pro. Satu baris = satu station yang diuji:
+# Impor "Penilaian OSCE" berformat ekspor Glide (data_osce_glide.csv).
+# Satu baris = satu station yang diuji:
 #
 #   emailYangDiuji (→ emailMahasiswa2..5)  mahasiswa (akun berperan mahasiswa)
 #   emailPenguji                           penguji (bila terdaftar)
@@ -12,8 +12,8 @@
 #                                          tidak pernah diimpor dua kali)
 #
 # Event tujuan: event OSCE yang dipilih admin, atau — bawaan — satu event per
-# HARI ujian ("OSCE 20 Oktober 2025", kode OSCE-GLIDE-2025-10-20), padanan
-# rekap Sesi OSCE per hari jejak.pro. Di data Glide nyata kolom PeriodeUjian
+# HARI ujian ("OSCE 20 Oktober 2025", kode OSCE-GLIDE-2025-10-20). Di data
+# Glide nyata kolom PeriodeUjian
 # dan tanggalUjianX kosong, jadi tanggal entri yang menentukan sesinya.
 #
 # Nilai OSCE mahasiswa pada event = rangkuman station-nya (OsceStationSummary).
@@ -261,7 +261,7 @@ class OsceGlideImporter
   end
 
   # Baris tanpa $rowID: station yang sama = mahasiswa + soal/station + penguji
-  # + hari yang sama (penjaga lapis kedua jejak.pro). Percobaan yang baru
+  # + hari yang sama (penjaga lapis kedua). Percobaan yang baru
   # dibuat belum punya station di basis data, jadi cukup dicek di memori.
   def duplicate_station?(attributes, created_ids)
     instance_id = attributes[:assessment_instance_id]

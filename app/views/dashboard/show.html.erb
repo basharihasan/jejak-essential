@@ -1,10 +1,9 @@
 <% content_for(:title) { "Beranda — JEJAK Essential" } %>
 
-<%# Beranda per peran aktif — lihat DashboardController. Urutannya mengikuti
-    beranda jejak.pro: sapaan → (mahasiswa) agenda & peringatan → perjalanan
-    belajar, atau (pengajar) ringkasan hari ini → tindakan → mahasiswa
-    bimbingan dengan agenda di kolom samping. Kartu sponsor AIPKI dan narasi
-    jejak.pro tetap tampil untuk semua peran. %>
+<%# Beranda per peran aktif — lihat DashboardController. Urutannya: sapaan →
+    (mahasiswa) agenda & peringatan → perjalanan belajar, atau (pengajar)
+    ringkasan hari ini → tindakan → mahasiswa bimbingan dengan agenda di kolom
+    samping. Kartu sponsor AIPKI tetap tampil untuk semua peran. %>
 <div class="space-y-6">
   <%= render "dashboard/welcome_header" %>
   <%= render "dashboard/aipki_card" %>

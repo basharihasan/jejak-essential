@@ -3,8 +3,6 @@
 # Event asesmen — satu ujian/penilaian pada satu periode, opsional dibatasi
 # prodi dan blok/stase. Nilainya masuk lewat impor CSV (CBT/OSCE/Progress
 # Test), lembar penguji (rubrik), atau inisiasi dari kasus (CBD/Long Case).
-# Meniru AssessmentEvent + AcademicAssessment.assessment_type jejak.pro,
-# dipersempit ke instrumen Paket Dasar (DAFTAR_FITUR_JEJAK.md § Pilar B).
 class AssessmentEvent < ApplicationRecord
   # tipe => [label, keluarga, prodi lazim]
   TYPES = {

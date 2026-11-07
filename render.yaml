@@ -37,8 +37,7 @@ services:
       # Menjalankan Solid Queue di dalam proses Puma (bukan worker terpisah)
       # — satu-satunya cara jalan di plan free Render, yang cuma mengizinkan
       # satu proses web. Tanpa ini notifikasi/job latar belakang tidak
-      # pernah diproses, diam-diam (lihat solid-queue-paused-two-days di
-      # memori PFKV2 — kelas kegagalan yang sama).
+      # pernah diproses, diam-diam.
       - key: SOLID_QUEUE_IN_PUMA
         value: "true"
       # Hemat RAM 512 MB plan free: satu thread job cukup untuk notifikasi,

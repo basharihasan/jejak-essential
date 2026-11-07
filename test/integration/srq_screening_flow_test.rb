@@ -217,8 +217,7 @@ class SrqScreeningFlowTest < ActionDispatch::IntegrationTest
     assert_equal [ 2, 1, 0 ], [ row.students, row.screened, row.needs_follow_up ]
   end
 
-  test "data SRQ tidak ikut paket migrasi maupun Ekspor Data" do
-    assert_not_includes MigrationExporter::FULL_TABLES, "srq_screenings"
+  test "data SRQ tidak ikut Ekspor Data" do
     assert DataExport::DATASETS.keys.none? { |key| key.to_s.include?("srq") }
   end
 end

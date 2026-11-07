@@ -3,8 +3,7 @@
 require "csv"
 
 # Konfigurasi → Relabel Prodi Mahasiswa: pindahkan/labeli prodi mahasiswa
-# secara massal dari CSV — pratinjau dulu, baru terapkan. Padanan
-# /management/student_relabel jejak.pro; pencocokannya di
+# secara massal dari CSV — pratinjau dulu, baru terapkan. Pencocokannya di
 # StudentProgramRelabeler.
 #
 # Gerbang: admin (lintas prodi) atau kaprodi. Kaprodi terikat ke prodi

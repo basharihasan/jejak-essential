@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 // Isian bertingkat Domain → Subdomain / Kategori → Bentuk Kegiatan pada form
-// Logbook Kegiatan (meniru jejak.pro). Server mengirim peta pilihan lewat
+// Logbook Kegiatan. Server mengirim peta pilihan lewat
 // data-*-value dan sudah merender pilihan untuk nilai tersimpan; controller
 // ini hanya membangun ulang pilihan saat tingkat di atasnya berganti, dan
 // menyembunyikan isian yang tidak punya pilihan.

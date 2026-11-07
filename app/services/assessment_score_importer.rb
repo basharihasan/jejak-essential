@@ -2,8 +2,8 @@
 
 require "csv"
 
-# Impor nilai massal ke satu AssessmentEvent dengan PEMETAAN KOLOM (Flexible
-# Column Mapper ala jejak.pro). Dua bentuk berkas didukung:
+# Impor nilai massal ke satu AssessmentEvent dengan PEMETAAN KOLOM. Dua bentuk
+# berkas didukung:
 #
 #   1. Nilai total saja — kolom email + skor (+ nilai maks / percobaan).
 #   2. **Nilai per dimensi** — satu kolom per mata uji CBT atau per station

@@ -1,4 +1,4 @@
-# Kolom baru Logbook Kegiatan mengikuti form jejak.pro: taksonomi 3 tingkat,
+# Kolom baru Logbook Kegiatan: taksonomi 3 tingkat,
 # waktu mulai/selesai, semester, rotasi klinik, dan tautan bukti & dokumen.
 # Pola aman strong_migrations sama dengan 20260915080003: indeks concurrent +
 # FK tanpa validasi; validasinya di migrasi berikutnya.

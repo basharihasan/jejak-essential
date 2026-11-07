@@ -4,9 +4,9 @@ require "csv"
 
 # Konfigurasi → Impor CBT & OSCE (CSV Glide): unggah berkas .csv hasil ekspor
 # tabel Glide — "CBT Exam Results" (data_cbt_exams_glide.csv) atau "Penilaian
-# OSCE" (data_osce_glide.csv) — tanpa koneksi API Glide. Padanan
-# /admin/glide_syncs/csv_import jejak.pro; diproses langsung (bukan job latar)
-# lalu diarahkan ke ringkasan hasil, yang juga menjadi tempat rollback.
+# OSCE" (data_osce_glide.csv) — tanpa koneksi API Glide. Diproses langsung
+# (bukan job latar) lalu diarahkan ke ringkasan hasil, yang juga menjadi tempat
+# rollback.
 class Admin::GlideSyncsController < Admin::BaseController
   MAX_FILE_SIZE = 50.megabytes
 

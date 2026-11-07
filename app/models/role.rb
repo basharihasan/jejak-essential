@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Role — pengganti ringan FunctionalRole/UserPersona/Capability JEJAK.
+# Role — peran akun.
 # Cukup kode + nama tampilan; tidak ada category/domain_permissions/capability
 # karena jejak-lite tidak butuh IAM enterprise, hanya "akun ini boleh lihat
 # menu apa" lewat has_role?/active_role.

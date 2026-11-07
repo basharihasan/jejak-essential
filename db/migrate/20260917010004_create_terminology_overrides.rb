@@ -1,5 +1,5 @@
-# Padanan "Taksonomi Istilah" jejak.pro (/admin/terminology) versi
-# single-tenant: satu baris per kunci i18n yang labelnya diganti admin
+# Taksonomi Istilah versi single-tenant: satu baris per kunci i18n yang labelnya
+# diganti admin
 # (nav.* = label menu, terms.* = istilah). Tanpa baris = pakai bawaan berkas
 # locale, jadi tabel kosong berarti tampilan persis seperti sebelumnya.
 class CreateTerminologyOverrides < ActiveRecord::Migration[8.1]

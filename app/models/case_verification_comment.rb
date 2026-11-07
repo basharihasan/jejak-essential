@@ -2,8 +2,8 @@
 
 # Riwayat audit trail verifikasi kasus klinis — satu baris per transisi
 # (submitted/verified/revision_requested), bukan satu kolom yang tertimpa
-# tiap kali seperti sebelumnya. Meniru pola CaseVerificationComment JEJAK
-# asli (tanpa rubrik terstruktur, cukup teks bebas + author + jenis aksi).
+# tiap kali seperti sebelumnya. Tanpa rubrik terstruktur, cukup teks bebas +
+# author + jenis aksi.
 class CaseVerificationComment < ApplicationRecord
   ACTIONS = {
     "submitted" => "Dikirim untuk Verifikasi",

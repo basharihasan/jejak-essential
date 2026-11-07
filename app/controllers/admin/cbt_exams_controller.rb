@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# Konfigurasi → Kelola Ujian CBT — padanan /admin/cbt_exams jejak.pro: daftar
+# Konfigurasi → Kelola Ujian CBT: daftar
 # ujian CBT & Progress Test (hasil impor maupun buatan admin) beserta jumlah
 # peserta, ubah judul/tanggal di tempat, dan pintu ke pemetaan dimensi →
 # ranah kompetensi (tab Dimensi event).
 #
-# Beda dengan jejak.pro: ujian yang sudah bernilai TIDAK dihapus dari sini —
+# Ujian yang sudah bernilai TIDAK dihapus dari sini —
 # aturan yang sama dengan Assessment Events. Impor yang keliru dibatalkan
 # lewat rollback di Riwayat Impor.
 class Admin::CbtExamsController < Admin::BaseController
@@ -61,7 +61,7 @@ class Admin::CbtExamsController < Admin::BaseController
 
   # Tanggal ujian dikoreksi → nilai hasil impor yang tercatat di tanggal lama
   # ikut pindah, supaya grafik tren & Evaluasi Akademik memakai tanggal yang
-  # benar (padanan rebuild ADP jejak.pro).
+  # benar.
   def shift_imported_dates!(previous_date)
     return if @exam.exam_date.blank? || previous_date == @exam.exam_date
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Tingkat 1 taksonomi Logbook Kegiatan (jejak.pro: AcademicActivityDomain),
-# mis. Praktek, Belajar Mengajar, Prestasi Kemahasiswaan.
+# Tingkat 1 taksonomi Logbook Kegiatan, mis. Praktek, Belajar Mengajar,
+# Prestasi Kemahasiswaan.
 class AcademicActivityDomain < ApplicationRecord
   include TaxonomyNode
 

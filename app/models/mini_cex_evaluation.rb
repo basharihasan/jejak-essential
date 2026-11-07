@@ -4,7 +4,7 @@ class MiniCexEvaluation < ApplicationRecord
   include DimensionScorable
   include ClinicalContextOptions
 
-  # 6 dimensi numerik (1-9) meniru rubrik Mini-CEX JEJAK asli. Penilaian
+  # 6 dimensi numerik (1-9) rubrik Mini-CEX. Penilaian
   # keseluruhan TIDAK jadi dimensi numerik ke-7 lagi — dipindah ke
   # `global_rating`, field kualitatif 4-pilihan terpisah (lihat
   # GLOBAL_RATING_OPTIONS), karena itu memang bagaimana Mini-CEX standar

@@ -4,7 +4,7 @@ class DopsEvaluation < ApplicationRecord
   include DimensionScorable
   include ClinicalContextOptions
 
-  # 10 dimensi meniru rubrik DOPS JEJAK asli (bukan versi ringkas 6 dimensi
+  # 10 dimensi rubrik DOPS (bukan versi ringkas 6 dimensi
   # sebelumnya). Komunikasi, profesionalisme, dan penilaian global SELALU
   # wajib diisi (tidak boleh N/A) — dimensi teknis lainnya boleh N/A kalau
   # memang tidak relevan untuk prosedur tertentu.

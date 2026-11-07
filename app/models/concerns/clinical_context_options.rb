@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 # Konstanta bersama dipakai DopsEvaluation, MiniCexEvaluation, dan
-# ClinicalCase — meniru field clinical_setting/patient_age_group/
-# case_complexity yang di JEJAK asli berulang di ketiga model tersebut.
+# ClinicalCase: clinical_setting/patient_age_group/case_complexity.
 # Bukan concern ActiveRecord (tidak ada included do...end) karena cuma
 # menyediakan daftar pilihan tetap, bukan perilaku model.
 module ClinicalContextOptions

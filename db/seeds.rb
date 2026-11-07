@@ -13,8 +13,8 @@
 end
 
 # Persis 2 prodi tetap — bukan hierarki Faculty/University (lihat
-# IMPLEMENTATION_PLAN.md § Keputusan Arsitektur Kunci). Kode & jenjang
-# mengikuti JEJAK (pssk = Sarjana, pspd = Profesi).
+# IMPLEMENTATION_PLAN.md § Keputusan Arsitektur Kunci). Kode & jenjang:
+# pssk = Sarjana, pspd = Profesi.
 { "Sarjana Kedokteran" => %w[pssk sarjana], "Profesi Dokter" => %w[pspd profesi] }.each do |name, (code, level)|
   sp = StudyProgram.find_or_initialize_by(name: name)
   sp.code  ||= code
@@ -22,8 +22,8 @@ end
   sp.save!
 end
 
-# Taksonomi Logbook Kegiatan (Domain → Subdomain → Bentuk Kegiatan) meniru
-# jejak.pro. Hanya mengisi basis data yang belum punya domain sama sekali —
+# Taksonomi Logbook Kegiatan (Domain → Subdomain → Bentuk Kegiatan). Hanya
+# mengisi basis data yang belum punya domain sama sekali —
 # domain yang dihapus admin tidak muncul lagi di deploy berikutnya.
 AcademicActivityTaxonomySeeder.call
 

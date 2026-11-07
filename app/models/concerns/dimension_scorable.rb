@@ -5,9 +5,9 @@
 # Mini-CEX baku secara internasional, bukan sesuatu yang perlu dikonfigurasi
 # ulang per institusi). Skor 1-9 meniru skala Mini-CEX standar (1-3 di bawah
 # harapan, 4-6 sesuai harapan, 7-9 melebihi harapan). Dimensi wajib (lihat
-# REQUIRED_DIMENSIONS per model) tidak boleh N/A — meniru aturan JEJAK asli.
+# REQUIRED_DIMENSIONS per model) tidak boleh N/A.
 #
-# Status draft/submitted meniru JEJAK: evaluator bisa mulai menilai lalu
+# Status draft/submitted: evaluator bisa mulai menilai lalu
 # menyelesaikannya nanti. Notifikasi ke mahasiswa BARU terkirim saat status
 # jadi "submitted" — lewat jalur mana pun (#submit!, tombol Kirim Evaluasi di
 # form sunting, atau langsung dibuat submitted) — bukan saat draft dibuat,

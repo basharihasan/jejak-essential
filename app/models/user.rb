@@ -197,7 +197,7 @@ class User < ApplicationRecord
   validate :birth_date_not_in_future
 
   # Label nomor identitas mengikuti peran: mahasiswa memakai NPM/NIM,
-  # selainnya NIP/NIDN — satu kolom, dua sebutan (seperti jejak.pro).
+  # selainnya NIP/NIDN — satu kolom, dua sebutan.
   def identifier_label
     has_role?("mahasiswa") ? "NPM / NIM" : "NIP / NIDN"
   end

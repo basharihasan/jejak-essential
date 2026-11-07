@@ -13,7 +13,7 @@ module CohortStats
     (((below + (same / 2.0)) / sorted.size) * 100).round
   end
 
-  # Interpolasi linear antar-titik, seperti kurva persentil kohort jejak.pro.
+  # Interpolasi linear antar-titik.
   def percentile_value(sorted, pct)
     return sorted.first if sorted.size == 1
 

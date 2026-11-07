@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Rencana cakupan asesmen (Blueprinting) — berdiri sendiri tanpa asosiasi
-# apa pun, meniru AssessmentBlueprint JEJAK. Bukan data hasil, tapi
+# apa pun. Bukan data hasil, tapi
 # rencana: seberapa besar bobot tiap ranah kompetensi dalam satu asesmen.
 class AssessmentBlueprint < ApplicationRecord
   has_many :assessment_blueprint_mappings, dependent: :destroy
